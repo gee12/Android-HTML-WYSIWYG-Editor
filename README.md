@@ -1,106 +1,44 @@
-# Android-Rich-WYSIWYG-Editor
-### Demo
- ![](./art/sample2.gif)
- ![](./art/sample3.gif)
- ![](./art/sample4.gif)
- ![](./art/sample5.gif)
- ![](./art/sample6.gif)
- ![](./art/sample7.gif)
+## WYSIWYG html-editor for Android
 
-### AndroidX
-Android-Rich-WYSIWYG-Editor uses AndroidX  
-You should migrate your project to AndroidX (How to migrate: https://developer.android.com/jetpack/androidx/migrate)  
+It is based on library [lumyjuwon/Android-Rich-WYSIWYG-Editor](https://github.com/lumyjuwon/Android-Rich-WYSIWYG-Editor), which in turn is on library [wasabeef/richeditor-android](https://github.com/wasabeef/richeditor-android).
 
-### Functions
-- [ ] Text Size
-- [x] Text Color
-- [x] Text Background Color
-- [x] Text Bold
-- [x] Text Italic
-- [x] Text Underline
-- [x] Text Strike Through
-- [x] Content Align
-- [x] Insert Image
-- [x] Insert Youtube
+Used:
+- native WebView
+- Javascript to execute commands
+- custom panel with tools (toolbar with popup buttons)
 
-### Todo List
-1. Add other functions.  
-2. Refactory variable names & Popup Fucntions.  
-3. Fix html default background color bugs.  
-4. Add Function Button setting method.
+### Implemented Functions
+- [x] Bold
+- [x] Italic
+- [x] Underline
+- [x] Strikethrough
+- [x] Font size
+- [x] Text color
+- [x] Background color
+- [x] Horizontal align
 
-## How to use it
-### Setup
-Add this maven to your ```project's``` build.gradle
-```
-repositories {
-    maven { url "https://jitpack.io" }
-}
-```
-
-And add this to your ```module's``` build.gradle
-```
-implementation 'com.github.lumyjuwon:Android-Rich-Wysiwyg-Editor:1.0.0'
-```
-### Sample
-```
-    private RichWysiwyg wysiwyg;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        wysiwyg = findViewById(R.id.richwysiwygeditor);
-        
-        wysiwyg.getContent()
-                .setEditorFontSize(18)
-                .setEditorPadding(4, 0, 4, 0);
-        
-        wysiwyg.getHeadlineEditText().setHint("Headline");
-        
-        wysiwyg.getCancelButton().setText("Cancel");
-        
-        wysiwyg.getConfirmButton().setText("Confirm");
-        wysiwyg.getConfirmButton().setOnClickListener(new Button.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                // Handle this
-                Log.i("Rich Wysiwyg Headline", wysiwyg.getHeadlineEditText().getText().toString());
-                if(wysiwyg.getContent().getHtml() != null)
-                    Log.i("Rich Wysiwyg", wysiwyg.getContent().getHtml());
-            }
-        });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, final int resultCode, Intent data) {
-        if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
-            List<Image> images = ImagePicker.getImages(data);
-            insertImages(images);
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private void insertImages(List<Image> images) {
-        if (images == null) return;
-
-        StringBuilder stringBuffer = new StringBuilder();
-        for (int i = 0, l = images.size(); i < l; i++) {
-            stringBuffer.append(images.get(i).getPath()).append("\n");
-            // Handle this
-            wysiwyg.getContent().insertImage("file://" + images.get(i).getPath(), "A");
-        }
-    }
-```
-
-## Credits
-ImagePicker: https://github.com/esafirm/android-image-picker  
-RichEditor: https://github.com/wasabeef/richeditor-android  
-Google Material Icon Design: https://material.io/tools/icons/?style=baseline
+### Functions to implement
+- [ ] Subscript/Superscript
+- [ ] Headering H1-H6
+- [ ] Font family
+- [ ] Indent/Outdent
+- [ ] Bullets list
+- [ ] Numbers list
+- [ ] Horizontal rule
+- [ ] Insert link/Unlink
+- [ ] Insert Image
+- [ ] Insert Youtube
+- [ ] Insert table
+- [ ] Undo/Redo
+- [ ] Search
+- [ ] Quote
+- [ ] Code
+- [ ] Formula
+- [ ] Clear formatting
 
 ## License
 ```
-Copyright 2019 lumyjuwon
+Copyright 2020 gee12
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
