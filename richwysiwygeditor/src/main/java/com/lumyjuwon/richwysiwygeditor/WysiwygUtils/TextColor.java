@@ -9,14 +9,33 @@ import java.util.regex.Pattern;
 
 public class TextColor {
 
-    public static final Map<Integer,Integer> colorMap = new HashMap<Integer, Integer>(){{
-        put(R.id.color_white, R.color.white); put(R.id.color_black, R.color.black); put(R.id.color_maroon, R.color.maroon); put(R.id.color_red, R.color.red); put(R.id.color_lime, R.color.lime);
-        put(R.id.color_magenta, R.color.magenta); put(R.id.color_pink, R.color.pink); put(R.id.color_orange, R.color.orange); put(R.id.color_yellow, R.color.yellow);
-        put(R.id.color_aqua, R.color.aqua); put(R.id.color_blue, R.color.blue); put(R.id.color_sky_blue, R.color.sky_blue); put(R.id.color_pale_cyan, R.color.pale_cyan);
+    public static final Map<Integer,Integer> colorMap = new HashMap<Integer, Integer>() {{
+        put(R.id.color_white, R.color.white);
+        put(R.id.color_black, R.color.black);
+        put(R.id.color_maroon, R.color.maroon);
+        put(R.id.color_red, R.color.red);
+        put(R.id.color_lime, R.color.lime);
+        put(R.id.color_magenta, R.color.magenta);
+        put(R.id.color_pink, R.color.pink);
+        put(R.id.color_orange, R.color.orange);
+        put(R.id.color_yellow, R.color.yellow);
+        put(R.id.color_aqua, R.color.aqua);
+        put(R.id.color_blue, R.color.blue);
+        put(R.id.color_sky_blue, R.color.sky_blue);
+        put(R.id.color_pale_cyan, R.color.pale_cyan);
         put(R.id.color_green, R.color.green);
     }};
 
-    public static int getColor(String color){
+    /**
+     * FIXME:
+     * 1) зачем проверка A-Z, если сделали toLowerCase() ?
+     * 2) в каком формате приходит значение цвета ? (отладить)
+     * 3) если формат в RGB=(e,g,b), то заменить на hex ?
+     *
+     * @param color
+     * @return
+     */
+    public static int getColor(String color) {
         final String color_ = color.toLowerCase();
         final String regex = "[a-zA-Z]+_[a-zA-Z]+_(\\w+)";
 
@@ -55,8 +74,7 @@ public class TextColor {
                 default:
                     return R.color.black;
             }
-        }
-        else{
+        } else {
             return R.color.black;
         }
     }

@@ -26,11 +26,25 @@
             android:background="@color/black" />
 
         <Button
+            android:id="@+id/color_green"
+            android:layout_width="@dimen/color_button_size"
+            android:layout_height="@dimen/color_button_size"
+            android:layout_marginEnd="8dp"
+            android:background="@color/green" />
+
+        <Button
             android:id="@+id/color_lime"
             android:layout_width="@dimen/color_button_size"
             android:layout_height="@dimen/color_button_size"
             android:layout_marginEnd="8dp"
             android:background="@color/lime" />
+
+        <Button
+            android:id="@+id/color_maroon"
+            android:layout_width="@dimen/color_button_size"
+            android:layout_height="@dimen/color_button_size"
+            android:layout_marginEnd="8dp"
+            android:background="@color/maroon" />
 
         <Button
             android:id="@+id/color_red"
@@ -47,25 +61,18 @@
             android:background="@color/orange" />
 
         <Button
-            android:id="@+id/color_blue"
-            android:layout_width="@dimen/color_button_size"
-            android:layout_height="@dimen/color_button_size"
-            android:layout_marginEnd="8dp"
-            android:background="@color/blue" />
-
-        <Button
-            android:id="@+id/color_green"
-            android:layout_width="@dimen/color_button_size"
-            android:layout_height="@dimen/color_button_size"
-            android:layout_marginEnd="8dp"
-            android:background="@color/green" />
-
-        <Button
             android:id="@+id/color_yellow"
             android:layout_width="@dimen/color_button_size"
             android:layout_height="@dimen/color_button_size"
             android:layout_marginEnd="8dp"
             android:background="@color/yellow" />
+
+        <Button
+            android:id="@+id/color_blue"
+            android:layout_width="@dimen/color_button_size"
+            android:layout_height="@dimen/color_button_size"
+            android:layout_marginEnd="8dp"
+            android:background="@color/blue" />
 
         <Button
             android:id="@+id/color_sky_blue"
@@ -75,25 +82,17 @@
             android:background="@color/sky_blue" />
 
         <Button
+            android:id="@+id/color_aqua"
+            android:layout_width="@dimen/color_button_size"
+            android:layout_height="@dimen/color_button_size"
+            android:background="@color/aqua" />
+
+        <Button
             android:id="@+id/color_pale_cyan"
             android:layout_width="@dimen/color_button_size"
             android:layout_height="@dimen/color_button_size"
             android:layout_marginEnd="8dp"
             android:background="@color/pale_cyan" />
-
-        <Button
-            android:id="@+id/color_pink"
-            android:layout_width="@dimen/color_button_size"
-            android:layout_height="@dimen/color_button_size"
-            android:layout_marginEnd="8dp"
-            android:background="@color/pink" />
-
-        <Button
-            android:id="@+id/color_maroon"
-            android:layout_width="@dimen/color_button_size"
-            android:layout_height="@dimen/color_button_size"
-            android:layout_marginEnd="8dp"
-            android:background="@color/maroon" />
 
         <Button
             android:id="@+id/color_magenta"
@@ -103,10 +102,11 @@
             android:background="@color/magenta" />
 
         <Button
-            android:id="@+id/color_aqua"
+            android:id="@+id/color_pink"
             android:layout_width="@dimen/color_button_size"
             android:layout_height="@dimen/color_button_size"
-            android:background="@color/aqua" />
+            android:layout_marginEnd="8dp"
+            android:background="@color/pink" />
 
     </LinearLayout>
 

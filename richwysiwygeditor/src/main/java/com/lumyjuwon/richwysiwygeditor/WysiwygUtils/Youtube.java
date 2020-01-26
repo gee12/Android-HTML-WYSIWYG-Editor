@@ -8,7 +8,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.lumyjuwon.richwysiwygeditor.R;
-import com.lumyjuwon.richwysiwygeditor.RichEditor.RichEditor;
+import com.lumyjuwon.richwysiwygeditor.RichEditor.EditableWebView;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,7 +33,7 @@ public class Youtube {
         return "error";
     }
 
-    public static void showYoutubeDialog(LayoutInflater layoutInflater, RichEditor content, View view) {
+    public static void showYoutubeDialog(LayoutInflater layoutInflater, EditableWebView content, View view) {
         layoutInflater = LayoutInflater.from(view.getContext());
         View promptView = layoutInflater.inflate(R.layout.dialog_youtube, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(view.getContext());
