@@ -276,6 +276,16 @@ RE.insertLink = function(url, title) {
     RE.callback();
 }
 
+RE.insertCSS = function(cssFile) {
+    var head  = document.getElementsByTagName("head")[0];
+    var link  = document.createElement("link");
+    link.rel  = "stylesheet";
+    link.type = "text/css";
+    link.href = cssFile;
+    link.media = "all";
+    head.appendChild(link);
+}
+
 RE.setTodo = function(text) {
     var html = '<input type="checkbox" name="'+ text +'" value="'+ text +'"/> &nbsp;';
     document.execCommand('insertHTML', false, html);

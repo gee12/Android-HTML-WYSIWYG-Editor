@@ -1,5 +1,10 @@
 package com.lumyjuwon.richwysiwygeditor.WysiwygUtils;
 
+import android.content.Context;
+
+import androidx.annotation.ColorRes;
+import androidx.core.content.ContextCompat;
+
 import com.lumyjuwon.richwysiwygeditor.R;
 
 import java.util.HashMap;
@@ -29,20 +34,20 @@ public class TextColor {
     /**
      * FIXME:
      * 1) зачем проверка A-Z, если сделали toLowerCase() ?
-     * 2) в каком формате приходит значение цвета ? (отладить)
-     * 3) если формат в RGB=(e,g,b), то заменить на hex ?
+     *
+     * Пример: "FONT_COLOR_BLACK"
      *
      * @param color
      * @return
      */
-    public static int getColor(String color) {
+    public static @ColorRes int getColorRes(String color) {
         final String color_ = color.toLowerCase();
         final String regex = "[a-zA-Z]+_[a-zA-Z]+_(\\w+)";
 
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(color_);
         String color_name;
-        if(matcher.find()) {
+        if (matcher.find()) {
             color_name = matcher.group(1);
             switch (color_name) {
                 case "black":
@@ -79,4 +84,8 @@ public class TextColor {
         }
     }
 
+    public static int getColor(Context context, String color) {
+        @ColorRes int colorRes = getColorRes(color);
+        return ContextCompat.getColor(context.getApplicationContext(), colorRes);
+    }
 }

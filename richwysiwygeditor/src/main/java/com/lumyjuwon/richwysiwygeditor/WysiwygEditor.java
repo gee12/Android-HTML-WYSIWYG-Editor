@@ -3,11 +3,7 @@ package com.lumyjuwon.richwysiwygeditor;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+
 import com.lumyjuwon.richwysiwygeditor.RichEditor.EditableWebView;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.ImgPicker;
-import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.Keyboard;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.TextColor;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.Youtube;
 
@@ -46,6 +44,7 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 public class WysiwygEditor extends LinearLayout {
 
     public interface IEditorListener {
@@ -53,9 +52,9 @@ public class WysiwygEditor extends LinearLayout {
     }
 
     private LayoutInflater layoutInflater;
-    private EditableWebView webView;
+    protected EditableWebView webView;
 //    private View popupView;
-//    private PopupWindow popupWindow;
+    private PopupWindow popupWindow;
     private HorizontalScrollView toolBarPanel;
     private ImageButton bInsertImage;
     private CheckedImageButton bFgColor;
@@ -96,35 +95,13 @@ public class WysiwygEditor extends LinearLayout {
         // webView
         webView = findViewById(R.id.web_view);
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null); // sdk 19 ChromeWebView ?
-        webView.setOnDecorationChangeListener((text, types) -> updateToolBarState(types));
+        webView.setOnDecorationChangeListener((text, types) -> updateButtonsState(types));
 
         // toolBar
         this.toolBarPanel = findViewById(R.id.layout_toolbar);
 
-        // text Size
-        ImageButton textSizeButton = findViewById(R.id.button_textSize);
-        textSizeButton.setOnClickListener(view -> {
-//            closePopupWindow();
-            showSizePopupWindow(view);
-        });
-
-        PopupButtonListener popupButtonListener = new PopupButtonListener();
-
-        // text color
-        bFgColor = findViewById(R.id.button_fgColor);
-        bFgColor.setStateColors(buttonBaseColor, highlightColor);
-        bFgColor.setOnClickListener(popupButtonListener);
-
-        // background color
-        bBgColor = findViewById(R.id.button_bgColor);
-        bBgColor.setStateColors(buttonBaseColor, highlightColor);
-        bBgColor.setOnClickListener(popupButtonListener);
-
-        // align
-        bTextAlign = findViewById(R.id.button_textAlign);
-        bTextAlign.setOnClickListener(popupButtonListener);
-
-        DecorationButtonListener decorationButtonListener = new DecorationButtonListener();
+        // decoration buttons
+        OnClickListener decorationButtonListener = v -> WysiwygEditor.this.onClickDecorationButton((CheckedImageButton) v);
 
         // bold
         bTextBold = findViewById(R.id.button_textBold);
@@ -146,9 +123,34 @@ public class WysiwygEditor extends LinearLayout {
         bTextStrike.setStateColors(buttonBaseColor, highlightColor);
         bTextStrike.setOnClickListener(decorationButtonListener);
 
+        // popup buttons
+        OnClickListener popupButtonListener = v -> WysiwygEditor.this.onClickPopupButton((CheckedImageButton) v);
+
+        // text size
+        ImageButton textSizeButton = findViewById(R.id.button_textSize);
+        textSizeButton.setOnClickListener(popupButtonListener);
+//        textSizeButton.setOnClickListener(view -> {
+//            closePopupWindow();
+//            showTextSizePopupWindow(view);
+//        });
+
+        // text color
+        bFgColor = findViewById(R.id.button_fgColor);
+        bFgColor.setStateColors(buttonBaseColor, highlightColor);
+        bFgColor.setOnClickListener(popupButtonListener);
+
+        // background color
+        bBgColor = findViewById(R.id.button_bgColor);
+        bBgColor.setStateColors(buttonBaseColor, highlightColor);
+        bBgColor.setOnClickListener(popupButtonListener);
+
+        // align
+        bTextAlign = findViewById(R.id.button_textAlign);
+        bTextAlign.setOnClickListener(popupButtonListener);
+
         // image insert
         bInsertImage = findViewById(R.id.button_imageInsert);
-        bInsertImage.setOnClickListener(v -> ImgPicker.start(v));
+        bInsertImage.setOnClickListener(ImgPicker::start);
 
         // launch YouTube app when clicked on YouTube embed link
         webView.setYoutubeLoadLinkListener(videoId -> {
@@ -159,34 +161,31 @@ public class WysiwygEditor extends LinearLayout {
         // video insert
         ImageButton videoInsertButton = findViewById(R.id.button_videoInsert);
         videoInsertButton.setOnClickListener(v -> {
-//            closePopupWindow();
+            closePopupWindow();
             clearPopupButton();
             Youtube.showYoutubeDialog(layoutInflater, webView, v);
         });
 
-        popupButtons = new ArrayList<>(Arrays.asList(bFgColor, bBgColor, bTextAlign));
-
+        this.popupButtons = new ArrayList<>(Arrays.asList(bFgColor, bBgColor, bTextAlign));
     }
 
     /**
      *
      * @param types
      */
-    private void updateToolBarState(List<EditableWebView.Type> types) {
-        buttons = new ArrayList<>(Arrays.asList(bFgColor, bBgColor, bTextBold, bTextItalic, bTextUnderline, bTextStrike));
+    private void updateButtonsState(List<EditableWebView.Type> types) {
+        this.buttons = new ArrayList<>(Arrays.asList(bFgColor, bBgColor, bTextBold, bTextItalic, bTextUnderline, bTextStrike));
 
         for (EditableWebView.Type type : types){
             if (type.name().contains("FONT_COLOR")) {
 //                setCheckedButton(bFgColor, TextColor.getColor(type.name()));
-                bFgColor.setCheckedState(true, TextColor.getColor(type.name()));
+                bFgColor.setCheckedState(true, TextColor.getColor(getContext(), type.name()));
                 buttons.remove(bFgColor);
-            }
-            else if (type.name().contains("BACKGROUND_COLOR")) {
+            } else if (type.name().contains("BACKGROUND_COLOR")) {
 //                setCheckedButton(bBgColor, TextColor.getColor(type.name()));
-                bBgColor.setCheckedState(true, TextColor.getColor(type.name()));
+                bBgColor.setCheckedState(true, TextColor.getColor(getContext(), type.name()));
                 buttons.remove(bBgColor);
-            }
-            else {
+            } else {
                 switch(type) {
                     case BOLD:
 //                        setCheckedButton(bTextBold, buttonHighlightColor);
@@ -212,7 +211,8 @@ public class WysiwygEditor extends LinearLayout {
                 }
             }
         }
-        for(CheckedImageButton button : buttons) {
+
+        for (CheckedImageButton button : buttons) {
             button.setCheckedState(false);
         }
     }
@@ -228,71 +228,72 @@ public class WysiwygEditor extends LinearLayout {
 //            button.switchCheckedState();
 //    }
 
-
-    class PopupButtonListener implements OnClickListener {
-        @Override
-        public void onClick(View view) {
-            if (view instanceof CheckedImageButton) {
-                CheckedImageButton button = (CheckedImageButton) view;
-
-//                closePopupWindow();
-                if (!button.isChecked()) {
-//                    webView.clearFocusEditor();
-                    if (button.getId() == R.id.button_fgColor)
-                        showFgColorPopupWindow(view);
-                    else if (button.getId() == R.id.button_bgColor)
-                        showBgColorPopupWindow(view);
-                    else if (button.getId() == R.id.button_textAlign)
-                        showAlignPopupWindow(view);
-                    clearPopupButton();
-                }
-                // ?
-                button.switchCheckedState();
-            }
-        }
-    }
-
-    class DecorationButtonListener implements OnClickListener{
-        @Override
-        public void onClick(View view){
-            if (view instanceof CheckedImageButton) {
-                CheckedImageButton button = (CheckedImageButton) view;
-
-//                closePopupWindow();
-                clearPopupButton();
-                webView.clearAndFocusEditor();
-                if(button.getId() == R.id.button_textBold)
-                    webView.setBold();
-                else if(button.getId() == R.id.button_textItalic)
-                    webView.setItalic();
-                else if(button.getId() == R.id.button_textUnderLine)
-                    webView.setUnderline();
-                else if(button.getId() == R.id.button_textStrike)
-                    webView.setStrikeThrough();
-                button.switchCheckedState();
-
-            }
-        }
+    /**
+     *
+     * @param button
+     */
+    public void onClickDecorationButton(CheckedImageButton button) {
+        if (button == null) return;
+        closePopupWindow();
+//        clearPopupButton();
+//        webView.clearAndFocusEditor();
+        if (button.getId() == R.id.button_textBold)
+            webView.setBold();
+        else if (button.getId() == R.id.button_textItalic)
+            webView.setItalic();
+        else if (button.getId() == R.id.button_textUnderLine)
+            webView.setUnderline();
+        else if (button.getId() == R.id.button_textStrike)
+            webView.setStrikeThrough();
+        button.switchCheckedState();
     }
 
     /**
      *
-     * @param view
+     * @param button
      */
-    private void showSizePopupWindow(View view) {
-        PopupWindow popupWindow = createPopupWindow(view, R.layout.popup_text_size);
+    public void onClickPopupButton(CheckedImageButton button) {
+        if (button == null) return;
+        closePopupWindow();
+//        if (!button.isChecked()) {
+//            webView.clearFocusEditor();
+            if (button.getId() == R.id.button_textSize)
+                showTextSizePopupWindow(button);
+            else if (button.getId() == R.id.button_fgColor)
+                showFgColorPopupWindow(button);
+            else if (button.getId() == R.id.button_bgColor)
+                showBgColorPopupWindow(button);
+            else if (button.getId() == R.id.button_textAlign)
+                showAlignPopupWindow(button);
+//            clearPopupButton();
+//        } else {
+//
+//        }
+        // ?
+//        button.switchCheckedState();
+    }
+
+    /**
+     *
+     * @param button
+     */
+    private void showTextSizePopupWindow(CheckedImageButton button) {
+        if (button == null) return;
+        this.popupWindow = createPopupWindow(button, R.layout.popup_text_size);
         View contentView = popupWindow.getContentView();
 
         for (int i = 0; i < ((ViewGroup)contentView).getChildCount(); ++i) {
             View child = ((ViewGroup)contentView).getChildAt(i);
             if (child instanceof ImageButton) {
                 child.setOnClickListener(view1 -> {
-                    closePopupWindow(popupWindow);
+                    closePopupWindow();
                     try {
                         int size = Integer.parseInt((String) child.getTag());
                         webView.setFontSize(size);
                     } catch (NumberFormatException ex) {
                     }
+                    button.setCheckedState(true);
+//                    webView.focusEditor();
                 });
             }
         }
@@ -300,10 +301,11 @@ public class WysiwygEditor extends LinearLayout {
 
     /**
      *
-     * @param view
+     * @param button
      */
-    private void showFgColorPopupWindow(View view) {
-        PopupWindow popupWindow = createPopupWindow(view, R.layout.popup_text_color);
+    private void showFgColorPopupWindow(CheckedImageButton button) {
+        if (button == null) return;
+        this.popupWindow = createPopupWindow(button, R.layout.popup_text_color);
         View contentView = popupWindow.getContentView();
 
         Context context = getContext().getApplicationContext();
@@ -311,22 +313,25 @@ public class WysiwygEditor extends LinearLayout {
             final int value = TextColor.colorMap.get(key);
             Button popupButton = contentView.findViewById(key);
             popupButton.setOnClickListener(view1 -> {
-                closePopupWindow(popupWindow);
+                closePopupWindow();
                 webView.setTextColor(ContextCompat.getColor(getContext().getApplicationContext(), value));
                 int color = (value != R.color.white)
                         ? ContextCompat.getColor(context, value) : buttonBaseColor;
-                bFgColor.switchCheckedState(color);
+//                bFgColor.switchCheckedState(color);
+                button.setCheckedState(true, color);
 //                Keyboard.showKeyboard(view1);
+//                webView.focusEditor();
             });
         }
     }
 
     /**
      *
-     * @param view
+     * @param button
      */
-    private void showBgColorPopupWindow(View view) {
-        PopupWindow popupWindow = createPopupWindow(view, R.layout.popup_text_color);
+    private void showBgColorPopupWindow(CheckedImageButton button) {
+        if (button == null) return;
+        this.popupWindow = createPopupWindow(button, R.layout.popup_text_color);
         View contentView = popupWindow.getContentView();
 
         Context context = getContext().getApplicationContext();
@@ -334,47 +339,53 @@ public class WysiwygEditor extends LinearLayout {
             final int value = TextColor.colorMap.get(key);
             Button popupButton = contentView.findViewById(key);
             popupButton.setOnClickListener(view1 -> {
-                closePopupWindow(popupWindow);
+                closePopupWindow();
                 webView.setTextBackgroundColor(ContextCompat.getColor(context, value));
                 int color = (value != R.color.white)
                         ? ContextCompat.getColor(context, value) : buttonBaseColor;
-                bBgColor.switchCheckedState(color);
+//                bBgColor.switchCheckedState(color);
+                button.setCheckedState(true, color);
 //                Keyboard.showKeyboard(view1);
+//                webView.focusEditor();
             });
         }
     }
 
     /**
      *
-     * @param view
+     * @param button
      */
-    private void showAlignPopupWindow(View view) {
-        PopupWindow popupWindow = createPopupWindow(view, R.layout.popup_text_align);
+    private void showAlignPopupWindow(CheckedImageButton button) {
+        if (button == null) return;
+        this.popupWindow = createPopupWindow(button, R.layout.popup_text_align);
         View contentView = popupWindow.getContentView();
 
         ImageButton textAlignLeftButton = contentView.findViewById(R.id.text_alignLeft);
         textAlignLeftButton.setOnClickListener(view1 -> {
-            closePopupWindow(popupWindow);
+            closePopupWindow();
             webView.setAlignLeft();
-            bTextAlign.switchCheckedState();
+//            bTextAlign.switchCheckedState();
+            button.setCheckedState(true);
 //            Keyboard.showKeyboard(view1);
             webView.focusEditor();
         });
 
         ImageButton textAlignCenterButton = contentView.findViewById(R.id.text_alignCenter);
         textAlignCenterButton.setOnClickListener(view12 -> {
-            closePopupWindow(popupWindow);
+            closePopupWindow();
             webView.setAlignCenter();
-            bTextAlign.switchCheckedState();
+//            bTextAlign.switchCheckedState();
+            button.setCheckedState(true);
 //            Keyboard.showKeyboard(view12);
             webView.focusEditor();
         });
 
         ImageButton textAlignRightButton = contentView.findViewById(R.id.text_alignRight);
         textAlignRightButton.setOnClickListener(view13 -> {
-            closePopupWindow(popupWindow);
+            closePopupWindow();
             webView.setAlignRight();
-            bTextAlign.switchCheckedState();
+//            bTextAlign.switchCheckedState();
+            button.setCheckedState(true);
 //            Keyboard.showKeyboard(view13);
             webView.focusEditor();
         });
@@ -396,9 +407,9 @@ public class WysiwygEditor extends LinearLayout {
 
     /**
      *
-     * @param popupWindow
      */
-    private static void closePopupWindow(PopupWindow popupWindow){
+//    private static void closePopupWindow(PopupWindow popupWindow){
+    private void closePopupWindow(){
         if (popupWindow != null) {
             popupWindow.dismiss();
             popupWindow = null;

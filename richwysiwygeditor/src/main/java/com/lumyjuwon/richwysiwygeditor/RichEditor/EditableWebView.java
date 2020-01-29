@@ -125,7 +125,7 @@ public class EditableWebView extends WebView {
 
     public interface IPageLoadListener {
 
-        void onPageLoad(boolean isReady);
+        void onPageLoaded(boolean isReady);
     }
 
     public interface IUrlLoadListener {
@@ -137,12 +137,6 @@ public class EditableWebView extends WebView {
         void onReceivedEvent(String videoId);
     }
 
-    public static final String HTML_START_WITH =
-            "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n" +
-            "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n" +
-            "p, li { white-space: pre-wrap; }\n" +
-            "</style></head><body style=\" font-family:'DejaVu Sans'; font-size:11pt; font-weight:400; font-style:normal;\">";
-    public static final String HTML_END_WITH = "</body></html>";
     public static final int EXEC_TRY_DELAY_MSEC = 100;
     public static final String EDITOR_JS_FILE = "editor.js";
     private static final String CALLBACK_SCHEME = "re-callback://";
@@ -180,13 +174,15 @@ public class EditableWebView extends WebView {
 
     public void onPageLoaded() {
 //            isPageLoaded = url.equalsIgnoreCase(SETUP_HTML);
-        loadEditorScript();
+//        if (!isPageLoaded) {
+            loadEditorScript();
+//        }
         makeHtmlRequest();
 
         EditableWebView.this.isPageLoaded = true;
 
         if (mLoadListener != null) {
-            mLoadListener.onPageLoad(isPageLoaded);
+            mLoadListener.onPageLoaded(isPageLoaded);
         }
     }
 
@@ -276,16 +272,28 @@ public class EditableWebView extends WebView {
         }
     }
 
+    /**
+     * FIXME:
+     * Результат в onReceiveValue() возврашается:
+     * 1) в формате unescape
+     * 2) обрамленный ненужными кавычками
+     * Как вернуть html с помощью Javascript без этих наворотов ?
+     *
+     */
     @JavascriptInterface
     public void makeHtmlRequest() {
 //        addJavascriptInterface(new JavascriptHandler(), "AndroidFunction");
-//        load("javascript: AndroidFunction.onPageLoad(document.body.innerHTML);");
+//        load("javascript: AndroidFunction.onPageLoaded(document.body.innerHTML);");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             evaluateJavascript("(function() { return document.body.innerHTML; })();", new ValueCallback<String>() {
                 @Override
                 public void onReceiveValue(String value) {
-//                    String html = org.jsoup.parser.Parser.unescapeEntities(value, strictMode);
+                    // delete unescape literals
                     String html = StringEscapeUtils.unescapeJava(value);
+                    if (html != null && html.length() > 3) {
+                        // delete quotes
+                        html = html.substring(1, html.length() - 1);
+                    }
                     EditableWebView.this.mHtml = html;
                 }
             });
@@ -293,7 +301,6 @@ public class EditableWebView extends WebView {
     }
 
     public class JavascriptHandler {
-
         JavascriptHandler() { }
 
         @JavascriptInterface
@@ -465,16 +472,17 @@ public class EditableWebView extends WebView {
     }
 
     public void loadCSS(String cssFile) {
-        String jsCSSImport = "(function() {" +
-                "    var head  = document.getElementsByTagName(\"head\")[0];" +
-                "    var link  = document.createElement(\"link\");" +
-                "    link.rel  = \"stylesheet\";" +
-                "    link.type = \"text/css\";" +
-                "    link.href = \"" + cssFile + "\";" +
-                "    link.media = \"all\";" +
-                "    head.appendChild(link);" +
-                "}) ();";
-        exec("javascript:" + jsCSSImport + "");
+//        String jsCSSImport = "(function() {" +
+//                "    var head  = document.getElementsByTagName(\"head\")[0];" +
+//                "    var link  = document.createElement(\"link\");" +
+//                "    link.rel  = \"stylesheet\";" +
+//                "    link.type = \"text/css\";" +
+//                "    link.href = \"" + cssFile + "\";" +
+//                "    link.media = \"all\";" +
+//                "    head.appendChild(link);" +
+//                "}) ();";
+//        exec("javascript:" + jsCSSImport + "");
+        exec("javascript:RE.insertCSS(" + cssFile + ")");
     }
 
     public void undo() {
@@ -612,14 +620,6 @@ public class EditableWebView extends WebView {
 
     public String getEditableHtml() {
         return mHtml;
-    }
-
-    public String getDocumentHtml() {
-        StringBuilder sb = new StringBuilder(3);
-        sb.append(HTML_START_WITH);
-        sb.append(mHtml);
-        sb.append(HTML_END_WITH);
-        return sb.toString();
     }
 
     /**
