@@ -16,6 +16,8 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import androidx.annotation.Nullable;
+
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.Youtube;
 
 import org.apache.commons.text.StringEscapeUtils;
@@ -25,6 +27,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -125,7 +128,8 @@ public class EditableWebView extends WebView {
 
     public interface IPageLoadListener {
 
-        void onPageLoaded(boolean isReady);
+        void onPageStartLoading();
+        void onPageLoaded();
     }
 
     public interface IUrlLoadListener {
@@ -147,10 +151,9 @@ public class EditableWebView extends WebView {
     private String mHtml;
     private ITextChangeListener mTextChangeListener;
     private IDecorationStateListener mDecorationStateListener;
-    private IPageLoadListener mLoadListener;
+    private IPageLoadListener mPageListener;
     private IUrlLoadListener mUrlLoadListener;
     private IYoutubeLoadLinkListener mLoadYoutubeLinkListener;
-//    private boolean isEditMode = true;
 
     public EditableWebView(Context context) {
         this(context, null);
@@ -173,16 +176,15 @@ public class EditableWebView extends WebView {
     }
 
     public void onPageLoaded() {
-//            isPageLoaded = url.equalsIgnoreCase(SETUP_HTML);
-//        if (!isPageLoaded) {
-            loadEditorScript();
-//        }
+        // load main javascript code
+        loadEditorScript();
+        // send first javascript request to receive page html
         makeHtmlRequest();
 
         EditableWebView.this.isPageLoaded = true;
 
-        if (mLoadListener != null) {
-            mLoadListener.onPageLoaded(isPageLoaded);
+        if (mPageListener != null) {
+            mPageListener.onPageLoaded();
         }
     }
 
@@ -635,7 +637,7 @@ public class EditableWebView extends WebView {
     }
 
     public void setOnPageLoadListener(IPageLoadListener listener) {
-        this.mLoadListener = listener;
+        this.mPageListener = listener;
     }
 
     public void setOnUrlLoadListener(IUrlLoadListener listener) {
@@ -644,6 +646,35 @@ public class EditableWebView extends WebView {
 
     public void setYoutubeLoadLinkListener(IYoutubeLoadLinkListener listener) {
         this.mLoadYoutubeLinkListener = listener;
+    }
+
+    private void onPageLoading() {
+        if (mPageListener != null)
+            mPageListener.onPageStartLoading();
+    }
+
+    @Override
+    public void loadUrl(String url) {
+        super.loadUrl(url);
+        onPageLoading();
+    }
+
+    @Override
+    public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
+        super.loadUrl(url, additionalHttpHeaders);
+        onPageLoading();
+    }
+
+    @Override
+    public void loadData(String data, @Nullable String mimeType, @Nullable String encoding) {
+        super.loadData(data, mimeType, encoding);
+        onPageLoading();
+    }
+
+    @Override
+    public void loadDataWithBaseURL(@Nullable String baseUrl, String data, @Nullable String mimeType, @Nullable String encoding, @Nullable String historyUrl) {
+        super.loadDataWithBaseURL(baseUrl, data, mimeType, encoding, historyUrl);
+        onPageLoading();
     }
 
     /**

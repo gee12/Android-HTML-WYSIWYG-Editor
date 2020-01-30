@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/write_coordinatorLayout"
     android:layout_width="match_parent"
@@ -9,19 +9,31 @@
     <com.lumyjuwon.richwysiwygeditor.RichEditor.EditableWebView
         android:id="@+id/web_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
+        android:layout_above="@id/layout_toolbar"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_weight="1"
         android:autoLink="web|email"
         android:background="@color/white"
         android:gravity="start"
         android:textCursorDrawable="@drawable/edit_cursor" />
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_centerInParent="true"
+        android:indeterminate="true"
+        />
+
     <HorizontalScrollView
         android:id="@+id/layout_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:background="@drawable/bottom_border_white"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
@@ -140,4 +152,4 @@
         </LinearLayout>
     </HorizontalScrollView>
 
-</LinearLayout>
+</RelativeLayout>

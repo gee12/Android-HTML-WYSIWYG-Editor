@@ -13,6 +13,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
@@ -47,16 +48,15 @@ import java.util.List;
 
 public class WysiwygEditor extends LinearLayout {
 
-    public interface IEditorListener {
-        void onGetHtml(String html);
-    }
+//    public interface IListener {
+//        void onGetHtml(String html);
+//    }
 
     private LayoutInflater layoutInflater;
     protected EditableWebView webView;
-//    private View popupView;
     private PopupWindow popupWindow;
     private HorizontalScrollView toolBarPanel;
-    private ImageButton bInsertImage;
+    private ProgressBar progressBar;
     private CheckedImageButton bFgColor;
     private CheckedImageButton bBgColor;
     private CheckedImageButton bTextBold;
@@ -64,10 +64,12 @@ public class WysiwygEditor extends LinearLayout {
     private CheckedImageButton bTextUnderline;
     private CheckedImageButton bTextStrike;
     private CheckedImageButton bTextAlign;
+    private ImageButton bInsertImage;
     private ArrayList<CheckedImageButton> popupButtons;
     private ArrayList<CheckedImageButton> buttons;
     private int buttonBaseColor;
-    private boolean isEditMode = true;
+
+    private EditableWebView.IPageLoadListener mPageLoadListener;
 
     public WysiwygEditor(Context context) {
         super(context);
@@ -85,17 +87,35 @@ public class WysiwygEditor extends LinearLayout {
     }
 
     private void init(){
-        inflate(getContext(), R.layout.activity_editor, this);
+        inflate(getContext(), R.layout.layout_editor, this);
 
         this.layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         this.buttonBaseColor = ContextCompat.getColor(getContext().getApplicationContext(), R.color.black);
         int highlightColor = ContextCompat.getColor(getContext().getApplicationContext(), R.color.sky_blue);
 
+        this.progressBar = findViewById(R.id.progress_bar);
+
         // webView
         webView = findViewById(R.id.web_view);
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null); // sdk 19 ChromeWebView ?
         webView.setOnDecorationChangeListener((text, types) -> updateButtonsState(types));
+
+        webView.setOnPageLoadListener(new EditableWebView.IPageLoadListener() {
+            @Override
+            public void onPageStartLoading() {
+                progressBar.setVisibility(View.VISIBLE);
+                if (mPageLoadListener != null)
+                    mPageLoadListener.onPageStartLoading();
+            }
+
+            @Override
+            public void onPageLoaded() {
+                progressBar.setVisibility(View.GONE);
+                if (mPageLoadListener != null)
+                    mPageLoadListener.onPageLoaded();
+            }
+        });
 
         // toolBar
         this.toolBarPanel = findViewById(R.id.layout_toolbar);
@@ -431,26 +451,16 @@ public class WysiwygEditor extends LinearLayout {
         return webView;
     }
 
-//    public String getHtml(){
-//        return webView.getHtml();
-//    }
-
     public void setToolBarVisibility(boolean isVisible) {
         toolBarPanel.setVisibility((isVisible) ? VISIBLE : GONE);
     }
 
     public void setEditMode(boolean isEditMode) {
-        this.isEditMode = isEditMode;
         webView.setInputEnabled(isEditMode);
     }
 
-
-    public void loadData(String data) {
-        getWebView().loadData(data, "text/html", "UTF-8");
-    }
-
-    public void loadDataWithBaseURL(@Nullable String baseUrl, String data) {
-        getWebView().loadDataWithBaseURL(baseUrl, data, "text/html", "UTF-8", null);
+    public void setOnPageLoadListener(EditableWebView.IPageLoadListener listener) {
+        this.mPageLoadListener = listener;
     }
 
 }
