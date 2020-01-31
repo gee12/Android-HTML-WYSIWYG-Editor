@@ -137,6 +137,10 @@ public class EditableWebView extends WebView {
         boolean onUrlLoad(String url);
     }
 
+    public interface IHtmlReceiveListener {
+        void onReceiveEditableHtml(String htmlText);
+    }
+
     public interface IYoutubeLoadLinkListener {
         void onReceivedEvent(String videoId);
     }
@@ -153,6 +157,7 @@ public class EditableWebView extends WebView {
     private IDecorationStateListener mDecorationStateListener;
     private IPageLoadListener mPageListener;
     private IUrlLoadListener mUrlLoadListener;
+    private IHtmlReceiveListener mReceiveHtmlListener;
     private IYoutubeLoadLinkListener mLoadYoutubeLinkListener;
 
     public EditableWebView(Context context) {
@@ -179,7 +184,7 @@ public class EditableWebView extends WebView {
         // load main javascript code
         loadEditorScript();
         // send first javascript request to receive page html
-        makeHtmlRequest();
+//        makeEditableHtmlRequest();
 
         EditableWebView.this.isPageLoaded = true;
 
@@ -275,19 +280,26 @@ public class EditableWebView extends WebView {
     }
 
     /**
+     * Запрос на получение html-текста редактируемого фрагмента страницы.
+     *
      * FIXME:
-     * Результат в onReceiveValue() возврашается:
+     * Результат в onReceiveValue() возвращается:
      * 1) в формате unescape
      * 2) обрамленный ненужными кавычками
      * Как вернуть html с помощью Javascript без этих наворотов ?
      *
      */
     @JavascriptInterface
-    public void makeHtmlRequest() {
-//        addJavascriptInterface(new JavascriptHandler(), "AndroidFunction");
-//        load("javascript: AndroidFunction.onPageLoaded(document.body.innerHTML);");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            evaluateJavascript("(function() { return document.body.innerHTML; })();", new ValueCallback<String>() {
+    public void makeEditableHtmlRequest() {
+        //
+        if (!TextUtils.isEmpty(mHtml)) {
+            onReceiveEditableHtml(mHtml);
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT >= 19) {
+            evaluateJavascript("(function() { return document.body.innerHTML; })();",
+                    new ValueCallback<String>() {
                 @Override
                 public void onReceiveValue(String value) {
                     // delete unescape literals
@@ -296,19 +308,33 @@ public class EditableWebView extends WebView {
                         // delete quotes
                         html = html.substring(1, html.length() - 1);
                     }
-                    EditableWebView.this.mHtml = html;
+                    onReceiveEditableHtml(html);
                 }
             });
+        } else /*if (Build.VERSION.SDK_INT <= 17)*/ {
+            //
+            addJavascriptInterface(new JavascriptHandler(), "AndroidFunction");
+            load("javascript: AndroidFunction.onPageLoaded(document.body.innerHTML);");
         }
     }
 
+    /**
+     * Запрос на получение html-текста редактируемого фрагмента страницы.
+     * (2 способ)
+     */
     public class JavascriptHandler {
         JavascriptHandler() { }
 
         @JavascriptInterface
         public void onPageLoaded(String html) {
-            EditableWebView.this.mHtml = html;
+            onReceiveEditableHtml(html);
         }
+    }
+
+    private void onReceiveEditableHtml(String html) {
+        EditableWebView.this.mHtml = html;
+        if (mReceiveHtmlListener != null)
+            mReceiveHtmlListener.onReceiveEditableHtml(html);
     }
 
     /**
@@ -642,6 +668,10 @@ public class EditableWebView extends WebView {
 
     public void setOnUrlLoadListener(IUrlLoadListener listener) {
         mUrlLoadListener = listener;
+    }
+
+    public void setOnHtmlReceiveListener(IHtmlReceiveListener listener) {
+        mReceiveHtmlListener = listener;
     }
 
     public void setYoutubeLoadLinkListener(IYoutubeLoadLinkListener listener) {
