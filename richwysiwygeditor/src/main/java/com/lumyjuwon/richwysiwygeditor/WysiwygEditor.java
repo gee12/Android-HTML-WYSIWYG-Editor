@@ -3,6 +3,7 @@ package com.lumyjuwon.richwysiwygeditor;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import androidx.core.content.ContextCompat;
 
 import com.gee12.htmlwysiwygeditor.ActionButton;
 import com.gee12.htmlwysiwygeditor.ActionType;
+import com.gee12.htmlwysiwygeditor.ColorUtils;
 import com.lumyjuwon.richwysiwygeditor.RichEditor.EditableWebView;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.ImgPicker;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.TextColor;
@@ -28,7 +30,8 @@ import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.Youtube;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Основная масса этого кода принадлежит lumyjuwon.
@@ -62,17 +65,17 @@ public class WysiwygEditor extends LinearLayout {
     private ProgressBar progressBar;
     private ActionButton bFgColor;
     private ActionButton bBgColor;
-    private ActionButton bTextBold;
+//    private ActionButton bTextBold;
     private ActionButton bTextItalic;
     private ActionButton bTextUnderline;
     private ActionButton bTextStrike;
     private ActionButton bTextAlign;
-    private ActionButton bInsertLine;
+//    private ActionButton bInsertLine;
     private ImageButton bInsertImage;
     private ArrayList<ActionButton> popupButtons;
-    private ArrayList<ActionButton> buttons;
-    private ArrayList<ActionButton> actionButtons;
-    private int buttonBaseColor;
+//    private ArrayList<ActionButton> buttons;
+    private Map<ActionType, ActionButton> actionButtons;
+//    private int buttonBaseColor;
 
     private EditableWebView.IPageLoadListener mPageLoadListener;
 
@@ -96,8 +99,8 @@ public class WysiwygEditor extends LinearLayout {
 
         this.layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        this.buttonBaseColor = ContextCompat.getColor(getContext().getApplicationContext(), R.color.black);
-        int highlightColor = ContextCompat.getColor(getContext().getApplicationContext(), R.color.sky_blue);
+//        this.buttonBaseColor = ContextCompat.getColor(getContext().getApplicationContext(), R.color.black);
+//        int highlightColor = ContextCompat.getColor(getContext().getApplicationContext(), R.color.sky_blue);
 
         this.progressBar = findViewById(R.id.progress_bar);
 
@@ -136,17 +139,17 @@ public class WysiwygEditor extends LinearLayout {
 
         // italic
         bTextItalic = findViewById(R.id.button_textItalic);
-        bTextItalic.setStateColors(buttonBaseColor, highlightColor);
+//        bTextItalic.setStateColors(buttonBaseColor, highlightColor);
         bTextItalic.setOnClickListener(decorationButtonListener);
 
         // underline
         bTextUnderline = findViewById(R.id.button_textUnderLine);
-        bTextUnderline.setStateColors(buttonBaseColor, highlightColor);
+//        bTextUnderline.setStateColors(buttonBaseColor, highlightColor);
         bTextUnderline.setOnClickListener(decorationButtonListener);
 
         // strike through
         bTextStrike = findViewById(R.id.button_textStrike);
-        bTextStrike.setStateColors(buttonBaseColor, highlightColor);
+//        bTextStrike.setStateColors(buttonBaseColor, highlightColor);
         bTextStrike.setOnClickListener(decorationButtonListener);
 
         // popup buttons
@@ -167,7 +170,7 @@ public class WysiwygEditor extends LinearLayout {
 
         // background color
         bBgColor = findViewById(R.id.button_bgColor);
-        bBgColor.setStateColors(buttonBaseColor, highlightColor);
+//        bBgColor.setStateColors(buttonBaseColor, highlightColor);
         bBgColor.setOnClickListener(popupButtonListener);
 
         // align
@@ -192,30 +195,24 @@ public class WysiwygEditor extends LinearLayout {
             Youtube.showYoutubeDialog(layoutInflater, webView, v);
         });
 
-        fillToolbar();
+        initToolbar();
 
         this.popupButtons = new ArrayList<>(Arrays.asList(bFgColor, bBgColor, bTextAlign));
-        this.buttons = new ArrayList<>(Arrays.asList(bFgColor, bBgColor, bTextBold, bTextItalic, bTextUnderline, bTextStrike));
 
     }
 
-    private void fillToolbar() {
-        this.actionButtons = new ArrayList<>();
-        this.bInsertLine = addActionButton(ActionType.INSERT_LINE, R.drawable.ic_line_black, false, false);
-        this.bTextBold = addActionButton(ActionType.BOLD, R.drawable.outline_format_bold_black_48, true, false);
+    private void initToolbar() {
+        this.actionButtons = new HashMap<>();
+        addActionButton(ActionType.INSERT_LINE, R.drawable.ic_line_black, false, false);
+        addActionButton(ActionType.BOLD, R.drawable.outline_format_bold_black_48, true, false);
         this.bFgColor = addActionButton(ActionType.TEXT_COLOR, R.drawable.baseline_format_color_text_black_48, true, true);
     }
 
     private ActionButton addActionButton(ActionType type, int imageId, boolean isCheckable, boolean isPopup) {
         ActionButton button = new ActionButton(getContext(), type, imageId, isCheckable, isPopup);
-        button.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        actionButtons.add(button);
+        button.setOnClickListener(v -> onClickActionButton((ActionButton) v));
         layoutButtons.addView(button);
+        actionButtons.put(type, button);
         return button;
     }
 
@@ -232,52 +229,74 @@ public class WysiwygEditor extends LinearLayout {
             case BOLD:
                 webView.setBold(); break;
             case INSERT_LINE:
-                
-                break;
+                webView.insertLine(); break;
             case TEXT_COLOR:
-                showFgColorPopupWindow(button); break;
+                showTextColorPopupWindow(button); break;
+        }
+        if (!button.isPopup()) {
+            button.switchCheckedState();
         }
     }
+
     /**
      *
      * @param types
      */
-    private void updateButtonsState(List<ActionType> types) {
+    private void updateButtonsState(Map<ActionType, String> types) {
+//        this.buttons = new ArrayList<>(Arrays.asList(bFgColor, bBgColor, bTextBold, bTextItalic, bTextUnderline, bTextStrike));
+        ArrayList<ActionButton> buttons = new ArrayList<>(actionButtons.values());
 
-        for (ActionType type : types){
-            if (type.name().contains("FONT_COLOR")) {
-//                setCheckedButton(bFgColor, TextColor.getColor(type.name()));
-                bFgColor.setCheckedState(true, TextColor.getColor(getContext(), type.name()));
-                buttons.remove(bFgColor);
-            } else if (type.name().contains("BACKGROUND_COLOR")) {
-//                setCheckedButton(bBgColor, TextColor.getColor(type.name()));
-                bBgColor.setCheckedState(true, TextColor.getColor(getContext(), type.name()));
-                buttons.remove(bBgColor);
-            } else {
-                switch(type) {
-                    case BOLD:
-//                        setCheckedButton(bTextBold, buttonHighlightColor);
-                        bTextBold.setCheckedState(true);
-                        buttons.remove(bTextBold);
-                        break;
-                    case ITALIC:
-//                        setCheckedButton(bTextItalic, buttonHighlightColor);
-                        bTextItalic.setCheckedState(true);
-                        buttons.remove(bTextItalic);
-                        break;
-                    case UNDERLINE:
-//                        setCheckedButton(bTextUnderline, buttonHighlightColor);
-                        bTextUnderline.setCheckedState(true);
-                        buttons.remove(bTextUnderline);
-                        break;
-                    case STRIKETHROUGH:
-//                        setCheckedButton(bTextStrike, buttonHighlightColor);
-                        bTextStrike.setCheckedState(true);
-                        buttons.remove(bTextStrike);
-                        break;
-                    default:
-                }
+        for (Map.Entry<ActionType,String> type : types.entrySet()){
+            ActionButton button = actionButtons.get(type.getKey());
+            if (button == null) continue;
+
+            switch (type.getKey()) {
+                case TEXT_COLOR:
+                case BACKGROUND_COLOR:
+
+                    // TODO: реализовать получение ЛЮБОГО цвета (проверить)
+
+                    String value = type.getValue();
+                    if (!TextUtils.isEmpty(value)) {
+//                        int color = TextColor.getColor(getContext(), value);
+                        int color = ColorUtils.rgbStringToColor(value);
+                        button.setCheckedState(true, color);
+                    } else {
+                        button.setCheckedState(true);
+                    }
+                    break;
+
+                default:
+                    button.setCheckedState(true);
             }
+            buttons.remove(button);
+//            if (type.name().contains("FONT_COLOR")) {
+//                bFgColor.setCheckedState(true, TextColor.getColor(getContext(), type.name()));
+//                buttons.remove(bFgColor);
+//            } else if (type.name().contains("BACKGROUND_COLOR")) {
+//                bBgColor.setCheckedState(true, TextColor.getColor(getContext(), type.name()));
+//                buttons.remove(bBgColor);
+//            } else {
+//                switch(type) {
+//                    case BOLD:
+//                        bTextBold.setCheckedState(true);
+//                        buttons.remove(bTextBold);
+//                        break;
+//                    case ITALIC:
+//                        bTextItalic.setCheckedState(true);
+//                        buttons.remove(bTextItalic);
+//                        break;
+//                    case UNDERLINE:
+//                        bTextUnderline.setCheckedState(true);
+//                        buttons.remove(bTextUnderline);
+//                        break;
+//                    case STRIKETHROUGH:
+//                        bTextStrike.setCheckedState(true);
+//                        buttons.remove(bTextStrike);
+//                        break;
+//                    default:
+//                }
+//            }
         }
 
         for (ActionButton button : buttons) {
@@ -294,9 +313,9 @@ public class WysiwygEditor extends LinearLayout {
         closePopupWindow();
 //        clearPopupButton();
 //        webView.clearAndFocusEditor();
-        if (button.getId() == R.id.button_textBold)
+        /*if (button.getId() == R.id.button_textBold)
             webView.setBold();
-        else if (button.getId() == R.id.button_textItalic)
+        else */if (button.getId() == R.id.button_textItalic)
             webView.setItalic();
         else if (button.getId() == R.id.button_textUnderLine)
             webView.setUnderline();
@@ -317,7 +336,7 @@ public class WysiwygEditor extends LinearLayout {
             if (button.getId() == R.id.button_textSize)
                 showTextSizePopupWindow(button);
             else if (button.getId() == R.id.button_fgColor)
-                showFgColorPopupWindow(button);
+                showTextColorPopupWindow(button);
             else if (button.getId() == R.id.button_bgColor)
                 showBgColorPopupWindow(button);
             else if (button.getId() == R.id.button_textAlign)
@@ -360,7 +379,7 @@ public class WysiwygEditor extends LinearLayout {
      *
      * @param button
      */
-    private void showFgColorPopupWindow(ActionButton button) {
+    private void showTextColorPopupWindow(ActionButton button) {
         if (button == null) return;
         this.popupWindow = createPopupWindow(button, R.layout.popup_text_color);
         View contentView = popupWindow.getContentView();
@@ -372,8 +391,8 @@ public class WysiwygEditor extends LinearLayout {
             popupButton.setOnClickListener(view1 -> {
                 closePopupWindow();
                 webView.setTextColor(ContextCompat.getColor(getContext().getApplicationContext(), value));
-                int color = (value != R.color.white)
-                        ? ContextCompat.getColor(context, value) : buttonBaseColor;
+                int color = ContextCompat.getColor(context, (value != R.color.white)
+                        ? value : ActionButton.RES_COLOR_BASE);
 //                bFgColor.switchCheckedState(color);
                 button.setCheckedState(true, color);
 //                Keyboard.showKeyboard(view1);
@@ -398,8 +417,10 @@ public class WysiwygEditor extends LinearLayout {
             popupButton.setOnClickListener(view1 -> {
                 closePopupWindow();
                 webView.setTextBackgroundColor(ContextCompat.getColor(context, value));
-                int color = (value != R.color.white)
-                        ? ContextCompat.getColor(context, value) : buttonBaseColor;
+                int color = ContextCompat.getColor(context, (value != R.color.white)
+                        ? value : ActionButton.RES_COLOR_BASE);
+//                int color = (value != R.color.white)
+//                        ? ContextCompat.getColor(context, value) : buttonBaseColor;
 //                bBgColor.switchCheckedState(color);
                 button.setCheckedState(true, color);
 //                Keyboard.showKeyboard(view1);

@@ -1,4 +1,6 @@
 /**
+ * Основная масса этого кода принадлежит Wasabeef.
+
  * Copyright (C) 2017 Wasabeef
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,16 +38,17 @@ RE.callback = function() {
 
     var items = [];
 
-    if (window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "background-color")) {
-        items.push('background_color_'
-        + window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode,
-        "background-color").getPropertyValue('background-color'));
-     }
-    if (window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "color")) {
-         items.push('font_color_'
-         + window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "
-         color").getPropertyValue('color'));
-     }
+    var parentNode = window.getSelection().getRangeAt(0).startContainer.parentNode;
+    if (window.getComputedStyle(parentNode, "background-color")) {
+//        items.push('background_color_'
+        items.push('background_color:'
+            + window.getComputedStyle(parentNode,"background-color").getPropertyValue('background-color'));
+    }
+    if (window.getComputedStyle(parentNode, "color")) {
+//         items.push('font_color_'
+         items.push('text_color:'
+            + window.getComputedStyle(parentNode, "color").getPropertyValue('color'));
+    }
     if (document.queryCommandState('bold')) {
         items.push('bold');
     }
@@ -65,32 +68,32 @@ RE.callback = function() {
         items.push('underline');
     }
     if (document.queryCommandState('insertOrderedList')) {
-        items.push('orderedList');
+        items.push('ordered_list');
     }
     if (document.queryCommandState('insertUnorderedList')) {
-        items.push('unorderedList');
+        items.push('unordered_list');
     }
     if (document.queryCommandState('justifyCenter')) {
-        items.push('justifyCenter');
+        items.push('justify_center');
     }
     if (document.queryCommandState('justifyFull')) {
-        items.push('justifyFull');
+        items.push('justify_full');
     }
     if (document.queryCommandState('justifyLeft')) {
-        items.push('justifyLeft');
+        items.push('justify_left');
     }
     if (document.queryCommandState('justifyRight')) {
-        items.push('justifyRight');
+        items.push('justify_right');
     }
-    if (document.queryCommandState('insertHorizontalRule')) {
-        items.push('horizontalRule');
-    }
+//    if (document.queryCommandState('insertHorizontalRule')) {
+//        items.push('horizontalRule');
+//    }
     var formatBlock = document.queryCommandValue('formatBlock');
     if (formatBlock.length > 0) {
         items.push(formatBlock);
     }
 
-    window.location.href = re_callback + "re-state://" + encodeURI(items.join(','));
+    window.location.href = re_callback + "re-state://" + encodeURI(items.join(';'));
 
 }
 
@@ -329,15 +332,16 @@ RE.restorerange = function(){
 RE.enabledEditingItems = function(e) {
     var items = [];
 
-    if (window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "background-color")) {
-        items.push('background_color_'
-            + window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode,
-            "background-color").getPropertyValue('background-color'));
+    var parentNode = window.getSelection().getRangeAt(0).startContainer.parentNode;
+    if (window.getComputedStyle(parentNode, "background-color")) {
+//        items.push('background_color_'
+        items.push('background_color:'
+            + window.getComputedStyle(parentNode, "background-color").getPropertyValue('background-color'));
      }
-    if (window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "color")) {
-         items.push('font_color_'
-         + window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode,
-         "color").getPropertyValue('color'));
+    if (window.getComputedStyle(parentNode, "color")) {
+//         items.push('font_color_'
+         items.push('text_color:'
+            + window.getComputedStyle(parentNode, "color").getPropertyValue('color'));
      }
     if (document.queryCommandState('bold')) {
         items.push('bold');
@@ -358,32 +362,32 @@ RE.enabledEditingItems = function(e) {
         items.push('underline');
     }
     if (document.queryCommandState('insertOrderedList')) {
-        items.push('orderedList');
+        items.push('ordered_list');
     }
     if (document.queryCommandState('insertUnorderedList')) {
-        items.push('unorderedList');
+        items.push('unordered_list');
     }
     if (document.queryCommandState('justifyCenter')) {
-        items.push('justifyCenter');
+        items.push('justify_center');
     }
     if (document.queryCommandState('justifyFull')) {
-        items.push('justifyFull');
+        items.push('justify_full');
     }
     if (document.queryCommandState('justifyLeft')) {
-        items.push('justifyLeft');
+        items.push('justify_left');
     }
     if (document.queryCommandState('justifyRight')) {
-        items.push('justifyRight');
+        items.push('justify_right');
     }
-    if (document.queryCommandState('insertHorizontalRule')) {
-        items.push('horizontalRule');
-    }
+//    if (document.queryCommandState('insertHorizontalRule')) {
+//        items.push('horizontalRule');
+//    }
     var formatBlock = document.queryCommandValue('formatBlock');
     if (formatBlock.length > 0) {
         items.push(formatBlock);
     }
 
-    window.location.href = "re-state://" + encodeURI(items.join(','));
+    window.location.href = "re-state://" + encodeURI(items.join(';'));
 }
 
 RE.focus = function() {

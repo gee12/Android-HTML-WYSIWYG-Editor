@@ -19,14 +19,14 @@ import android.webkit.WebViewClient;
 import androidx.annotation.Nullable;
 
 import com.gee12.htmlwysiwygeditor.ActionType;
+import com.gee12.htmlwysiwygeditor.ColorUtils;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.Youtube;
 
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -59,7 +59,7 @@ public class EditableWebView extends WebView {
 
     public interface IDecorationStateListener {
 
-        void onStateChangeListener(String text, List<ActionType> types);
+        void onStateChangeListener(String text, Map<ActionType, String> types);
     }
 
     public interface IPageLoadListener {
@@ -146,6 +146,9 @@ public class EditableWebView extends WebView {
             p = Pattern.compile(CALLBACK_STATE_SCHEME_PATTERN);
             m = p.matcher(decode);
             isRegexFound = m.find();
+
+            // FIXME: почему не находит 2 совпадения ?
+
             if (isRegexFound) {
                 re_callback = m.group(1);
                 re_state = m.group(2);
@@ -279,26 +282,46 @@ public class EditableWebView extends WebView {
      */
     private void stateCheck(String text) {
         String state = text.replaceFirst(STATE_SCHEME, "").toUpperCase(Locale.ENGLISH);
-        List<ActionType> types = new ArrayList<>();
-        for (ActionType type : ActionType.values()) {
-            if (type.getR() == -1) {
-                if (TextUtils.indexOf(state, type.name()) != -1) {
-                    types.add(type);
-                }
+        String[] typesStrings = state.split(";");
+        Map<ActionType, String> types = new HashMap<>();
+
+        // TODO:
+        //  1) разделить строку по запятым
+        //  2) делать цикл по полученным полстрокам
+        //  3) разделить подстроку по ":"
+        //  4) если есть второй элемент - это значение (цвет, например)
+
+        for (String typeString : typesStrings) {
+            String[] typeParts = typeString.split(":");
+            if (typeParts.length > 1) {
+                ActionType type = ActionType.parse(typeParts[0]);
+                String value = typeParts[1];
+                types.put(type, value);
             } else {
-                if (type.name().contains("FONT_COLOR")) {
-                    String color = "FONT_COLOR_RGB(" + type.getR() + ", " + type.getG() + ", " + type.getB() + ")";
-                    if (TextUtils.indexOf(state, color) != -1) {
-                        types.add(type);
-                    }
-                } else if (type.name().contains("BACKGROUND_COLOR")) {
-                    String color = "BACKGROUND_COLOR_RGB(" + type.getR() + ", " + type.getG() + ", " + type.getB() + ")";
-                    if (TextUtils.indexOf(state, color) != -1) {
-                        types.add(type);
-                    }
-                }
+                ActionType type = ActionType.parse(typeString);
+                types.put(type, "");
             }
         }
+
+//        for (ActionType type : ActionType.values()) {
+//            if (type.getR() == -1) {
+//                if (TextUtils.indexOf(state, type.name()) != -1) {
+//                    types.put(type, null);
+//                }
+//            } else {
+//                if (type.name().contains("FONT_COLOR")) {
+//                    String color = "FONT_COLOR_RGB(" + type.getR() + ", " + type.getG() + ", " + type.getB() + ")";
+//                    if (TextUtils.indexOf(state, color) != -1) {
+//                        types.put(type, null);
+//                    }
+//                } else if (type.name().contains("BACKGROUND_COLOR")) {
+//                    String color = "BACKGROUND_COLOR_RGB(" + type.getR() + ", " + type.getG() + ", " + type.getB() + ")";
+//                    if (TextUtils.indexOf(state, color) != -1) {
+//                        types.put(type, null);
+//                    }
+//                }
+//            }
+//        }
 
         if (mDecorationStateListener != null) {
             mDecorationStateListener.onStateChangeListener(state, types);
@@ -362,7 +385,7 @@ public class EditableWebView extends WebView {
 //    }
 
     public EditableWebView setEditorFontColor(int color) {
-        String hex = convertHexColorString(color);
+        String hex = ColorUtils.colorToHexString(color);
         exec("javascript:RE.setBaseTextColor('" + hex + "');");
         return this;
     }
@@ -484,14 +507,14 @@ public class EditableWebView extends WebView {
     public void setTextColor(int color) {
         exec("javascript:RE.prepareInsert();");
 
-        String hex = convertHexColorString(color);
+        String hex = ColorUtils.colorToHexString(color);
         exec("javascript:RE.setTextColor('" + hex + "');");
     }
 
     public void setTextBackgroundColor(int color) {
         exec("javascript:RE.prepareInsert();");
 
-        String hex = convertHexColorString(color);
+        String hex = ColorUtils.colorToHexString(color);
         exec("javascript:RE.setTextBackgroundColor('" + hex + "');");
     }
 
@@ -565,6 +588,11 @@ public class EditableWebView extends WebView {
         exec("javascript:RE.setTodo('" + Utils.getCurrentTime() + "');");
     }
 
+    public void insertLine() {
+        exec("javascript:RE.prepareInsert();");
+        exec("javascript:RE.insertLine();");
+    }
+
     public void focusEditor() {
         requestFocus();
         exec("javascript:RE.focus();");
@@ -576,10 +604,6 @@ public class EditableWebView extends WebView {
 
     public void clearAndFocusEditor() {
         exec("javascript:RE.clearAndFocusEditor();");
-    }
-
-    private String convertHexColorString(int color) {
-        return String.format("#%06X", (0xFFFFFF & color));
     }
 
     public String getEditableHtml() {

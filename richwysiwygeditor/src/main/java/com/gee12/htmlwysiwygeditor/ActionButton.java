@@ -9,6 +9,9 @@ import com.lumyjuwon.richwysiwygeditor.R;
 
 public class ActionButton extends androidx.appcompat.widget.AppCompatImageButton {
 
+    public static final int RES_COLOR_BASE = R.color.black;
+    public static final int RES_COLOR_CHECKED = R.color.sky_blue;
+    public static final int RES_COLOR_DISABLED = R.color.dark_gray;
     private ActionType type;
     private int imageId;
     private boolean isCheckable;
@@ -34,15 +37,9 @@ public class ActionButton extends androidx.appcompat.widget.AppCompatImageButton
         this.imageId = imageId;
         this.isCheckable = isCheckable;
         this.isPopup = isPopup;
-        this.mBaseColor = ContextCompat.getColor(getContext().getApplicationContext(), R.color.black);
-        this.mCheckedColor = ContextCompat.getColor(getContext().getApplicationContext(), R.color.sky_blue);
-        this.mDisabledColor = ContextCompat.getColor(getContext().getApplicationContext(), R.color.dark_gray);
-    }
-
-
-    public void setStateColors(int baseColor, int checkedColor) {
-        this.mBaseColor = baseColor;
-        this.mCheckedColor = checkedColor;
+        this.mBaseColor = ContextCompat.getColor(getContext().getApplicationContext(), RES_COLOR_BASE);
+        this.mCheckedColor = ContextCompat.getColor(getContext().getApplicationContext(), RES_COLOR_CHECKED);
+        this.mDisabledColor = ContextCompat.getColor(getContext().getApplicationContext(), RES_COLOR_DISABLED);
     }
 
     public void switchCheckedState(){
