@@ -18,6 +18,7 @@ import android.webkit.WebViewClient;
 
 import androidx.annotation.Nullable;
 
+import com.gee12.htmlwysiwygeditor.ActionType;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.Youtube;
 
 import org.apache.commons.text.StringEscapeUtils;
@@ -51,71 +52,6 @@ import java.util.regex.Pattern;
 
 public class EditableWebView extends WebView {
 
-    public enum Type {
-        BOLD,
-        ITALIC,
-        SUBSCRIPT,
-        SUPERSCRIPT,
-        STRIKETHROUGH,
-        UNDERLINE,
-        H1,
-        H2,
-        H3,
-        H4,
-        H5,
-        H6,
-        ORDEREDLIST,
-        UNORDEREDLIST,
-        JUSTIFYCENTER,
-        JUSTIFYFULL,
-        JUSTUFYLEFT,
-        JUSTIFYRIGHT,
-        BACKGROUND_COLOR_WHITE(255, 255, 255),
-        BACKGROUND_COLOR_BLACK(0, 0, 0),
-        BACKGROUND_COLOR_MAROON(128, 0, 0),
-        BACKGROUND_COLOR_RED(255, 0, 0),
-        BACKGROUND_COLOR_MAGENTA(255, 0, 255),
-        BACKGROUND_COLOR_PINK(255, 153, 204),
-        BACKGROUND_COLOR_ORANGE(255, 102, 0),
-        BACKGROUND_COLOR_YELLOW(255, 255, 0),
-        BACKGROUND_COLOR_LIME(0, 255, 0),
-        BACKGROUND_COLOR_AQUA(0, 255, 255),
-        BACKGROUND_COLOR_BLUE(0, 0, 255),
-        BACKGROUND_COLOR_SKY_BLUE(0, 204, 255),
-        BACKGROUND_COLOR_PALE_CYAN(204, 255, 255),
-        BACKGROUND_COLOR_GREEN(0, 128, 0),
-        FONT_COLOR_WHITE(255, 255, 255),
-        FONT_COLOR_BLACK(0, 0, 0),
-        FONT_COLOR_MAROON(128, 0, 0),
-        FONT_COLOR_RED(255, 0, 0),
-        FONT_COLOR_MAGENTA(255, 0, 255),
-        FONT_COLOR_PINK(255, 153, 204),
-        FONT_COLOR_ORANGE(255, 102, 0),
-        FONT_COLOR_YELLOW(255, 255, 0),
-        FONT_COLOR_LIME(0, 255, 0),
-        FONT_COLOR_AQUA(0, 255, 255),
-        FONT_COLOR_BLUE(0, 0, 255),
-        FONT_COLOR_SKY_BLUE(0, 204, 255),
-        FONT_COLOR_PALE_CYAN(204, 255, 255),
-        FONT_COLOR_GREEN(0, 128, 0);
-
-
-        private int r;
-        private int g;
-        private int b;
-
-        Type(int r, int g, int b) {
-            this.r = r;
-            this.g = g;
-            this.b = b;
-        }
-
-        Type() {
-            this(-1, -1, -1);
-        }
-    }
-
-
     public interface ITextChangeListener {
 
         void onTextChange(String text);
@@ -123,7 +59,7 @@ public class EditableWebView extends WebView {
 
     public interface IDecorationStateListener {
 
-        void onStateChangeListener(String text, List<Type> types);
+        void onStateChangeListener(String text, List<ActionType> types);
     }
 
     public interface IPageLoadListener {
@@ -343,20 +279,20 @@ public class EditableWebView extends WebView {
      */
     private void stateCheck(String text) {
         String state = text.replaceFirst(STATE_SCHEME, "").toUpperCase(Locale.ENGLISH);
-        List<Type> types = new ArrayList<>();
-        for (Type type : Type.values()) {
-            if (type.r == -1) {
+        List<ActionType> types = new ArrayList<>();
+        for (ActionType type : ActionType.values()) {
+            if (type.getR() == -1) {
                 if (TextUtils.indexOf(state, type.name()) != -1) {
                     types.add(type);
                 }
             } else {
                 if (type.name().contains("FONT_COLOR")) {
-                    String color = "FONT_COLOR_RGB(" + type.r + ", " + type.g + ", " + type.b + ")";
+                    String color = "FONT_COLOR_RGB(" + type.getR() + ", " + type.getG() + ", " + type.getB() + ")";
                     if (TextUtils.indexOf(state, color) != -1) {
                         types.add(type);
                     }
                 } else if (type.name().contains("BACKGROUND_COLOR")) {
-                    String color = "BACKGROUND_COLOR_RGB(" + type.r + ", " + type.g + ", " + type.b + ")";
+                    String color = "BACKGROUND_COLOR_RGB(" + type.getR() + ", " + type.getG() + ", " + type.getB() + ")";
                     if (TextUtils.indexOf(state, color) != -1) {
                         types.add(type);
                     }

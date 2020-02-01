@@ -37,10 +37,14 @@ RE.callback = function() {
     var items = [];
 
     if (window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "background-color")) {
-        items.push('background_color_' + window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "background-color").getPropertyValue('background-color'));
+        items.push('background_color_'
+        + window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode,
+        "background-color").getPropertyValue('background-color'));
      }
     if (window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "color")) {
-         items.push('font_color_' + window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "color").getPropertyValue('color'));
+         items.push('font_color_'
+         + window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "
+         color").getPropertyValue('color'));
      }
     if (document.queryCommandState('bold')) {
         items.push('bold');
@@ -243,13 +247,19 @@ RE.setBlockquote = function() {
     document.execCommand('formatBlock', false, '<blockquote>');
 }
 
+RE.insertLine = function() {
+    var html = '<hr>';
+    RE.insertHTML(html);
+}
+
 RE.insertImage = function(url, alt) {
     var html = '<img src="' + url + '" alt="' + alt + '" /><br><br>';
     RE.insertHTML(html);
 }
 
 RE.insertYoutubeVideo = function(url) {
-    var html = '<iframe id="player" type="text/html" src="https://www.youtube.com/embed/' + url + '?enablejsapi=1" frameborder="0"></iframe><br><br>'
+    var html = '<iframe id="player" type="text/html" src="https://www.youtube.com/embed/' + url
+        + '?enablejsapi=1" frameborder="0"></iframe><br><br>'
     RE.insertHTML(html);
 }
 
@@ -320,10 +330,14 @@ RE.enabledEditingItems = function(e) {
     var items = [];
 
     if (window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "background-color")) {
-        items.push('background_color_' + window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "background-color").getPropertyValue('background-color'));
+        items.push('background_color_'
+            + window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode,
+            "background-color").getPropertyValue('background-color'));
      }
     if (window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "color")) {
-         items.push('font_color_' + window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "color").getPropertyValue('color'));
+         items.push('font_color_'
+         + window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode,
+         "color").getPropertyValue('color'));
      }
     if (document.queryCommandState('bold')) {
         items.push('bold');

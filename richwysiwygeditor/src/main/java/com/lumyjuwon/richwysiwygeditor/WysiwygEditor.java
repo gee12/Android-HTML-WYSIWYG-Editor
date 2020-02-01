@@ -19,6 +19,8 @@ import android.widget.RelativeLayout;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
+import com.gee12.htmlwysiwygeditor.ActionButton;
+import com.gee12.htmlwysiwygeditor.ActionType;
 import com.lumyjuwon.richwysiwygeditor.RichEditor.EditableWebView;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.ImgPicker;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.TextColor;
@@ -56,17 +58,20 @@ public class WysiwygEditor extends LinearLayout {
     protected EditableWebView webView;
     private PopupWindow popupWindow;
     private HorizontalScrollView toolBarPanel;
+    private LinearLayout layoutButtons;
     private ProgressBar progressBar;
-    private EditorActionButton bFgColor;
-    private EditorActionButton bBgColor;
-    private EditorActionButton bTextBold;
-    private EditorActionButton bTextItalic;
-    private EditorActionButton bTextUnderline;
-    private EditorActionButton bTextStrike;
-    private EditorActionButton bTextAlign;
+    private ActionButton bFgColor;
+    private ActionButton bBgColor;
+    private ActionButton bTextBold;
+    private ActionButton bTextItalic;
+    private ActionButton bTextUnderline;
+    private ActionButton bTextStrike;
+    private ActionButton bTextAlign;
+    private ActionButton bInsertLine;
     private ImageButton bInsertImage;
-    private ArrayList<EditorActionButton> popupButtons;
-    private ArrayList<EditorActionButton> buttons;
+    private ArrayList<ActionButton> popupButtons;
+    private ArrayList<ActionButton> buttons;
+    private ArrayList<ActionButton> actionButtons;
     private int buttonBaseColor;
 
     private EditableWebView.IPageLoadListener mPageLoadListener;
@@ -119,14 +124,15 @@ public class WysiwygEditor extends LinearLayout {
 
         // toolBar
         this.toolBarPanel = findViewById(R.id.layout_toolbar);
+        this.layoutButtons = findViewById(R.id.layout_toolbar_buttons);
 
         // decoration buttons
-        OnClickListener decorationButtonListener = v -> WysiwygEditor.this.onClickDecorationButton((EditorActionButton) v);
+        OnClickListener decorationButtonListener = v -> WysiwygEditor.this.onClickDecorationButton((ActionButton) v);
 
         // bold
-        bTextBold = findViewById(R.id.button_textBold);
-        bTextBold.setStateColors(buttonBaseColor, highlightColor);
-        bTextBold.setOnClickListener(decorationButtonListener);
+//        bTextBold = findViewById(R.id.button_textBold);
+//        bTextBold.setStateColors(buttonBaseColor, highlightColor);
+//        bTextBold.setOnClickListener(decorationButtonListener);
 
         // italic
         bTextItalic = findViewById(R.id.button_textItalic);
@@ -144,7 +150,7 @@ public class WysiwygEditor extends LinearLayout {
         bTextStrike.setOnClickListener(decorationButtonListener);
 
         // popup buttons
-        OnClickListener popupButtonListener = v -> WysiwygEditor.this.onClickPopupButton((EditorActionButton) v);
+        OnClickListener popupButtonListener = v -> WysiwygEditor.this.onClickPopupButton((ActionButton) v);
 
         // text size
         ImageButton textSizeButton = findViewById(R.id.button_textSize);
@@ -155,9 +161,9 @@ public class WysiwygEditor extends LinearLayout {
 //        });
 
         // text color
-        bFgColor = findViewById(R.id.button_fgColor);
-        bFgColor.setStateColors(buttonBaseColor, highlightColor);
-        bFgColor.setOnClickListener(popupButtonListener);
+//        bFgColor = findViewById(R.id.button_fgColor);
+//        bFgColor.setStateColors(buttonBaseColor, highlightColor);
+//        bFgColor.setOnClickListener(popupButtonListener);
 
         // background color
         bBgColor = findViewById(R.id.button_bgColor);
@@ -186,17 +192,59 @@ public class WysiwygEditor extends LinearLayout {
             Youtube.showYoutubeDialog(layoutInflater, webView, v);
         });
 
+        fillToolbar();
+
         this.popupButtons = new ArrayList<>(Arrays.asList(bFgColor, bBgColor, bTextAlign));
+        this.buttons = new ArrayList<>(Arrays.asList(bFgColor, bBgColor, bTextBold, bTextItalic, bTextUnderline, bTextStrike));
+
+    }
+
+    private void fillToolbar() {
+        this.actionButtons = new ArrayList<>();
+        this.bInsertLine = addActionButton(ActionType.INSERT_LINE, R.drawable.ic_line_black, false, false);
+        this.bTextBold = addActionButton(ActionType.BOLD, R.drawable.outline_format_bold_black_48, true, false);
+        this.bFgColor = addActionButton(ActionType.TEXT_COLOR, R.drawable.baseline_format_color_text_black_48, true, true);
+    }
+
+    private ActionButton addActionButton(ActionType type, int imageId, boolean isCheckable, boolean isPopup) {
+        ActionButton button = new ActionButton(getContext(), type, imageId, isCheckable, isPopup);
+        button.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        actionButtons.add(button);
+        layoutButtons.addView(button);
+        return button;
     }
 
     /**
      *
+     * @param button
+     */
+    public void onClickActionButton(ActionButton button) {
+        if (button == null) return;
+        closePopupWindow();
+//        clearPopupButton();
+//        webView.clearAndFocusEditor();
+        switch (button.getType()) {
+            case BOLD:
+                webView.setBold(); break;
+            case INSERT_LINE:
+                
+                break;
+            case TEXT_COLOR:
+                showFgColorPopupWindow(button); break;
+        }
+    }
+    /**
+     *
      * @param types
      */
-    private void updateButtonsState(List<EditableWebView.Type> types) {
-        this.buttons = new ArrayList<>(Arrays.asList(bFgColor, bBgColor, bTextBold, bTextItalic, bTextUnderline, bTextStrike));
+    private void updateButtonsState(List<ActionType> types) {
 
-        for (EditableWebView.Type type : types){
+        for (ActionType type : types){
             if (type.name().contains("FONT_COLOR")) {
 //                setCheckedButton(bFgColor, TextColor.getColor(type.name()));
                 bFgColor.setCheckedState(true, TextColor.getColor(getContext(), type.name()));
@@ -232,27 +280,16 @@ public class WysiwygEditor extends LinearLayout {
             }
         }
 
-        for (EditorActionButton button : buttons) {
+        for (ActionButton button : buttons) {
             button.setCheckedState(false);
         }
     }
-
-//    /**
-//     *
-//     * @param button
-//     * @param color
-//     */
-//    private void setCheckedButton(CheckedImageButton button, int color) {
-//        button.setColorFilter(color);
-//        if (!button.isChecked())
-//            button.switchCheckedState();
-//    }
 
     /**
      *
      * @param button
      */
-    public void onClickDecorationButton(EditorActionButton button) {
+    public void onClickDecorationButton(ActionButton button) {
         if (button == null) return;
         closePopupWindow();
 //        clearPopupButton();
@@ -272,7 +309,7 @@ public class WysiwygEditor extends LinearLayout {
      *
      * @param button
      */
-    public void onClickPopupButton(EditorActionButton button) {
+    public void onClickPopupButton(ActionButton button) {
         if (button == null) return;
         closePopupWindow();
 //        if (!button.isChecked()) {
@@ -297,7 +334,7 @@ public class WysiwygEditor extends LinearLayout {
      *
      * @param button
      */
-    private void showTextSizePopupWindow(EditorActionButton button) {
+    private void showTextSizePopupWindow(ActionButton button) {
         if (button == null) return;
         this.popupWindow = createPopupWindow(button, R.layout.popup_text_size);
         View contentView = popupWindow.getContentView();
@@ -323,7 +360,7 @@ public class WysiwygEditor extends LinearLayout {
      *
      * @param button
      */
-    private void showFgColorPopupWindow(EditorActionButton button) {
+    private void showFgColorPopupWindow(ActionButton button) {
         if (button == null) return;
         this.popupWindow = createPopupWindow(button, R.layout.popup_text_color);
         View contentView = popupWindow.getContentView();
@@ -349,7 +386,7 @@ public class WysiwygEditor extends LinearLayout {
      *
      * @param button
      */
-    private void showBgColorPopupWindow(EditorActionButton button) {
+    private void showBgColorPopupWindow(ActionButton button) {
         if (button == null) return;
         this.popupWindow = createPopupWindow(button, R.layout.popup_text_color);
         View contentView = popupWindow.getContentView();
@@ -375,7 +412,7 @@ public class WysiwygEditor extends LinearLayout {
      *
      * @param button
      */
-    private void showAlignPopupWindow(EditorActionButton button) {
+    private void showAlignPopupWindow(ActionButton button) {
         if (button == null) return;
         this.popupWindow = createPopupWindow(button, R.layout.popup_text_align);
         View contentView = popupWindow.getContentView();
@@ -438,7 +475,7 @@ public class WysiwygEditor extends LinearLayout {
 
     // 버튼 클릭 후 popup 버튼이 아닌 것을 클릭했을 때 기존 popup 버튼 false로 초기화
     private void clearPopupButton(){
-        for(EditorActionButton popupbutton : popupButtons){
+        for(ActionButton popupbutton : popupButtons){
             popupbutton.setCheckedState(false);
         }
     }

@@ -40,12 +40,13 @@
         android:scrollbars="none">
 
         <LinearLayout
+            android:id="@+id/layout_toolbar_buttons"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@color/transparent"
             android:orientation="horizontal">
 
-            <com.lumyjuwon.richwysiwygeditor.EditorActionButton
+            <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_textSize"
                 android:layout_width="@dimen/toolbar_icon_width_size"
                 android:layout_height="@dimen/toolbar_icon_height_size"
@@ -54,7 +55,7 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/outline_format_size_black_48" />
 
-            <com.lumyjuwon.richwysiwygeditor.EditorActionButton
+            <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_fgColor"
                 android:layout_width="@dimen/toolbar_icon_width_size"
                 android:layout_height="@dimen/toolbar_icon_height_size"
@@ -63,7 +64,7 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/baseline_format_color_text_black_48" />
 
-            <com.lumyjuwon.richwysiwygeditor.EditorActionButton
+            <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_bgColor"
                 android:layout_width="@dimen/toolbar_icon_width_size"
                 android:layout_height="@dimen/toolbar_icon_height_size"
@@ -73,16 +74,16 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/baseline_format_color_fill_black_48" />
 
-            <com.lumyjuwon.richwysiwygeditor.EditorActionButton
-                android:id="@+id/button_textBold"
-                android:layout_width="@dimen/toolbar_icon_width_size"
-                android:layout_height="@dimen/toolbar_icon_height_size"
-                android:background="?attr/selectableItemBackground"
-                android:contentDescription="@string/text_bold"
-                android:scaleType="fitCenter"
-                android:src="@drawable/outline_format_bold_black_48" />
+<!--            <com.gee12.htmlwysiwygeditor.ActionButton-->
+<!--                android:id="@+id/button_textBold"-->
+<!--                android:layout_width="@dimen/toolbar_icon_width_size"-->
+<!--                android:layout_height="@dimen/toolbar_icon_height_size"-->
+<!--                android:background="?attr/selectableItemBackground"-->
+<!--                android:contentDescription="@string/text_bold"-->
+<!--                android:scaleType="fitCenter"-->
+<!--                android:src="@drawable/outline_format_bold_black_48" />-->
 
-            <com.lumyjuwon.richwysiwygeditor.EditorActionButton
+            <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_textItalic"
                 android:layout_width="@dimen/toolbar_icon_width_size"
                 android:layout_height="@dimen/toolbar_icon_height_size"
@@ -91,7 +92,7 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/outline_format_italic_black_48" />
 
-            <com.lumyjuwon.richwysiwygeditor.EditorActionButton
+            <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_textUnderLine"
                 android:layout_width="@dimen/toolbar_icon_width_size"
                 android:layout_height="@dimen/toolbar_icon_height_size"
@@ -101,7 +102,7 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/baseline_format_underlined_black_48" />
 
-            <com.lumyjuwon.richwysiwygeditor.EditorActionButton
+            <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_textStrike"
                 android:layout_width="@dimen/toolbar_icon_width_size"
                 android:layout_height="@dimen/toolbar_icon_height_size"
@@ -110,7 +111,7 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/outline_format_strikethrough_black_48" />
 
-            <com.lumyjuwon.richwysiwygeditor.EditorActionButton
+            <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_textAlign"
                 android:layout_width="@dimen/toolbar_icon_width_size"
                 android:layout_height="@dimen/toolbar_icon_height_size"
