@@ -5,7 +5,7 @@ It is based on library [lumyjuwon/Android-Rich-WYSIWYG-Editor](https://github.co
 Used:
 - native WebView
 - Javascript to execute commands
-- custom panel with tools (toolbar with popup buttons)
+- custom panel with tools (toolbar with checked/popup buttons)
 
 ### Implemented Functions
 - [x] Bold
