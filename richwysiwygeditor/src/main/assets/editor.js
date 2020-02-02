@@ -251,8 +251,9 @@ RE.setBlockquote = function() {
 }
 
 RE.insertLine = function() {
-    var html = '<hr>';
-    RE.insertHTML(html);
+//    var html = '<hr>';
+//    RE.insertHTML(html);
+    document.execCommand('insertHorizontalRule', false, null);
 }
 
 RE.insertImage = function(url, alt) {
@@ -287,6 +288,14 @@ RE.insertLink = function(url, title) {
        sel.addRange(range);
    }
     RE.callback();
+}
+
+RE.createLink = function(url, title) {
+    document.execCommand('createLink', false, url);
+}
+
+RE.removeLink = function() {
+    document.execCommand('unlink', false, null);
 }
 
 RE.insertCSS = function(cssFile) {

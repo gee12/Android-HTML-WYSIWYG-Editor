@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/write_coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -47,7 +46,7 @@
             android:orientation="horizontal">
 
             <com.gee12.htmlwysiwygeditor.ActionButton
-                android:id="@+id/button_textSize"
+                android:id="@+id/button_text_size"
                 android:layout_width="@dimen/toolbar_icon_width_size"
                 android:layout_height="@dimen/toolbar_icon_height_size"
                 android:background="?attr/selectableItemBackground"
@@ -55,36 +54,26 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/outline_format_size_black_48" />
 
-            <com.gee12.htmlwysiwygeditor.ActionButton
-                android:id="@+id/button_fgColor"
-                android:layout_width="@dimen/toolbar_icon_width_size"
-                android:layout_height="@dimen/toolbar_icon_height_size"
-                android:background="?attr/selectableItemBackground"
-                android:contentDescription="@string/text_color"
-                android:scaleType="fitCenter"
-                android:src="@drawable/baseline_format_color_text_black_48" />
-
-            <com.gee12.htmlwysiwygeditor.ActionButton
-                android:id="@+id/button_bgColor"
-                android:layout_width="@dimen/toolbar_icon_width_size"
-                android:layout_height="@dimen/toolbar_icon_height_size"
-                android:layout_weight="1"
-                android:background="?attr/selectableItemBackground"
-                android:contentDescription="@string/text_color"
-                android:scaleType="fitCenter"
-                android:src="@drawable/baseline_format_color_fill_black_48" />
-
 <!--            <com.gee12.htmlwysiwygeditor.ActionButton-->
-<!--                android:id="@+id/button_textBold"-->
+<!--                android:id="@+id/button_text_headering"-->
 <!--                android:layout_width="@dimen/toolbar_icon_width_size"-->
 <!--                android:layout_height="@dimen/toolbar_icon_height_size"-->
 <!--                android:background="?attr/selectableItemBackground"-->
-<!--                android:contentDescription="@string/text_bold"-->
+<!--                android:contentDescription="@string/text_size"-->
 <!--                android:scaleType="fitCenter"-->
-<!--                android:src="@drawable/outline_format_bold_black_48" />-->
+<!--                android:src="@drawable/ic_headering_black" />-->
 
             <com.gee12.htmlwysiwygeditor.ActionButton
-                android:id="@+id/button_textItalic"
+                android:id="@+id/button_text_bold"
+                android:layout_width="@dimen/toolbar_icon_width_size"
+                android:layout_height="@dimen/toolbar_icon_height_size"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/text_bold"
+                android:scaleType="fitCenter"
+                android:src="@drawable/outline_format_bold_black_48" />
+
+            <com.gee12.htmlwysiwygeditor.ActionButton
+                android:id="@+id/button_text_italic"
                 android:layout_width="@dimen/toolbar_icon_width_size"
                 android:layout_height="@dimen/toolbar_icon_height_size"
                 android:background="?attr/selectableItemBackground"
@@ -93,7 +82,7 @@
                 android:src="@drawable/outline_format_italic_black_48" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
-                android:id="@+id/button_textUnderLine"
+                android:id="@+id/button_text_underLine"
                 android:layout_width="@dimen/toolbar_icon_width_size"
                 android:layout_height="@dimen/toolbar_icon_height_size"
                 android:layout_weight="1"
@@ -103,7 +92,7 @@
                 android:src="@drawable/baseline_format_underlined_black_48" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
-                android:id="@+id/button_textStrike"
+                android:id="@+id/button_text_strike"
                 android:layout_width="@dimen/toolbar_icon_width_size"
                 android:layout_height="@dimen/toolbar_icon_height_size"
                 android:background="?attr/selectableItemBackground"
@@ -112,7 +101,26 @@
                 android:src="@drawable/outline_format_strikethrough_black_48" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
-                android:id="@+id/button_textAlign"
+                android:id="@+id/button_text_color"
+                android:layout_width="@dimen/toolbar_icon_width_size"
+                android:layout_height="@dimen/toolbar_icon_height_size"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/text_color"
+                android:scaleType="fitCenter"
+                android:src="@drawable/baseline_format_color_text_black_48" />
+
+            <com.gee12.htmlwysiwygeditor.ActionButton
+                android:id="@+id/button_background_color"
+                android:layout_width="@dimen/toolbar_icon_width_size"
+                android:layout_height="@dimen/toolbar_icon_height_size"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/text_color"
+                android:scaleType="fitCenter"
+                android:src="@drawable/baseline_format_color_fill_black_48" />
+
+            <com.gee12.htmlwysiwygeditor.ActionButton
+                android:id="@+id/button_text_align"
                 android:layout_width="@dimen/toolbar_icon_width_size"
                 android:layout_height="@dimen/toolbar_icon_height_size"
                 android:background="?attr/selectableItemBackground"
@@ -120,25 +128,34 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/outline_format_align_left_black_48" />
 
-            <ImageButton
-                android:id="@+id/button_insertLink"
+            <com.gee12.htmlwysiwygeditor.ActionButton
+                android:id="@+id/button_remove_format"
+                android:layout_width="@dimen/toolbar_icon_width_size"
+                android:layout_height="@dimen/toolbar_icon_height_size"
+                android:background="?attr/selectableItemBackground"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_format_clear_black"/>
+
+            <com.gee12.htmlwysiwygeditor.ActionButton
+                android:id="@+id/button_insert_link"
                 android:layout_width="@dimen/toolbar_icon_width_size"
                 android:layout_height="@dimen/toolbar_icon_height_size"
                 android:background="?attr/selectableItemBackground"
                 android:contentDescription="@string/insert_link"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_link_insert_black" />
+                android:src="@drawable/ic_link_insert_black"
+                android:tag=""/>
 
-            <ImageButton
-                android:id="@+id/button_removeLink"
-                android:layout_width="@dimen/toolbar_icon_width_size"
-                android:layout_height="@dimen/toolbar_icon_height_size"
-                android:background="?attr/selectableItemBackground"
-                android:contentDescription="@string/remove_link"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_link_remove_black" />
+<!--            <com.gee12.htmlwysiwygeditor.ActionButton-->
+<!--                android:id="@+id/button_remove_link"-->
+<!--                android:layout_width="@dimen/toolbar_icon_width_size"-->
+<!--                android:layout_height="@dimen/toolbar_icon_height_size"-->
+<!--                android:background="?attr/selectableItemBackground"-->
+<!--                android:contentDescription="@string/remove_link"-->
+<!--                android:scaleType="fitCenter"-->
+<!--                android:src="@drawable/ic_link_remove_black" />-->
 
-            <ImageButton
+            <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_insert_line"
                 android:layout_width="@dimen/toolbar_icon_width_size"
                 android:layout_height="@dimen/toolbar_icon_height_size"
@@ -147,35 +164,23 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_line_black" />
 
-            <ImageButton
-                android:id="@+id/button_imageInsert"
+            <com.gee12.htmlwysiwygeditor.ActionButton
+                android:id="@+id/button_insert_image"
                 android:layout_width="@dimen/toolbar_icon_width_size"
                 android:layout_height="@dimen/toolbar_icon_height_size"
                 android:background="?attr/selectableItemBackground"
                 android:contentDescription="@string/insert_image"
                 android:scaleType="fitCenter"
-                android:src="@drawable/outline_image_black_48"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0" />
+                android:src="@drawable/outline_image_black_48" />
 
-            <ImageButton
-                android:id="@+id/button_videoInsert"
+            <com.gee12.htmlwysiwygeditor.ActionButton
+                android:id="@+id/button_insert_video"
                 android:layout_width="@dimen/toolbar_icon_width_size"
                 android:layout_height="@dimen/toolbar_icon_height_size"
                 android:background="?attr/selectableItemBackground"
                 android:contentDescription="@string/insert_video"
                 android:scaleType="fitCenter"
-                android:src="@drawable/outline_slideshow_black_48"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.135"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0" />
+                android:src="@drawable/outline_slideshow_black_48" />
 
         </LinearLayout>
     </HorizontalScrollView>

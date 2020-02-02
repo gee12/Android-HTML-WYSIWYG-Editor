@@ -1,90 +1,56 @@
 package com.gee12.htmlwysiwygeditor;
 
+import androidx.annotation.IdRes;
+
+import com.lumyjuwon.richwysiwygeditor.R;
+
 public enum ActionType {
-    NONE,
-    BOLD,
-    ITALIC,
-    SUBSCRIPT,
-    SUPERSCRIPT,
-    STRIKETHROUGH,
-    UNDERLINE,
-    H1,
-    H2,
-    H3,
-    H4,
-    H5,
-    H6,
-    ORDERED_LIST,
-    UNORDERED_LIST,
-    JUSTIFY_CENTER,
-    JUSTIFY_FULL,
-    JUSTUFY_LEFT,
-    JUSTIFY_RIGHT,
-    TEXT_COLOR,
-    BACKGROUND_COLOR,
+    NONE(0),
+    TEXT_SIZE(R.id.button_text_size),
+//    HEADERING(R.id.button_text_headering),
+    BOLD(R.id.button_text_bold),
+    ITALIC(R.id.button_text_italic),
+//    SUBSCRIPT((R.id.button_text_subscript),
+//    SUPERSCRIPT(R.id.button_text_superscript),
+    UNDERLINE(R.id.button_text_underLine),
+    STRIKETHROUGH(R.id.button_text_strike),
+    TEXT_COLOR(R.id.button_text_color),
+    BACKGROUND_COLOR(R.id.button_background_color),
+//    ORDERED_LIST(R.id.button_number_list),
+//    UNORDERED_LIST(R.id.button_bullet_list),
 
-    INSERT_LINE,
-    INSERT_LINK,
-    REMOVE_LINK,
-    INSERT_IMAGE,
-    INSERT_VIDEO;
+    TEXT_ALIGN(R.id.button_text_align),
+//    JUSTIFY_CENTER(R.id.button_text_align),
+//    JUSTIFY_FULL(R.id.button_text_align),
+//    JUSTUFY_LEFT(R.id.button_text_align),
+//    JUSTIFY_RIGHT(R.id.button_text_align),
 
-//    BACKGROUND_COLOR_WHITE(255, 255, 255),
-//    BACKGROUND_COLOR_BLACK(0, 0, 0),
-//    BACKGROUND_COLOR_MAROON(128, 0, 0),
-//    BACKGROUND_COLOR_RED(255, 0, 0),
-//    BACKGROUND_COLOR_MAGENTA(255, 0, 255),
-//    BACKGROUND_COLOR_PINK(255, 153, 204),
-//    BACKGROUND_COLOR_ORANGE(255, 102, 0),
-//    BACKGROUND_COLOR_YELLOW(255, 255, 0),
-//    BACKGROUND_COLOR_LIME(0, 255, 0),
-//    BACKGROUND_COLOR_AQUA(0, 255, 255),
-//    BACKGROUND_COLOR_BLUE(0, 0, 255),
-//    BACKGROUND_COLOR_SKY_BLUE(0, 204, 255),
-//    BACKGROUND_COLOR_PALE_CYAN(204, 255, 255),
-//    BACKGROUND_COLOR_GREEN(0, 128, 0),
-//    FONT_COLOR_WHITE(255, 255, 255),
-//    FONT_COLOR_BLACK(0, 0, 0),
-//    FONT_COLOR_MAROON(128, 0, 0),
-//    FONT_COLOR_RED(255, 0, 0),
-//    FONT_COLOR_MAGENTA(255, 0, 255),
-//    FONT_COLOR_PINK(255, 153, 204),
-//    FONT_COLOR_ORANGE(255, 102, 0),
-//    FONT_COLOR_YELLOW(255, 255, 0),
-//    FONT_COLOR_LIME(0, 255, 0),
-//    FONT_COLOR_AQUA(0, 255, 255),
-//    FONT_COLOR_BLUE(0, 0, 255),
-//    FONT_COLOR_SKY_BLUE(0, 204, 255),
-//    FONT_COLOR_PALE_CYAN(204, 255, 255),
-//    FONT_COLOR_GREEN(0, 128, 0);
+    INSERT_LINE(R.id.button_insert_line),
+    INSERT_LINK(R.id.button_insert_link),
+//    REMOVE_LINK(R.id.button_remove_link),
+    INSERT_IMAGE(R.id.button_insert_image),
+    INSERT_VIDEO(R.id.button_insert_video),
 
+    REMOVE_FORMAT(R.id.button_insert_video);
 
-//    private int r;
-//    private int g;
-//    private int b;
-//
-//    ActionType(int r, int g, int b) {
-//        this.r = r;
-//        this.g = g;
-//        this.b = b;
-//    }
-//
-//    ActionType() {
-//        this(-1, -1, -1);
-//    }
-//
-//    public int getR() {
-//        return r;
-//    }
-//
-//    public int getG() {
-//        return g;
-//    }
-//
-//    public int getB() {
-//        return b;
-//    }
+    int mButtonId;
 
+    ActionType() {
+    }
+
+    ActionType(@IdRes int buttonId) {
+        this.mButtonId = buttonId;
+    }
+
+    public int getmButtonId() {
+        return this.mButtonId;
+    }
+
+    /**
+     *
+     * @param typeString
+     * @return
+     */
     public static ActionType parse(String typeString) {
         for (ActionType type : ActionType.values()) {
             if (typeString.equals(type.name()))

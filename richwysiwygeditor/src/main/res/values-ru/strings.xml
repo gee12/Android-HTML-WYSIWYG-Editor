@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RichWYSIWYGEditor</string>
+    <string name="answer_ok">Ок</string>
+    <string name="answer_cancel">Отмена</string>
+    <string name="insert_image">Вставить изображение</string>
+    <string name="insert_line">Вставить линию</string>
+    <string name="insert_link">Вставить ссылку</string>
+    <string name="insert_video">вставить Youtube-видео</string>
+    <string name="remove_link">Удалить ссылку</string>
+    <string name="text_align">Выравнивание текста</string>
+    <string name="text_bold">Жирный текст</string>
+    <string name="text_color">Цвет текста</string>
+    <string name="text_italic">Наклонный текст</string>
+    <string name="text_size">Размер текста</string>
+    <string name="text_strike">Зачеркнутый текст</string>
+    <string name="link">Ссылка</string>
+    <string name="title">Заголовок</string>
+    <string name="text_size_hint">Значение 1–7</string>
+</resources>

@@ -13,7 +13,6 @@ public class ActionButton extends androidx.appcompat.widget.AppCompatImageButton
     public static final int RES_COLOR_CHECKED = R.color.sky_blue;
     public static final int RES_COLOR_DISABLED = R.color.dark_gray;
     private ActionType type;
-    private int imageId;
     private boolean isCheckable;
     private boolean isChecked;
     private boolean isPopup;
@@ -24,23 +23,46 @@ public class ActionButton extends androidx.appcompat.widget.AppCompatImageButton
 
     public ActionButton(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(ActionType.NONE, 0, false, false);
+        init(ActionType.NONE, false, false, true);
     }
 
-    public ActionButton(Context context, ActionType type, int imageId, boolean isCheckable, boolean isPopup) {
+    public ActionButton(Context context, ActionType type, boolean isCheckable, boolean isPopup, boolean isEnabled) {
         super(context);
-        init(type, imageId, isCheckable, isPopup);
+        init(type, isCheckable, isPopup, isEnabled);
+//        initVisual(imageId);
     }
 
-    public void init(ActionType type, int imageId, boolean isCheckable, boolean isPopup) {
+    public void init(ActionType type, boolean isCheckable, boolean isPopup, boolean isEnabled) {
         this.type = type;
-        this.imageId = imageId;
         this.isCheckable = isCheckable;
         this.isPopup = isPopup;
         this.mBaseColor = ContextCompat.getColor(getContext().getApplicationContext(), RES_COLOR_BASE);
         this.mCheckedColor = ContextCompat.getColor(getContext().getApplicationContext(), RES_COLOR_CHECKED);
         this.mDisabledColor = ContextCompat.getColor(getContext().getApplicationContext(), RES_COLOR_DISABLED);
+        setEnabled(isEnabled);
     }
+
+//    /**
+//     * Установка параметров отображения кнопки
+//     * (метод должен вызываться при программном создании кнопки, чтобы не переопределять параметры,
+//     * заданные в xml)
+//     * @param imageId
+//     */
+//    public void initVisual(int imageId) {
+////        ViewGroup.LayoutParams layoutParams = getLayoutParams();
+////        layoutParams.width = 38;
+////        layoutParams.height = 35;
+////        setLayoutParams(layoutParams);
+//        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(new ViewGroup.LayoutParams(38, 35));
+//        setLayoutParams(layoutParams);
+//        setScaleType(ScaleType.CENTER);
+//        if (imageId > 0) {
+//            setImageResource(imageId);
+//        }
+//        TypedValue outValue = new TypedValue();
+//        getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+//        setBackgroundResource(outValue.resourceId);
+//    }
 
     public void switchCheckedState(){
         setCheckedState(!isChecked);

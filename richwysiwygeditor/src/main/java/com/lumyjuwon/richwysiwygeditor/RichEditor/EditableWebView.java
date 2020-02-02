@@ -68,17 +68,17 @@ public class EditableWebView extends WebView {
         void onPageLoaded();
     }
 
-    public interface IUrlLoadListener {
+    public interface ILinkLoadListener {
 
-        boolean onUrlLoad(String url);
+        boolean onLinkLoad(String url);
+    }
+
+    public interface IYoutubeLinkLoadListener {
+        void onYoutubeLinkLoad(String videoId);
     }
 
     public interface IHtmlReceiveListener {
         void onReceiveEditableHtml(String htmlText);
-    }
-
-    public interface IYoutubeLoadLinkListener {
-        void onReceivedEvent(String videoId);
     }
 
     public static final int EXEC_TRY_DELAY_MSEC = 100;
@@ -87,14 +87,16 @@ public class EditableWebView extends WebView {
     private static final String STATE_SCHEME = "re-state://";
     private static final String CALLBACK_STATE_SCHEME_PATTERN = "("+CALLBACK_SCHEME+".*)("+STATE_SCHEME+".*)";
 
-    private boolean isPageLoaded = false;
+    private boolean mIsPageLoaded = false;
+    private boolean mIsEditMode = false;
     private String mHtml;
+    // listeners
     private ITextChangeListener mTextChangeListener;
     private IDecorationStateListener mDecorationStateListener;
     private IPageLoadListener mPageListener;
-    private IUrlLoadListener mUrlLoadListener;
+    private ILinkLoadListener mUrlLoadListener;
     private IHtmlReceiveListener mReceiveHtmlListener;
-    private IYoutubeLoadLinkListener mLoadYoutubeLinkListener;
+    private IYoutubeLinkLoadListener mLoadYoutubeLinkListener;
 
     public EditableWebView(Context context) {
         this(context, null);
@@ -122,7 +124,7 @@ public class EditableWebView extends WebView {
         // send first javascript request to receive page html
 //        makeEditableHtmlRequest();
 
-        EditableWebView.this.isPageLoaded = true;
+        EditableWebView.this.mIsPageLoaded = true;
 
         if (mPageListener != null) {
             mPageListener.onPageLoaded();
@@ -130,11 +132,11 @@ public class EditableWebView extends WebView {
     }
 
     public Boolean onUrlLoading(String url) {
-//            if (!isEditMode) {
-//                if (mUrlLoadListener != null)
-//                    mUrlLoadListener.onUrlLoad(url);
-//                return true;
-//            }
+        // если не используется режим редактирования, то нет смысла обрабатывать события страницы
+        if (!mIsEditMode) {
+            if (mUrlLoadListener != null)
+                return mUrlLoadListener.onLinkLoad(url);
+        }
         String decode;
         String re_callback = "";
         String re_state = "";
@@ -163,7 +165,7 @@ public class EditableWebView extends WebView {
             String videoid = Youtube.getVideoId(url);
             if (!videoid.equals("error")) {
                 if (mLoadYoutubeLinkListener != null) {
-                    mLoadYoutubeLinkListener.onReceivedEvent(videoid);
+                    mLoadYoutubeLinkListener.onYoutubeLinkLoad(videoid);
                 }
             }
             return true;
@@ -178,7 +180,7 @@ public class EditableWebView extends WebView {
             callback(decode);
             return true;
         } else if (mUrlLoadListener != null)
-            return mUrlLoadListener.onUrlLoad(url);
+            return mUrlLoadListener.onLinkLoad(url);
         return null;
     }
 
@@ -191,7 +193,7 @@ public class EditableWebView extends WebView {
     }
 
     protected void exec(final String trigger) {
-        if (isPageLoaded) {
+        if (mIsPageLoaded) {
             load(trigger);
         } else {
             postDelayed(new Runnable() {
@@ -456,6 +458,7 @@ public class EditableWebView extends WebView {
 
     public void setInputEnabled(Boolean inputEnabled) {
         exec("javascript:RE.setInputEnabled(" + inputEnabled + ")");
+        this.mIsEditMode = inputEnabled;
     }
 
     public void loadCSS(String cssFile) {
@@ -583,6 +586,15 @@ public class EditableWebView extends WebView {
         exec("javascript:RE.insertLink('" + href + "', '" + title + "');");
     }
 
+    public void createLink(String href) {
+        exec("javascript:RE.prepareInsert();");
+        exec("javascript:RE.createLink(href);");
+    }
+
+    public void removeLink() {
+//        exec("javascript:RE.prepareInsert();");
+        exec("javascript:RE.removeLink();");
+    }
     public void insertTodo() {
         exec("javascript:RE.prepareInsert();");
         exec("javascript:RE.setTodo('" + Utils.getCurrentTime() + "');");
@@ -626,7 +638,7 @@ public class EditableWebView extends WebView {
         this.mPageListener = listener;
     }
 
-    public void setOnUrlLoadListener(IUrlLoadListener listener) {
+    public void setOnUrlLoadListener(ILinkLoadListener listener) {
         mUrlLoadListener = listener;
     }
 
@@ -634,7 +646,7 @@ public class EditableWebView extends WebView {
         mReceiveHtmlListener = listener;
     }
 
-    public void setYoutubeLoadLinkListener(IYoutubeLoadLinkListener listener) {
+    public void setYoutubeLoadLinkListener(IYoutubeLinkLoadListener listener) {
         this.mLoadYoutubeLinkListener = listener;
     }
 

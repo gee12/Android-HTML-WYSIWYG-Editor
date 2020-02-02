@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">RichWYSIWYGEditor</string>
+    <string name="answer_ok">Ok</string>
+    <string name="answer_cancel">Cancel</string>
     <string name="text_size">Text size</string>
     <string name="text_color">Text color</string>
     <string name="text_bold">Bold</string>
@@ -11,4 +13,7 @@
     <string name="insert_link">Insert link</string>
     <string name="remove_link">Remove link</string>
     <string name="insert_line">Insert line</string>
+    <string name="link">Link</string>
+    <string name="title">Title</string>
+    <string name="text_size_hint">Value 1–7</string>
 </resources>
