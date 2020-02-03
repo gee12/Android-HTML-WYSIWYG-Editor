@@ -14,6 +14,8 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.lumyjuwon.richwysiwygeditor.R;
 
+import java.util.Locale;
+
 public class Dialogs {
 
     public interface IApplyResult {
@@ -40,10 +42,13 @@ public class Dialogs {
      * @param context
      * @param handler
      */
-    public static void createTextSizeDialog(Context context, ITextSizeResult handler) {
+    public static void createTextSizeDialog(Context context, int curSize, ITextSizeResult handler) {
         AskDialogBuilder builder = AskDialogBuilder.create(context, R.layout.dialog_text_size);
 
         EditText etSize = builder.getView().findViewById(R.id.edit_text_size);
+        if (curSize >= 1) {
+            etSize.setText(String.format(Locale.getDefault(), "%d", curSize));
+        }
         builder.setPositiveButton(R.string.answer_ok, (dialog1, which) -> {
             int size = Integer.parseInt(etSize.getText().toString());
             handler.onApply(size);

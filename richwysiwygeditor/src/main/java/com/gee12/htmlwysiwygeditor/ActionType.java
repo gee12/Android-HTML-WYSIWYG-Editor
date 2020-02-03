@@ -24,6 +24,10 @@ public enum ActionType {
 //    JUSTIFY_FULL(R.id.button_text_align),
 //    JUSTUFY_LEFT(R.id.button_text_align),
 //    JUSTIFY_RIGHT(R.id.button_text_align),
+    UNORDERED_LIST,
+    ORDERED_LIST,
+    INDENT,
+    OUTDENT,
 
     INSERT_LINE(R.id.button_insert_line),
     INSERT_LINK(R.id.button_insert_link),
@@ -35,8 +39,7 @@ public enum ActionType {
 
     int mButtonId;
 
-    ActionType() {
-    }
+    ActionType() { }
 
     ActionType(@IdRes int buttonId) {
         this.mButtonId = buttonId;

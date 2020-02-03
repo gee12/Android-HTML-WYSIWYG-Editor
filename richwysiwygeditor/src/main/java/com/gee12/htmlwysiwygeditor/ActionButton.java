@@ -11,9 +11,10 @@ public class ActionButton extends androidx.appcompat.widget.AppCompatImageButton
 
     public static final int RES_COLOR_BASE = R.color.black;
     public static final int RES_COLOR_CHECKED = R.color.sky_blue;
-    public static final int RES_COLOR_DISABLED = R.color.dark_gray;
+    public static final int RES_COLOR_DISABLED = R.color.gray;
     private ActionType type;
     private boolean isCheckable;
+    private boolean isToggle;
     private boolean isChecked;
     private boolean isPopup;
 

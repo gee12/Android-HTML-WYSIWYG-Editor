@@ -47,139 +47,110 @@
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_text_size"
-                android:layout_width="@dimen/toolbar_icon_width_size"
-                android:layout_height="@dimen/toolbar_icon_height_size"
-                android:background="?attr/selectableItemBackground"
+                style="@style/ActionButton"
                 android:contentDescription="@string/text_size"
-                android:scaleType="fitCenter"
                 android:src="@drawable/outline_format_size_black_48" />
 
 <!--            <com.gee12.htmlwysiwygeditor.ActionButton-->
 <!--                android:id="@+id/button_text_headering"-->
-<!--                android:layout_width="@dimen/toolbar_icon_width_size"-->
-<!--                android:layout_height="@dimen/toolbar_icon_height_size"-->
-<!--                android:background="?attr/selectableItemBackground"-->
-<!--                android:contentDescription="@string/text_size"-->
-<!--                android:scaleType="fitCenter"-->
+<!--                style="@style/ActionButton"-->
 <!--                android:src="@drawable/ic_headering_black" />-->
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_text_bold"
-                android:layout_width="@dimen/toolbar_icon_width_size"
-                android:layout_height="@dimen/toolbar_icon_height_size"
-                android:background="?attr/selectableItemBackground"
+                style="@style/ActionButton"
                 android:contentDescription="@string/text_bold"
-                android:scaleType="fitCenter"
                 android:src="@drawable/outline_format_bold_black_48" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_text_italic"
-                android:layout_width="@dimen/toolbar_icon_width_size"
-                android:layout_height="@dimen/toolbar_icon_height_size"
-                android:background="?attr/selectableItemBackground"
+                style="@style/ActionButton"
                 android:contentDescription="@string/text_italic"
-                android:scaleType="fitCenter"
                 android:src="@drawable/outline_format_italic_black_48" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_text_underLine"
-                android:layout_width="@dimen/toolbar_icon_width_size"
-                android:layout_height="@dimen/toolbar_icon_height_size"
-                android:layout_weight="1"
-                android:background="?attr/selectableItemBackground"
+                style="@style/ActionButton"
                 android:contentDescription="@string/text_align"
-                android:scaleType="fitCenter"
                 android:src="@drawable/baseline_format_underlined_black_48" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_text_strike"
-                android:layout_width="@dimen/toolbar_icon_width_size"
-                android:layout_height="@dimen/toolbar_icon_height_size"
-                android:background="?attr/selectableItemBackground"
+                style="@style/ActionButton"
                 android:contentDescription="@string/text_strike"
-                android:scaleType="fitCenter"
                 android:src="@drawable/outline_format_strikethrough_black_48" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_text_color"
-                android:layout_width="@dimen/toolbar_icon_width_size"
-                android:layout_height="@dimen/toolbar_icon_height_size"
-                android:background="?attr/selectableItemBackground"
+                style="@style/ActionButton"
                 android:contentDescription="@string/text_color"
-                android:scaleType="fitCenter"
                 android:src="@drawable/baseline_format_color_text_black_48" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_background_color"
-                android:layout_width="@dimen/toolbar_icon_width_size"
-                android:layout_height="@dimen/toolbar_icon_height_size"
-                android:layout_weight="1"
-                android:background="?attr/selectableItemBackground"
+                style="@style/ActionButton"
                 android:contentDescription="@string/text_color"
-                android:scaleType="fitCenter"
                 android:src="@drawable/baseline_format_color_fill_black_48" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_text_align"
-                android:layout_width="@dimen/toolbar_icon_width_size"
-                android:layout_height="@dimen/toolbar_icon_height_size"
-                android:background="?attr/selectableItemBackground"
+                style="@style/ActionButton"
                 android:contentDescription="@string/text_align"
-                android:scaleType="fitCenter"
                 android:src="@drawable/outline_format_align_left_black_48" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
+                android:id="@+id/button_unordered_list"
+                style="@style/ActionButton"
+                android:src="@drawable/ic_bullet_list_black" />
+
+            <com.gee12.htmlwysiwygeditor.ActionButton
+                android:id="@+id/button_ordered_list"
+                style="@style/ActionButton"
+                android:src="@drawable/ic_numbered_list_black" />
+
+            <com.gee12.htmlwysiwygeditor.ActionButton
+                android:id="@+id/button_indent_inc"
+                style="@style/ActionButton"
+                android:src="@drawable/ic_indent_inc_black" />
+
+            <com.gee12.htmlwysiwygeditor.ActionButton
+                android:id="@+id/button_indent_dec"
+                style="@style/ActionButton"
+                android:src="@drawable/ic_indent_dec_black" />
+
+            <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_remove_format"
-                android:layout_width="@dimen/toolbar_icon_width_size"
-                android:layout_height="@dimen/toolbar_icon_height_size"
-                android:background="?attr/selectableItemBackground"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_format_clear_black"/>
+                style="@style/ActionButton"
+                android:src="@drawable/ic_clear_format_black"/>
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_insert_link"
-                android:layout_width="@dimen/toolbar_icon_width_size"
-                android:layout_height="@dimen/toolbar_icon_height_size"
-                android:background="?attr/selectableItemBackground"
+                style="@style/ActionButton"
                 android:contentDescription="@string/insert_link"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_link_insert_black"
-                android:tag=""/>
+                android:src="@drawable/ic_insert_link_black"/>
 
 <!--            <com.gee12.htmlwysiwygeditor.ActionButton-->
 <!--                android:id="@+id/button_remove_link"-->
-<!--                android:layout_width="@dimen/toolbar_icon_width_size"-->
-<!--                android:layout_height="@dimen/toolbar_icon_height_size"-->
-<!--                android:background="?attr/selectableItemBackground"-->
+<!--                style="@style/ActionButton"-->
 <!--                android:contentDescription="@string/remove_link"-->
-<!--                android:scaleType="fitCenter"-->
-<!--                android:src="@drawable/ic_link_remove_black" />-->
+<!--                android:src="@drawable/ic_remove_link_black" />-->
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_insert_line"
-                android:layout_width="@dimen/toolbar_icon_width_size"
-                android:layout_height="@dimen/toolbar_icon_height_size"
-                android:background="?attr/selectableItemBackground"
+                style="@style/ActionButton"
                 android:contentDescription="@string/insert_line"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_line_black" />
+                android:src="@drawable/ic_insert_line_black" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_insert_image"
-                android:layout_width="@dimen/toolbar_icon_width_size"
-                android:layout_height="@dimen/toolbar_icon_height_size"
-                android:background="?attr/selectableItemBackground"
+                style="@style/ActionButton"
                 android:contentDescription="@string/insert_image"
-                android:scaleType="fitCenter"
                 android:src="@drawable/outline_image_black_48" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_insert_video"
-                android:layout_width="@dimen/toolbar_icon_width_size"
-                android:layout_height="@dimen/toolbar_icon_height_size"
-                android:background="?attr/selectableItemBackground"
+                style="@style/ActionButton"
                 android:contentDescription="@string/insert_video"
-                android:scaleType="fitCenter"
                 android:src="@drawable/outline_slideshow_black_48" />
 
         </LinearLayout>

@@ -49,6 +49,9 @@ RE.callback = function() {
          items.push('text_color:'
             + window.getComputedStyle(parentNode, "color").getPropertyValue('color'));
     }
+    if (document.queryCommandState('fontSize')) {
+        items.push('text_size');
+    }
     if (document.queryCommandState('bold')) {
         items.push('bold');
     }
@@ -73,21 +76,30 @@ RE.callback = function() {
     if (document.queryCommandState('insertUnorderedList')) {
         items.push('unordered_list');
     }
+//    if (document.queryCommandState('indent')) {
+//        items.push('indent');
+//    }
+//    if (document.queryCommandState('outdent')) {
+//        items.push('outdent');
+//    }
     if (document.queryCommandState('justifyCenter')) {
-        items.push('justify_center');
+        items.push('text_align:center');
     }
     if (document.queryCommandState('justifyFull')) {
-        items.push('justify_full');
+        items.push('text_align:full');
     }
     if (document.queryCommandState('justifyLeft')) {
-        items.push('justify_left');
+        items.push('text_align:left');
     }
     if (document.queryCommandState('justifyRight')) {
-        items.push('justify_right');
+        items.push('text_align:right');
     }
 //    if (document.queryCommandState('insertHorizontalRule')) {
 //        items.push('horizontalRule');
 //    }
+    if (document.queryCommandState('createLink')) {
+        items.push('insert_link');
+    }
     var formatBlock = document.queryCommandValue('formatBlock');
     if (formatBlock.length > 0) {
         items.push(formatBlock);
@@ -352,6 +364,9 @@ RE.enabledEditingItems = function(e) {
          items.push('text_color:'
             + window.getComputedStyle(parentNode, "color").getPropertyValue('color'));
      }
+    if (document.queryCommandState('fontSize')) {
+     items.push('text_size');
+    }
     if (document.queryCommandState('bold')) {
         items.push('bold');
     }
@@ -376,21 +391,30 @@ RE.enabledEditingItems = function(e) {
     if (document.queryCommandState('insertUnorderedList')) {
         items.push('unordered_list');
     }
+//    if (document.queryCommandState('indent')) {
+//        items.push('indent');
+//    }
+//    if (document.queryCommandState('outdent')) {
+//        items.push('outdent');
+//    }
     if (document.queryCommandState('justifyCenter')) {
-        items.push('justify_center');
+        items.push('text_align:center');
     }
     if (document.queryCommandState('justifyFull')) {
-        items.push('justify_full');
+        items.push('text_align:full');
     }
     if (document.queryCommandState('justifyLeft')) {
-        items.push('justify_left');
+        items.push('text_align:left');
     }
     if (document.queryCommandState('justifyRight')) {
-        items.push('justify_right');
+        items.push('text_align:right');
     }
 //    if (document.queryCommandState('insertHorizontalRule')) {
 //        items.push('horizontalRule');
 //    }
+    if (document.queryCommandState('createLink')) {
+        items.push('insert_link');
+    }
     var formatBlock = document.queryCommandValue('formatBlock');
     if (formatBlock.length > 0) {
         items.push(formatBlock);

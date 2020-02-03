@@ -17,5 +17,11 @@
         <item name="android:textColorPrimary">@color/black</item>
     </style>
 
+    <style name="ActionButton">
+        <item name="android:layout_width">@dimen/toolbar_icon_width_size</item>
+        <item name="android:layout_height">@dimen/toolbar_icon_height_size</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:scaleType">fitCenter</item>
+    </style>
 
 </resources>
