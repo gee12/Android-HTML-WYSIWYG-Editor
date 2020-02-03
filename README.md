@@ -5,7 +5,7 @@ It is based on library [lumyjuwon/Android-Rich-WYSIWYG-Editor](https://github.co
 Used:
 - native WebView
 - Javascript to execute commands
-- custom panel with tools (toolbar with checked/popup buttons)
+- custom panel with actions (toolbar with checked/popup buttons)
 
 ### Implemented Functions
 - [x] Bold
@@ -13,28 +13,28 @@ Used:
 - [x] Underline
 - [x] Strikethrough
 - [x] Font size
-- [x] Text color
+- [x] Font color
 - [x] Background color
 - [x] Horizontal align
+- [x] Bullets list
+- [x] Numbers list
+- [x] Indent/Outdent
+- [x] Insert link/Unlink
+- [x] Insert horizontal rule
+- [x] Clear formatting
 
 ### Functions to implement
 - [ ] Subscript/Superscript
 - [ ] Headering H1-H6
 - [ ] Font family
-- [ ] Indent/Outdent
-- [ ] Bullets list
-- [ ] Numbers list
-- [ ] Horizontal rule
-- [ ] Insert link/Unlink
-- [ ] Insert Image
-- [ ] Insert Youtube
+- [ ] Insert image
+- [ ] Insert Youtube video
 - [ ] Insert table
 - [ ] Undo/Redo
 - [ ] Search
 - [ ] Quote
 - [ ] Code
 - [ ] Formula
-- [ ] Clear formatting
 
 ## License
 ```
