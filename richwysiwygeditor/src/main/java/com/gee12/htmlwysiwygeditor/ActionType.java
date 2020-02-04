@@ -5,8 +5,12 @@ import androidx.annotation.IdRes;
 import com.lumyjuwon.richwysiwygeditor.R;
 
 public enum ActionType {
-    NONE(0),
+    NONE,
+    UNDO,
+    REDO,
     TEXT_SIZE(R.id.button_text_size),
+    FONT_FAMILY,
+    HEADERING,
 //    HEADERING(R.id.button_text_headering),
     BOLD(R.id.button_text_bold),
     ITALIC(R.id.button_text_italic),
@@ -18,6 +22,8 @@ public enum ActionType {
     BACKGROUND_COLOR(R.id.button_background_color),
 //    ORDERED_LIST(R.id.button_number_list),
 //    UNORDERED_LIST(R.id.button_bullet_list),
+    CODE,
+    QUOTE,
 
     TEXT_ALIGN(R.id.button_text_align),
 //    JUSTIFY_CENTER(R.id.button_text_align),
@@ -32,14 +38,23 @@ public enum ActionType {
     INSERT_LINE(R.id.button_insert_line),
     INSERT_LINK(R.id.button_insert_link),
 //    REMOVE_LINK(R.id.button_remove_link),
-    INSERT_IMAGE(R.id.button_insert_image),
-    INSERT_VIDEO(R.id.button_insert_video),
+    INSERT_IMAGE(false),
+    INSERT_VIDEO(false),
+    INSERT_TABLE(false),
+    INSERT_FORMULA(false),
 
     REMOVE_FORMAT(R.id.button_insert_video);
 
     int mButtonId;
+    boolean mIsFree;
 
-    ActionType() { }
+    ActionType() {
+        this.mIsFree = true;
+    }
+
+    ActionType(boolean isFree) {
+        this.mIsFree = isFree;
+    }
 
     ActionType(@IdRes int buttonId) {
         this.mButtonId = buttonId;
@@ -47,6 +62,10 @@ public enum ActionType {
 
     public int getmButtonId() {
         return this.mButtonId;
+    }
+
+    public boolean isFree() {
+        return mIsFree;
     }
 
     /**

@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
 import com.lumyjuwon.richwysiwygeditor.R;
+import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.Keyboard;
 
 import java.util.Locale;
 
@@ -46,7 +47,7 @@ public class Dialogs {
         AskDialogBuilder builder = AskDialogBuilder.create(context, R.layout.dialog_text_size);
 
         EditText etSize = builder.getView().findViewById(R.id.edit_text_size);
-        if (curSize >= 1) {
+        if (curSize >= 1 && curSize <= 7) {
             etSize.setText(String.format(Locale.getDefault(), "%d", curSize));
         }
         builder.setPositiveButton(R.string.answer_ok, (dialog1, which) -> {
@@ -58,7 +59,10 @@ public class Dialogs {
         dialog.show();
         final Button okButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
-        dialog.setOnShowListener(dialog12 -> okButton.setEnabled(false));
+        dialog.setOnShowListener(dialog12 -> {
+            okButton.setEnabled(false);
+            Keyboard.showKeyboard(etSize);
+        });
 
         etSize.addTextChangedListener(new TextWatcher() {
             @Override

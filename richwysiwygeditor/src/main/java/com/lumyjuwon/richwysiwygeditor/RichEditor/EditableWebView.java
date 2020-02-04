@@ -563,6 +563,10 @@ public class EditableWebView extends WebView {
         exec("javascript:RE.setBlockquote();");
     }
 
+    public void setCode() {
+        exec("javascript:RE.setCode();");
+    }
+
     public void setBullets() {
         exec("javascript:RE.setBullets();");
     }

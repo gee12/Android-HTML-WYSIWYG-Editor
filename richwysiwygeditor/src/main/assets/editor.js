@@ -262,6 +262,10 @@ RE.setBlockquote = function() {
     document.execCommand('formatBlock', false, '<blockquote>');
 }
 
+RE.setCode = function() {
+    document.execCommand('formatBlock', false, '<code>');
+}
+
 RE.insertLine = function() {
 //    var html = '<hr>';
 //    RE.insertHTML(html);
@@ -365,7 +369,7 @@ RE.enabledEditingItems = function(e) {
             + window.getComputedStyle(parentNode, "color").getPropertyValue('color'));
      }
     if (document.queryCommandState('fontSize')) {
-     items.push('text_size');
+        items.push('text_size');
     }
     if (document.queryCommandState('bold')) {
         items.push('bold');

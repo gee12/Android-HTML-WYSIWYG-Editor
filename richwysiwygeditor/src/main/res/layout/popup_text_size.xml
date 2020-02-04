@@ -12,7 +12,7 @@
         android:layout_weight="1"
         android:background="@color/transparent"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/outline_format_size_black_48"
+        app:srcCompat="@drawable/ic_text_size_black"
         android:tag="1"/>
 
     <ImageButton
@@ -23,7 +23,7 @@
         android:layout_weight="1"
         android:background="@color/transparent"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/outline_format_size_black_48"
+        app:srcCompat="@drawable/ic_text_size_black"
         android:tag="2"/>
 
     <ImageButton
@@ -34,7 +34,7 @@
         android:layout_weight="1"
         android:background="@color/transparent"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/outline_format_size_black_48"
+        app:srcCompat="@drawable/ic_text_size_black"
         android:tag="3"/>
 
     <ImageButton
@@ -45,7 +45,7 @@
         android:layout_weight="1"
         android:background="@color/transparent"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/outline_format_size_black_48"
+        app:srcCompat="@drawable/ic_text_size_black"
         android:tag="4"/>
 
     <ImageButton
@@ -56,6 +56,6 @@
         android:layout_weight="1"
         android:background="@color/transparent"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/outline_format_size_black_48"
+        app:srcCompat="@drawable/ic_text_size_black"
         android:tag="5"/>
 </LinearLayout>

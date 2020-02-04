@@ -57,6 +57,7 @@ public class WysiwygEditor extends LinearLayout {
     protected ProgressBar progressBar;
     protected Map<ActionType, ActionButton> actionButtons;
     protected EditableWebView.IPageLoadListener mPageLoadListener;
+    protected boolean isActivateAllButtons = true;
     private int curTextSize;
 
     public WysiwygEditor(Context context) {
@@ -119,46 +120,53 @@ public class WysiwygEditor extends LinearLayout {
     protected void initActionButton(ActionButton button) {
         int id = button.getId();
         if (id == R.id.button_text_size)
-            initActionButton(button, ActionType.TEXT_SIZE, false, true, true);
+            initActionButton(button, ActionType.TEXT_SIZE, false, true);
         else if (id == R.id.button_text_bold)
-            initActionButton(button, ActionType.BOLD, true, false, true);
+            initActionButton(button, ActionType.BOLD, true, false);
         else if (id == R.id.button_text_italic)
-            initActionButton(button, ActionType.ITALIC, true, false, true);
+            initActionButton(button, ActionType.ITALIC, true, false);
         else if (id == R.id.button_text_underLine)
-            initActionButton(button, ActionType.UNDERLINE, true, false, true);
+            initActionButton(button, ActionType.UNDERLINE, true, false);
         else if (id == R.id.button_text_strike)
-            initActionButton(button, ActionType.STRIKETHROUGH, true, false, true);
+            initActionButton(button, ActionType.STRIKETHROUGH, true, false);
         else if (id == R.id.button_text_color)
-            initActionButton(button, ActionType.TEXT_COLOR, true, true, true);
+            initActionButton(button, ActionType.TEXT_COLOR, true, true);
         else if (id == R.id.button_background_color)
-            initActionButton(button, ActionType.BACKGROUND_COLOR, true, true, true);
+            initActionButton(button, ActionType.BACKGROUND_COLOR, true, true);
+        else if (id == R.id.button_code)
+            initActionButton(button, ActionType.CODE, true, false);
+        else if (id == R.id.button_quote)
+            initActionButton(button, ActionType.QUOTE, true, false);
         else if (id == R.id.button_text_align)
-            initActionButton(button, ActionType.TEXT_ALIGN, true, true, true);
+            initActionButton(button, ActionType.TEXT_ALIGN, true, true);
         else if (id == R.id.button_unordered_list)
-            initActionButton(button, ActionType.UNORDERED_LIST, true, false, true);
+            initActionButton(button, ActionType.UNORDERED_LIST, true, false);
         else if (id == R.id.button_ordered_list)
-            initActionButton(button, ActionType.ORDERED_LIST, true, false, true);
+            initActionButton(button, ActionType.ORDERED_LIST, true, false);
         else if (id == R.id.button_indent_inc)
-            initActionButton(button, ActionType.INDENT, false, false, true);
+            initActionButton(button, ActionType.INDENT, false, false);
         else if (id == R.id.button_indent_dec)
-            initActionButton(button, ActionType.OUTDENT, false, false, true);
+            initActionButton(button, ActionType.OUTDENT, false, false);
 
         else if (id == R.id.button_insert_line)
-            initActionButton(button, ActionType.INSERT_LINE, false, false, true);
+            initActionButton(button, ActionType.INSERT_LINE, false, false);
         else if (id == R.id.button_insert_link)
-            initActionButton(button, ActionType.INSERT_LINK, true, true, true);
+            initActionButton(button, ActionType.INSERT_LINK, true, true);
         else if (id == R.id.button_insert_image)
-            initActionButton(button, ActionType.INSERT_IMAGE, true, true, false);
+            initActionButton(button, ActionType.INSERT_IMAGE, true, true);
         else if (id == R.id.button_insert_video)
-            initActionButton(button, ActionType.INSERT_VIDEO, true, true, false);
+            initActionButton(button, ActionType.INSERT_VIDEO, true, true);
+        else if (id == R.id.button_insert_table)
+            initActionButton(button, ActionType.INSERT_TABLE, false, true);
+        else if (id == R.id.button_insert_formula)
+            initActionButton(button, ActionType.INSERT_FORMULA, false, true);
 
         else if (id == R.id.button_remove_format)
-            initActionButton(button, ActionType.REMOVE_FORMAT, false, false, true);
+            initActionButton(button, ActionType.REMOVE_FORMAT, false, false);
     }
 
-    protected void initActionButton(ActionButton button, ActionType type, boolean isCheckable,
-                                    boolean isPopup, boolean isActive) {
-        button.init(type, isCheckable, isPopup, isActive);
+    protected void initActionButton(ActionButton button, ActionType type, boolean isCheckable, boolean isPopup) {
+        button.init(type, isCheckable, isPopup, true);
         button.setOnClickListener(v -> onClickActionButton((ActionButton) v));
         actionButtons.put(type, button);
     }
@@ -238,7 +246,9 @@ public class WysiwygEditor extends LinearLayout {
             case UNDERLINE: webView.setUnderline(); break;
             case STRIKETHROUGH: webView.setStrikeThrough(); break;
             case TEXT_COLOR: showTextColorPopupWindow(button); break;
-            case BACKGROUND_COLOR: showBgColorPopupWindow(button); break;
+            case BACKGROUND_COLOR: showBackgroundColorPopupWindow(button); break;
+            case CODE: webView.setCode(); break;
+            case QUOTE: webView.setBlockquote(); break;
             case TEXT_ALIGN: showTextAlignPopupWindow(button); break;
             case UNORDERED_LIST: webView.setBullets(); break;
             case ORDERED_LIST: webView.setNumbers(); break;
@@ -246,13 +256,15 @@ public class WysiwygEditor extends LinearLayout {
             case OUTDENT: webView.setOutdent(); break;
 
             case INSERT_LINE: webView.insertLine(); break;
-            case INSERT_LINK: getShowInsertLinkPopupWindow(button); break;
-            case INSERT_IMAGE: getShowInsertImagePopupWindow(button); break;
-            case INSERT_VIDEO: getShowInsertVideoPopupWindow(button); break;
+            case INSERT_LINK: showLinkPopupWindow(button); break;
+            case INSERT_IMAGE: showImagePopupWindow(button); break;
+            case INSERT_VIDEO: showVideoPopupWindow(button); break;
+            case INSERT_TABLE: break;
+            case INSERT_FORMULA: break;
 
             case REMOVE_FORMAT: webView.removeFormat(); break;
         }
-        if (!button.isPopup()) {
+        if (button.isCheckable() && !button.isPopup()) {
             button.switchCheckedState();
         }
     }
@@ -301,7 +313,7 @@ public class WysiwygEditor extends LinearLayout {
      * Обработчик изменения цвета фона текста.
      * @param button
      */
-    private void showBgColorPopupWindow(ActionButton button) {
+    private void showBackgroundColorPopupWindow(ActionButton button) {
         if (button == null) return;
         this.popupWindow = createPopupWindow(button, R.layout.popup_text_color);
         View contentView = popupWindow.getContentView();
@@ -365,7 +377,7 @@ public class WysiwygEditor extends LinearLayout {
      * Обработчики вставки, изменения и удаления ссылок.
      * @param button
      */
-    public void getShowInsertLinkPopupWindow(ActionButton button) {
+    public void showLinkPopupWindow(ActionButton button) {
         if (button == null) return;
 
         // TODO: проверить
@@ -412,14 +424,14 @@ public class WysiwygEditor extends LinearLayout {
      * Обработчики вставки изображений.
      * @param button
      */
-    public void getShowInsertImagePopupWindow(ActionButton button) {
+    public void showImagePopupWindow(ActionButton button) {
     }
 
     /**
      * Обработчики вставки видео из Youtube.
      * @param button
      */
-    public void getShowInsertVideoPopupWindow(ActionButton button) {
+    public void showVideoPopupWindow(ActionButton button) {
         if (button == null) return;
         closePopupWindow();
         clearPopupButton();
