@@ -46,11 +46,9 @@ public enum ActionType {
     REMOVE_FORMAT(R.id.button_insert_video);
 
     int mButtonId;
-    boolean mIsFree;
+    boolean mIsFree = true;
 
-    ActionType() {
-        this.mIsFree = true;
-    }
+    ActionType() { }
 
     ActionType(boolean isFree) {
         this.mIsFree = isFree;

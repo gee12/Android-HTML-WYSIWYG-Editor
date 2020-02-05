@@ -61,7 +61,7 @@ public class Dialogs {
 
         dialog.setOnShowListener(dialog12 -> {
             okButton.setEnabled(false);
-            Keyboard.showKeyboard(etSize);
+            Keyboard.showKeyboard(builder.getView());
         });
 
         etSize.addTextChangedListener(new TextWatcher() {

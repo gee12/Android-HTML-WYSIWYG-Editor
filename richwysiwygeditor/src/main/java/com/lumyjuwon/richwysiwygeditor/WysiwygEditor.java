@@ -112,14 +112,20 @@ public class WysiwygEditor extends LinearLayout {
     protected void initToolbar() {
         this.actionButtons = new HashMap<>();
         for (int i = 0; i < layoutButtons.getChildCount(); i++) {
-            ActionButton button = (ActionButton) layoutButtons.getChildAt(i);
-            initActionButton(button);
+            View view = layoutButtons.getChildAt(i);
+            if (view instanceof ActionButton) {
+                initActionButton((ActionButton) view);
+            }
         }
     }
 
     protected void initActionButton(ActionButton button) {
         int id = button.getId();
-        if (id == R.id.button_text_size)
+        if (id == R.id.button_undo)
+            initActionButton(button, ActionType.UNDO, false, false);
+        else if (id == R.id.button_redo)
+            initActionButton(button, ActionType.REDO, false, false);
+        else if (id == R.id.button_text_size)
             initActionButton(button, ActionType.TEXT_SIZE, false, true);
         else if (id == R.id.button_text_bold)
             initActionButton(button, ActionType.BOLD, true, false);
@@ -240,6 +246,8 @@ public class WysiwygEditor extends LinearLayout {
 //        clearPopupButton();
 //        webView.clearAndFocusEditor();
         switch (button.getType()) {
+            case UNDO: webView.undo(); break;
+            case REDO: webView.redo(); break;
             case TEXT_SIZE: showTextSizePopupWindow(button); break;
             case BOLD: webView.setBold(); break;
             case ITALIC: webView.setItalic(); break;
