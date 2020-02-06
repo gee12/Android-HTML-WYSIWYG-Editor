@@ -39,7 +39,8 @@ public class Dialogs {
     }
 
     /**
-     *
+     * Диалог ввода размера текста.
+     * Значение должно быть в диапазоне 1-7.
      * @param context
      * @param handler
      */
@@ -56,23 +57,26 @@ public class Dialogs {
         }).setNegativeButton(R.string.answer_cancel, null);
 
         final AlertDialog dialog = builder.create();
-        dialog.show();
-        final Button okButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
         dialog.setOnShowListener(dialog12 -> {
+            // получаем okButton уже после вызова show()
+            final Button okButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
             okButton.setEnabled(false);
-            Keyboard.showKeyboard(builder.getView());
+//                Keyboard.showKeyboard(etSize);
+        Keyboard.showKeyboard(builder.getView());
         });
 
+        dialog.show();
+
+        // получаем okButton тут отдельно после вызова show()
+        final Button okButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
         etSize.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
             @Override
             public void afterTextChanged(Editable s) {
                 if (TextUtils.isEmpty(s)) {
@@ -83,6 +87,7 @@ public class Dialogs {
                 }
             }
         });
+
     }
 
     /**
