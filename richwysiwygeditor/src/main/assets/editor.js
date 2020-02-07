@@ -29,10 +29,15 @@ RE.currentSelection = {
 //RE.editor = document.documentElement;
 RE.editor = document.body;
 
-document.addEventListener("selectionchange", function() { RE.backuprange(); });
-
-// Initializations
-RE.callback = function() {
+//
+//RE.pageLoaded = function() {
+//    Android.pageLoaded(RE.getHtml());
+//}
+//
+RE.textChange = function() {
+    Android.textChange(/*RE.getText(), */RE.getHtml());
+}
+/*RE.callback = function() {
     var re_callback = "re-callback://" + encodeURI(RE.getHtml());
     // window.location.href = "re-callback://" + encodeURI(RE.getHtml());
 
@@ -40,12 +45,10 @@ RE.callback = function() {
 
     var parentNode = window.getSelection().getRangeAt(0).startContainer.parentNode;
     if (window.getComputedStyle(parentNode, "background-color")) {
-//        items.push('background_color_'
         items.push('background_color:'
             + window.getComputedStyle(parentNode,"background-color").getPropertyValue('background-color'));
     }
     if (window.getComputedStyle(parentNode, "color")) {
-//         items.push('font_color_'
          items.push('text_color:'
             + window.getComputedStyle(parentNode, "color").getPropertyValue('color'));
     }
@@ -94,9 +97,6 @@ RE.callback = function() {
     if (document.queryCommandState('justifyRight')) {
         items.push('text_align:right');
     }
-//    if (document.queryCommandState('insertHorizontalRule')) {
-//        items.push('horizontalRule');
-//    }
     if (document.queryCommandState('createLink')) {
         items.push('insert_link');
     }
@@ -107,20 +107,96 @@ RE.callback = function() {
 
     window.location.href = re_callback + "re-state://" + encodeURI(items.join(';'));
 
+}*/
+
+
+// send state of selected text when user click or keyup
+//RE.enabledEditingItems = function(e) {
+RE.stateChange = function() {
+    var items = [];
+
+    var parentNode = window.getSelection().getRangeAt(0).startContainer.parentNode;
+    if (window.getComputedStyle(parentNode, "background-color")) {
+        items.push(encodeParam('background_color',
+            window.getComputedStyle(parentNode, "background-color").getPropertyValue('background-color')));
+     }
+    if (window.getComputedStyle(parentNode, "color")) {
+         items.push('text_color',
+            window.getComputedStyle(parentNode, "color").getPropertyValue('color')));
+     }
+    if (document.queryCommandState('fontSize')) {
+        items.push('text_size');
+    }
+    if (document.queryCommandState('bold')) {
+        items.push('bold');
+    }
+    if (document.queryCommandState('italic')) {
+        items.push('italic');
+    }
+    if (document.queryCommandState('subscript')) {
+        items.push('subscript');
+    }
+    if (document.queryCommandState('superscript')) {
+        items.push('superscript');
+    }
+    if (document.queryCommandState('strikeThrough')) {
+        items.push('strikeThrough');
+    }
+    if (document.queryCommandState('underline')) {
+        items.push('underline');
+    }
+    if (document.queryCommandState('insertOrderedList')) {
+        items.push('ordered_list');
+    } else if (document.queryCommandState('insertUnorderedList')) {
+        items.push('unordered_list');
+    }
+//    if (document.queryCommandState('indent')) {
+//        items.push('indent');
+//    }
+//    if (document.queryCommandState('outdent')) {
+//        items.push('outdent');
+//    }
+    if (document.queryCommandState('justifyCenter')) {
+        items.push(encodeParam('text_align', 'center'));
+    } else if (document.queryCommandState('justifyFull')) {
+        items.push(encodeParam('text_align', 'full'));
+    } else if (document.queryCommandState('justifyLeft')) {
+        items.push(encodeParam('text_align', 'left'));
+    } else if (document.queryCommandState('justifyRight')) {
+        items.push(encodeParam('text_align', 'right'));
+    }
+    // ?
+    if (document.queryCommandState('createLink')) {
+        items.push('insert_link');
+    }
+    var formatBlock = document.queryCommandValue('formatBlock');
+    if (formatBlock.length > 0) {
+        items.push(formatBlock);
+    }
+
+//    window.location.href = "re-state://" + encodeURI(items.join(';'));
+    const formatsAsQuery = items.join('&');
+    Android.stateChange(formatsAsQuery, RE.getText());
 }
 
-//RE.setHtml = function(contents) {
-//    RE.editor.innerHTML = decodeURIComponent(contents.replace(/\+/g, '%20'));
-//}
+function encodeParam(attr) {
+    return encodeURIComponent(attr);
+}
+
+function encodeParam(attr, value) {
+    return encodeURIComponent(attr) + '=' + encodeURIComponent(value);
+}
+
+RE.setHtml = function(contents) {
+    RE.editor.innerHTML = decodeURIComponent(contents.replace(/\+/g, '%20'));
+}
 
 RE.getHtml = function() {
     return RE.editor.innerHTML;
-//    return RE.editor.outerHTML;
 }
 
 RE.getText = function() {
     return RE.editor.innerText;
-//    return RE.editor.outerText;
 }
 
 RE.setBaseTextColor = function(color) {
@@ -217,14 +293,14 @@ RE.setNumbers = function() {
 }
 
 RE.setTextColor = function(color) {
-    RE.restorerange();
+    RE.restoreRange();
     document.execCommand("styleWithCSS", null, true);
     document.execCommand('foreColor', false, color);
     document.execCommand("styleWithCSS", null, false);
 }
 
 RE.setTextBackgroundColor = function(color) {
-    RE.restorerange();
+    RE.restoreRange();
     document.execCommand("styleWithCSS", null, true);
     document.execCommand('hiliteColor', false, color);
     document.execCommand("styleWithCSS", null, false);
@@ -263,12 +339,14 @@ RE.setBlockquote = function() {
 }
 
 RE.setCode = function() {
-    document.execCommand('formatBlock', false, '<code>');
+    document.execCommand('formatBlock', false, '<pre>');
+}
+
+RE.removeFormat = function() {
+    document.execCommand('removeFormat', false, null);
 }
 
 RE.insertLine = function() {
-//    var html = '<hr>';
-//    RE.insertHTML(html);
     document.execCommand('insertHorizontalRule', false, null);
 }
 
@@ -284,27 +362,31 @@ RE.insertYoutubeVideo = function(url) {
 }
 
 RE.insertHTML = function(html) {
-    RE.restorerange();
+    RE.restoreRange();
     document.execCommand('insertHTML', false, html);
 }
 
-RE.insertLink = function(url, title) {
-    RE.restorerange();
+// create new link (with url and text) or converts exist text to a link
+RE.insertLink = function(url, text) {
+    RE.restoreRange();
     var sel = document.getSelection();
     if (sel.toString().length == 0) {
-        document.execCommand("insertHTML",false,"<a href='"+url+"'>"+title+"</a>");
-    } else if (sel.rangeCount) {
+        document.execCommand("insertHTML",false,"<a href='"+url+"'>"+text+"</a>");
+    } else if (sel.rangeCount > 0) {
        var el = document.createElement("a");
        el.setAttribute("href", url);
-       el.setAttribute("title", title);
-
+       if (text != null) {
+            el.setAttribute("title", text);
+       }
        var range = sel.getRangeAt(0).cloneRange();
        range.surroundContents(el);
        sel.removeAllRanges();
        sel.addRange(range);
-   }
-    RE.callback();
+    }
+//    RE.callback();
+    RE.textChange();
 }
+
 
 RE.createLink = function(url, title) {
     document.execCommand('createLink', false, url);
@@ -330,10 +412,10 @@ RE.setTodo = function(text) {
 }
 
 RE.prepareInsert = function() {
-    RE.backuprange();
+    RE.saveRange();
 }
 
-RE.backuprange = function(){
+RE.saveRange = function(){
     var selection = window.getSelection();
     if (selection.rangeCount > 0) {
       var range = selection.getRangeAt(0);
@@ -345,7 +427,7 @@ RE.backuprange = function(){
     }
 }
 
-RE.restorerange = function(){
+RE.restoreRange = function(){
     var selection = window.getSelection();
     selection.removeAllRanges();
     var range = document.createRange();
@@ -354,80 +436,11 @@ RE.restorerange = function(){
     selection.addRange(range);
 }
 
-RE.enabledEditingItems = function(e) {
-    var items = [];
-
-    var parentNode = window.getSelection().getRangeAt(0).startContainer.parentNode;
-    if (window.getComputedStyle(parentNode, "background-color")) {
-//        items.push('background_color_'
-        items.push('background_color:'
-            + window.getComputedStyle(parentNode, "background-color").getPropertyValue('background-color'));
-     }
-    if (window.getComputedStyle(parentNode, "color")) {
-//         items.push('font_color_'
-         items.push('text_color:'
-            + window.getComputedStyle(parentNode, "color").getPropertyValue('color'));
-     }
-    if (document.queryCommandState('fontSize')) {
-        items.push('text_size');
-    }
-    if (document.queryCommandState('bold')) {
-        items.push('bold');
-    }
-    if (document.queryCommandState('italic')) {
-        items.push('italic');
-    }
-    if (document.queryCommandState('subscript')) {
-        items.push('subscript');
-    }
-    if (document.queryCommandState('superscript')) {
-        items.push('superscript');
-    }
-    if (document.queryCommandState('strikeThrough')) {
-        items.push('strikeThrough');
-    }
-    if (document.queryCommandState('underline')) {
-        items.push('underline');
-    }
-    if (document.queryCommandState('insertOrderedList')) {
-        items.push('ordered_list');
-    }
-    if (document.queryCommandState('insertUnorderedList')) {
-        items.push('unordered_list');
-    }
-//    if (document.queryCommandState('indent')) {
-//        items.push('indent');
-//    }
-//    if (document.queryCommandState('outdent')) {
-//        items.push('outdent');
-//    }
-    if (document.queryCommandState('justifyCenter')) {
-        items.push('text_align:center');
-    }
-    if (document.queryCommandState('justifyFull')) {
-        items.push('text_align:full');
-    }
-    if (document.queryCommandState('justifyLeft')) {
-        items.push('text_align:left');
-    }
-    if (document.queryCommandState('justifyRight')) {
-        items.push('text_align:right');
-    }
-//    if (document.queryCommandState('insertHorizontalRule')) {
-//        items.push('horizontalRule');
-//    }
-    if (document.queryCommandState('createLink')) {
-        items.push('insert_link');
-    }
-    var formatBlock = document.queryCommandValue('formatBlock');
-    if (formatBlock.length > 0) {
-        items.push(formatBlock);
-    }
-
-    window.location.href = "re-state://" + encodeURI(items.join(';'));
+RE.focus = function() {
+    RE.editor.focus();
 }
 
-RE.focus = function() {
+RE.focusToEnd = function() {
     var range = document.createRange();
     range.selectNodeContents(RE.editor);
     range.collapse(false);
@@ -437,7 +450,7 @@ RE.focus = function() {
     RE.editor.focus();
 }
 
-RE.blurFocus = function() {
+RE.clearFocus = function() {
     RE.editor.blur();
 }
 
@@ -446,22 +459,36 @@ RE.clearAndFocusEditor = function() {
     range.selectNodeContents(RE.editor);
     range.collapse(false);
     var selection = window.getSelection();
-    if(selection.toString().length == 0){
+    if (selection.toString().length == 0) {
         RE.editor.blur();
         RE.editor.focus();
-     }
+    }
 }
 
-RE.removeFormat = function() {
-    document.execCommand('removeFormat', false, null);
-}
+// event listeners
+//window.addEventListener("load",
+//    function load(event) {
+//        window.removeEventListener("load", load, false); //remove listener, no longer needed
+//        RE.pageLoaded();
+//    },false);
 
-// Event Listeners
-RE.editor.addEventListener("input", RE.callback);
+document.addEventListener("selectionchange", function() { RE.saveRange(); });
+//document.addEventListener("selectionchange", function() {
+//    RE.saveRange();
+//    RE.selectionChange();
+//});
+
+//RE.editor.addEventListener("input", RE.callback);
+RE.editor.addEventListener("input", RE.textChange());
 RE.editor.addEventListener("keyup", function(e) {
     var KEY_LEFT = 37, KEY_RIGHT = 39;
     if (e.which == KEY_LEFT || e.which == KEY_RIGHT) {
         RE.enabledEditingItems(e);
     }
 });
-RE.editor.addEventListener("click", RE.enabledEditingItems);
+//RE.editor.addEventListener("click", RE.enabledEditingItems);
+RE.editor.addEventListener("click", RE.statechange);
+
+
+
+// Java interface methods

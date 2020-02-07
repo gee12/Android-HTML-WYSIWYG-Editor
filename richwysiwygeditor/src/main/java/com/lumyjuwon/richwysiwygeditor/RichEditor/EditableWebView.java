@@ -10,8 +10,6 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
-import android.webkit.JavascriptInterface;
-import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -22,15 +20,8 @@ import com.gee12.htmlwysiwygeditor.ActionType;
 import com.gee12.htmlwysiwygeditor.ColorUtils;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.Youtube;
 
-import org.apache.commons.text.StringEscapeUtils;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Основная масса этого кода принадлежит Wasabeef.
@@ -57,9 +48,9 @@ public class EditableWebView extends WebView {
         void onTextChange(String text);
     }
 
-    public interface IDecorationStateListener {
+    public interface ITextStateListener {
 
-        void onStateChangeListener(String text, Map<ActionType, String> types);
+        void onStateChange(String text, Map<ActionType, String> types);
     }
 
     public interface IPageLoadListener {
@@ -83,16 +74,16 @@ public class EditableWebView extends WebView {
 
     public static final int EXEC_TRY_DELAY_MSEC = 100;
     public static final String EDITOR_JS_FILE = "editor.js";
-    private static final String CALLBACK_SCHEME = "re-callback://";
-    private static final String STATE_SCHEME = "re-state://";
-    private static final String CALLBACK_STATE_SCHEME_PATTERN = "("+CALLBACK_SCHEME+".*)("+STATE_SCHEME+".*)";
+//    private static final String CALLBACK_SCHEME = "re-callback://";
+//    private static final String STATE_SCHEME = "re-state://";
+//    private static final String CALLBACK_STATE_SCHEME_PATTERN = "("+CALLBACK_SCHEME+".*)("+STATE_SCHEME+".*)";
 
     private boolean mIsPageLoaded = false;
     private boolean mIsEditMode = false;
     private String mHtml;
     // listeners
     private ITextChangeListener mTextChangeListener;
-    private IDecorationStateListener mDecorationStateListener;
+    private ITextStateListener mStateListener;
     private IPageLoadListener mPageListener;
     private ILinkLoadListener mUrlLoadListener;
     private IHtmlReceiveListener mReceiveHtmlListener;
@@ -116,8 +107,47 @@ public class EditableWebView extends WebView {
         setWebChromeClient(new WebChromeClient());
         setWebViewClient(new EditorWebViewClient());
         applyAttributes(context, attrs);
+        addJavascriptInterface(new JavascriptInterface(), "Android");
     }
 
+    /**
+     * Class with methods to be called from javascript page.
+     */
+    public class JavascriptInterface {
+
+        JavascriptInterface() { }
+
+        @android.webkit.JavascriptInterface
+        public void textChange(/*String text, */String html) {
+            EditableWebView.this.textChange(/*text, */html);
+        }
+
+        @android.webkit.JavascriptInterface
+        public void stateChange(String formatsAsQuery, String selectedText) {
+            EditableWebView.this.stateCheck(formatsAsQuery);
+        }
+
+        // обработчик события загрузки страницы средствами Javascript
+        // (специально для получения исходного html-кода на старте)
+        // ---Теоретически вызывается раньше аналогичного обработчика средствами WebView,
+        //
+        @android.webkit.JavascriptInterface
+//        public void pageLoaded(String html) {
+        public void receiveHtml(String html) {
+            EditableWebView.this.onReceiveEditableHtml(html);
+        }
+    }
+
+    private void textChange(/*String text, */String html) {
+//        this.text = text;
+        this.mHtml = html;
+        if (mTextChangeListener != null) {
+            mTextChangeListener.onTextChange(html);
+        }
+    }
+
+    // обработчик события загрузки страницы средствами WebView
+    // FIXME: можно заменить на JS pageLoaded(), если он заработает
     public void onPageLoaded() {
         // load main javascript code
         loadEditorScript();
@@ -137,7 +167,7 @@ public class EditableWebView extends WebView {
             if (mUrlLoadListener != null)
                 return mUrlLoadListener.onLinkLoad(url);
         }
-        String decode;
+        /*String decode;
         String re_callback = "";
         String re_state = "";
         boolean isRegexFound;
@@ -158,7 +188,7 @@ public class EditableWebView extends WebView {
         } catch (UnsupportedEncodingException e) {
             // No handling
             return false;
-        }
+        }*/
 
         // User clicks the link that is youtube then post video id.
         if (!Youtube.getVideoId(url).equals("error")) {
@@ -169,7 +199,7 @@ public class EditableWebView extends WebView {
                 }
             }
             return true;
-        } else if (isRegexFound) {
+        } /*else if (isRegexFound) {
             callback(re_callback);
             stateCheck(re_state);
             return true;
@@ -179,18 +209,18 @@ public class EditableWebView extends WebView {
         } else if (TextUtils.indexOf(url, CALLBACK_SCHEME) == 0) {
             callback(decode);
             return true;
-        } else if (mUrlLoadListener != null)
+        } */else if (mUrlLoadListener != null)
             return mUrlLoadListener.onLinkLoad(url);
         return null;
     }
 
-    private void callback(String text) {
+/*    private void callback(String text) {
 //        this.mHtml = text.replaceFirst(CALLBACK_SCHEME, "");
         this.mHtml = text.replaceFirst(CALLBACK_SCHEME, "").replaceFirst(STATE_SCHEME+".*$", "");
         if (mTextChangeListener != null) {
             mTextChangeListener.onTextChange(mHtml);
         }
-    }
+    }*/
 
     protected void exec(final String trigger) {
         if (mIsPageLoaded) {
@@ -230,7 +260,15 @@ public class EditableWebView extends WebView {
      * Как вернуть html с помощью Javascript без этих наворотов ?
      *
      */
-    @JavascriptInterface
+    public void makeEditableHtmlRequest() {
+        // ?
+        if (!TextUtils.isEmpty(mHtml)) {
+            onReceiveEditableHtml(mHtml);
+        }
+        load("javascript: Android.receiveHtml(document.body.innerHTML);");
+    }
+
+/*    @JavascriptInterface
     public void makeEditableHtmlRequest() {
         //
         if (!TextUtils.isEmpty(mHtml)) {
@@ -252,25 +290,25 @@ public class EditableWebView extends WebView {
                     onReceiveEditableHtml(html);
                 }
             });
-        } else /*if (Build.VERSION.SDK_INT <= 17)*/ {
+        } else *//*if (Build.VERSION.SDK_INT <= 17)*//* {
             //
             addJavascriptInterface(new JavascriptHandler(), "AndroidFunction");
             load("javascript: AndroidFunction.onPageLoaded(document.body.innerHTML);");
         }
-    }
+    }*/
 
     /**
      * Запрос на получение html-текста редактируемого фрагмента страницы.
      * (2 способ)
      */
-    public class JavascriptHandler {
+/*    public class JavascriptHandler {
         JavascriptHandler() { }
 
         @JavascriptInterface
         public void onPageLoaded(String html) {
             onReceiveEditableHtml(html);
         }
-    }
+    }*/
 
     private void onReceiveEditableHtml(String html) {
         EditableWebView.this.mHtml = html;
@@ -279,29 +317,28 @@ public class EditableWebView extends WebView {
     }
 
     /**
-     *
-     * @param text
+     *  1) разделить строку по амперсантам
+     *  2) делать цикл по полученным подстрокам
+     *  3) разделить подстроку по "="
+     *  4) если есть второй элемент - это значение (цвет, например)
+     * @param formatsAsQuery
      */
-    private void stateCheck(String text) {
-        String state = text.replaceFirst(STATE_SCHEME, "").toUpperCase(Locale.ENGLISH);
-        String[] typesStrings = state.split(";");
+    private void stateCheck(String formatsAsQuery) {
+//        String state = text.replaceFirst(STATE_SCHEME, "").toUpperCase(Locale.ENGLISH);
+//        String[] typesStrings = state.split("&");
+        String[] typesStrings = formatsAsQuery.split("&");
         Map<ActionType, String> types = new HashMap<>();
 
-        // TODO:
-        //  1) разделить строку по запятым
-        //  2) делать цикл по полученным полстрокам
-        //  3) разделить подстроку по ":"
-        //  4) если есть второй элемент - это значение (цвет, например)
-
         for (String typeString : typesStrings) {
-            String[] typeParts = typeString.split(":");
+            String[] typeParts = typeString.split("=");
             if (typeParts.length > 1) {
                 ActionType type = ActionType.parse(typeParts[0]);
                 String value = typeParts[1];
                 types.put(type, value);
             } else {
                 ActionType type = ActionType.parse(typeString);
-                types.put(type, "");
+//                types.put(type, "");
+                types.put(type, null);
             }
         }
 
@@ -325,8 +362,9 @@ public class EditableWebView extends WebView {
 //            }
 //        }
 
-        if (mDecorationStateListener != null) {
-            mDecorationStateListener.onStateChangeListener(state, types);
+        if (mStateListener != null) {
+//            mStateListener.onStateChange(state, types);
+            mStateListener.onStateChange(formatsAsQuery, types);
         }
     }
 
@@ -615,7 +653,7 @@ public class EditableWebView extends WebView {
     }
 
     public void clearFocusEditor() {
-        exec("javascript:RE.blurFocus();");
+        exec("javascript:RE.clearFocus();");
     }
 
     public void clearAndFocusEditor() {
@@ -634,8 +672,8 @@ public class EditableWebView extends WebView {
         this.mTextChangeListener = listener;
     }
 
-    public void setOnDecorationChangeListener(IDecorationStateListener listener) {
-        this.mDecorationStateListener = listener;
+    public void setOnStateChangeListener(ITextStateListener listener) {
+        this.mStateListener = listener;
     }
 
     public void setOnPageLoadListener(IPageLoadListener listener) {
