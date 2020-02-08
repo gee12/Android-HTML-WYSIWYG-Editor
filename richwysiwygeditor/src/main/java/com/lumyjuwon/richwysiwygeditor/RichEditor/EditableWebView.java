@@ -6,7 +6,6 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -124,7 +123,7 @@ public class EditableWebView extends WebView {
 
         @android.webkit.JavascriptInterface
         public void stateChange(String formatsAsQuery, String selectedText) {
-            EditableWebView.this.stateCheck(formatsAsQuery);
+            EditableWebView.this.stateChange(formatsAsQuery);
         }
 
         // обработчик события загрузки страницы средствами Javascript
@@ -152,9 +151,10 @@ public class EditableWebView extends WebView {
         // load main javascript code
         loadEditorScript();
         // send first javascript request to receive page html
-//        makeEditableHtmlRequest();
-
-        EditableWebView.this.mIsPageLoaded = true;
+        if (!mIsPageLoaded) {
+            makeEditableHtmlRequest();
+        }
+        mIsPageLoaded = true;
 
         if (mPageListener != null) {
             mPageListener.onPageLoaded();
@@ -201,10 +201,10 @@ public class EditableWebView extends WebView {
             return true;
         } /*else if (isRegexFound) {
             callback(re_callback);
-            stateCheck(re_state);
+            stateChange(re_state);
             return true;
         } else if (TextUtils.indexOf(url, STATE_SCHEME) == 0) {
-            stateCheck(decode);
+            stateChange(decode);
             return true;
         } else if (TextUtils.indexOf(url, CALLBACK_SCHEME) == 0) {
             callback(decode);
@@ -261,11 +261,11 @@ public class EditableWebView extends WebView {
      *
      */
     public void makeEditableHtmlRequest() {
-        // ?
-        if (!TextUtils.isEmpty(mHtml)) {
-            onReceiveEditableHtml(mHtml);
-        }
-        load("javascript: Android.receiveHtml(document.body.innerHTML);");
+//        if (TextUtils.isEmpty(mHtml)) {
+            load("javascript: Android.receiveHtml(document.body.innerHTML);");
+//        } else {
+//            onReceiveEditableHtml(mHtml);
+//        }
     }
 
 /*    @JavascriptInterface
@@ -323,7 +323,7 @@ public class EditableWebView extends WebView {
      *  4) если есть второй элемент - это значение (цвет, например)
      * @param formatsAsQuery
      */
-    private void stateCheck(String formatsAsQuery) {
+    private void stateChange(String formatsAsQuery) {
 //        String state = text.replaceFirst(STATE_SCHEME, "").toUpperCase(Locale.ENGLISH);
 //        String[] typesStrings = state.split("&");
         String[] typesStrings = formatsAsQuery.split("&");
@@ -337,8 +337,7 @@ public class EditableWebView extends WebView {
                 types.put(type, value);
             } else {
                 ActionType type = ActionType.parse(typeString);
-//                types.put(type, "");
-                types.put(type, null);
+                types.put(type, "");
             }
         }
 

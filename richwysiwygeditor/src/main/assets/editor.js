@@ -112,7 +112,7 @@ RE.textChange = function() {
 
 // send state of selected text when user click or keyup
 //RE.enabledEditingItems = function(e) {
-RE.stateChange = function() {
+RE.stateChange = function(e) {
     var items = [];
 
     var parentNode = window.getSelection().getRangeAt(0).startContainer.parentNode;
@@ -121,7 +121,7 @@ RE.stateChange = function() {
             window.getComputedStyle(parentNode, "background-color").getPropertyValue('background-color')));
      }
     if (window.getComputedStyle(parentNode, "color")) {
-         items.push('text_color',
+         items.push(encodeParam('text_color',
             window.getComputedStyle(parentNode, "color").getPropertyValue('color')));
      }
     if (document.queryCommandState('fontSize')) {
@@ -472,18 +472,19 @@ RE.clearAndFocusEditor = function() {
 //        RE.pageLoaded();
 //    },false);
 
-document.addEventListener("selectionchange", function() { RE.saveRange(); });
+document.addEventListener("selectionchange", RE.saveRange);
 //document.addEventListener("selectionchange", function() {
 //    RE.saveRange();
 //    RE.selectionChange();
 //});
 
 //RE.editor.addEventListener("input", RE.callback);
-RE.editor.addEventListener("input", RE.textChange());
+RE.editor.addEventListener("input", RE.textChange);
 RE.editor.addEventListener("keyup", function(e) {
     var KEY_LEFT = 37, KEY_RIGHT = 39;
     if (e.which == KEY_LEFT || e.which == KEY_RIGHT) {
-        RE.enabledEditingItems(e);
+//        RE.enabledEditingItems(e);
+        RE.statechange(e);
     }
 });
 //RE.editor.addEventListener("click", RE.enabledEditingItems);
