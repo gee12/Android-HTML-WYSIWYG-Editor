@@ -84,7 +84,12 @@ public class WysiwygEditor extends LinearLayout {
         // webView
         webView = findViewById(R.id.web_view);
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null); // sdk 19 ChromeWebView ?
-        webView.setOnStateChangeListener((text, types) -> updateButtonsState(types));
+        webView.setOnStateChangeListener((text, types) ->  webView.post(new Runnable() {
+            @Override
+            public void run() {
+                updateButtonsState(types);
+            }
+        }));
 
         webView.setOnPageLoadListener(new EditableWebView.IPageLoadListener() {
             @Override

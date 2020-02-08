@@ -26,92 +26,19 @@ RE.currentSelection = {
     "endOffset": 0};
 
 //RE.editor = document.getElementById('editor');
-//RE.editor = document.documentElement;
 RE.editor = document.body;
 
 //
 //RE.pageLoaded = function() {
 //    Android.pageLoaded(RE.getHtml());
 //}
-//
+
 RE.textChange = function() {
     Android.textChange(/*RE.getText(), */RE.getHtml());
 }
-/*RE.callback = function() {
-    var re_callback = "re-callback://" + encodeURI(RE.getHtml());
-    // window.location.href = "re-callback://" + encodeURI(RE.getHtml());
-
-    var items = [];
-
-    var parentNode = window.getSelection().getRangeAt(0).startContainer.parentNode;
-    if (window.getComputedStyle(parentNode, "background-color")) {
-        items.push('background_color:'
-            + window.getComputedStyle(parentNode,"background-color").getPropertyValue('background-color'));
-    }
-    if (window.getComputedStyle(parentNode, "color")) {
-         items.push('text_color:'
-            + window.getComputedStyle(parentNode, "color").getPropertyValue('color'));
-    }
-    if (document.queryCommandState('fontSize')) {
-        items.push('text_size');
-    }
-    if (document.queryCommandState('bold')) {
-        items.push('bold');
-    }
-    if (document.queryCommandState('italic')) {
-        items.push('italic');
-    }
-    if (document.queryCommandState('subscript')) {
-        items.push('subscript');
-    }
-    if (document.queryCommandState('superscript')) {
-        items.push('superscript');
-    }
-    if (document.queryCommandState('strikeThrough')) {
-        items.push('strikeThrough');
-    }
-    if (document.queryCommandState('underline')) {
-        items.push('underline');
-    }
-    if (document.queryCommandState('insertOrderedList')) {
-        items.push('ordered_list');
-    }
-    if (document.queryCommandState('insertUnorderedList')) {
-        items.push('unordered_list');
-    }
-//    if (document.queryCommandState('indent')) {
-//        items.push('indent');
-//    }
-//    if (document.queryCommandState('outdent')) {
-//        items.push('outdent');
-//    }
-    if (document.queryCommandState('justifyCenter')) {
-        items.push('text_align:center');
-    }
-    if (document.queryCommandState('justifyFull')) {
-        items.push('text_align:full');
-    }
-    if (document.queryCommandState('justifyLeft')) {
-        items.push('text_align:left');
-    }
-    if (document.queryCommandState('justifyRight')) {
-        items.push('text_align:right');
-    }
-    if (document.queryCommandState('createLink')) {
-        items.push('insert_link');
-    }
-    var formatBlock = document.queryCommandValue('formatBlock');
-    if (formatBlock.length > 0) {
-        items.push(formatBlock);
-    }
-
-    window.location.href = re_callback + "re-state://" + encodeURI(items.join(';'));
-
-}*/
 
 
 // send state of selected text when user click or keyup
-//RE.enabledEditingItems = function(e) {
 RE.stateChange = function(e) {
     var items = [];
 
@@ -174,17 +101,18 @@ RE.stateChange = function(e) {
         items.push(formatBlock);
     }
 
-//    window.location.href = "re-state://" + encodeURI(items.join(';'));
-    const formatsAsQuery = items.join('&');
+    var formatsAsQuery = items.join('&');
     Android.stateChange(formatsAsQuery, RE.getText());
 }
 
 function encodeParam(attr) {
-    return encodeURIComponent(attr);
+//    return encodeURIComponent(attr.toUpperCase());
+    return (attr);
 }
 
 function encodeParam(attr, value) {
-    return encodeURIComponent(attr) + '=' + encodeURIComponent(value);
+//    return encodeURIComponent(attr.toUpperCase()) + '=' + encodeURIComponent(value.toUpperCase());
+    return (attr) + '=' + (value);
 }
 
 RE.setHtml = function(contents) {
@@ -383,7 +311,6 @@ RE.insertLink = function(url, text) {
        sel.removeAllRanges();
        sel.addRange(range);
     }
-//    RE.callback();
     RE.textChange();
 }
 
@@ -478,18 +405,11 @@ document.addEventListener("selectionchange", RE.saveRange);
 //    RE.selectionChange();
 //});
 
-//RE.editor.addEventListener("input", RE.callback);
 RE.editor.addEventListener("input", RE.textChange);
 RE.editor.addEventListener("keyup", function(e) {
     var KEY_LEFT = 37, KEY_RIGHT = 39;
     if (e.which == KEY_LEFT || e.which == KEY_RIGHT) {
-//        RE.enabledEditingItems(e);
         RE.statechange(e);
     }
 });
-//RE.editor.addEventListener("click", RE.enabledEditingItems);
-RE.editor.addEventListener("click", RE.statechange);
-
-
-
-// Java interface methods
+RE.editor.addEventListener("click", RE.stateChange);

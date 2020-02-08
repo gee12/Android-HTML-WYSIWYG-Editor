@@ -1,5 +1,7 @@
 package com.gee12.htmlwysiwygeditor;
 
+import android.text.TextUtils;
+
 import androidx.annotation.IdRes;
 
 import com.lumyjuwon.richwysiwygeditor.R;
@@ -72,8 +74,11 @@ public enum ActionType {
      * @return
      */
     public static ActionType parse(String typeString) {
+        if (TextUtils.isEmpty(typeString))
+            return ActionType.NONE;
+        String value = typeString.toUpperCase();
         for (ActionType type : ActionType.values()) {
-            if (typeString.equals(type.name()))
+            if (value.equals(type.name()))
                 return type;
         }
         return ActionType.NONE;

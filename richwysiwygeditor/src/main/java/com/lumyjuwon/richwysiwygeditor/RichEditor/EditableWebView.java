@@ -73,9 +73,6 @@ public class EditableWebView extends WebView {
 
     public static final int EXEC_TRY_DELAY_MSEC = 100;
     public static final String EDITOR_JS_FILE = "editor.js";
-//    private static final String CALLBACK_SCHEME = "re-callback://";
-//    private static final String STATE_SCHEME = "re-state://";
-//    private static final String CALLBACK_STATE_SCHEME_PATTERN = "("+CALLBACK_SCHEME+".*)("+STATE_SCHEME+".*)";
 
     private boolean mIsPageLoaded = false;
     private boolean mIsEditMode = false;
@@ -131,7 +128,6 @@ public class EditableWebView extends WebView {
         // ---Теоретически вызывается раньше аналогичного обработчика средствами WebView,
         //
         @android.webkit.JavascriptInterface
-//        public void pageLoaded(String html) {
         public void receiveHtml(String html) {
             EditableWebView.this.onReceiveEditableHtml(html);
         }
@@ -162,33 +158,11 @@ public class EditableWebView extends WebView {
     }
 
     public Boolean onUrlLoading(String url) {
-        // если не используется режим редактирования, то нет смысла обрабатывать события страницы
+        // если не используется режим редактирования, то не обрабатываем события редактирования страницы
         if (!mIsEditMode) {
             if (mUrlLoadListener != null)
                 return mUrlLoadListener.onLinkLoad(url);
         }
-        /*String decode;
-        String re_callback = "";
-        String re_state = "";
-        boolean isRegexFound;
-        try {
-            decode = URLDecoder.decode(url, "UTF-8");
-            Pattern p;
-            Matcher m;
-            p = Pattern.compile(CALLBACK_STATE_SCHEME_PATTERN);
-            m = p.matcher(decode);
-            isRegexFound = m.find();
-
-            // FIXME: почему не находит 2 совпадения ?
-
-            if (isRegexFound) {
-                re_callback = m.group(1);
-                re_state = m.group(2);
-            }
-        } catch (UnsupportedEncodingException e) {
-            // No handling
-            return false;
-        }*/
 
         // User clicks the link that is youtube then post video id.
         if (!Youtube.getVideoId(url).equals("error")) {
@@ -199,28 +173,12 @@ public class EditableWebView extends WebView {
                 }
             }
             return true;
-        } /*else if (isRegexFound) {
-            callback(re_callback);
-            stateChange(re_state);
-            return true;
-        } else if (TextUtils.indexOf(url, STATE_SCHEME) == 0) {
-            stateChange(decode);
-            return true;
-        } else if (TextUtils.indexOf(url, CALLBACK_SCHEME) == 0) {
-            callback(decode);
-            return true;
-        } */else if (mUrlLoadListener != null)
+        } else if (mUrlLoadListener != null)
+            // ?
             return mUrlLoadListener.onLinkLoad(url);
         return null;
     }
 
-/*    private void callback(String text) {
-//        this.mHtml = text.replaceFirst(CALLBACK_SCHEME, "");
-        this.mHtml = text.replaceFirst(CALLBACK_SCHEME, "").replaceFirst(STATE_SCHEME+".*$", "");
-        if (mTextChangeListener != null) {
-            mTextChangeListener.onTextChange(mHtml);
-        }
-    }*/
 
     protected void exec(final String trigger) {
         if (mIsPageLoaded) {
@@ -252,20 +210,9 @@ public class EditableWebView extends WebView {
 
     /**
      * Запрос на получение html-текста редактируемого фрагмента страницы.
-     *
-     * FIXME:
-     * Результат в onReceiveValue() возвращается:
-     * 1) в формате unescape
-     * 2) обрамленный ненужными кавычками
-     * Как вернуть html с помощью Javascript без этих наворотов ?
-     *
      */
     public void makeEditableHtmlRequest() {
-//        if (TextUtils.isEmpty(mHtml)) {
-            load("javascript: Android.receiveHtml(document.body.innerHTML);");
-//        } else {
-//            onReceiveEditableHtml(mHtml);
-//        }
+            load("javascript: Android.receiveHtml(RE.editor.innerHTML);");
     }
 
 /*    @JavascriptInterface
@@ -297,19 +244,6 @@ public class EditableWebView extends WebView {
         }
     }*/
 
-    /**
-     * Запрос на получение html-текста редактируемого фрагмента страницы.
-     * (2 способ)
-     */
-/*    public class JavascriptHandler {
-        JavascriptHandler() { }
-
-        @JavascriptInterface
-        public void onPageLoaded(String html) {
-            onReceiveEditableHtml(html);
-        }
-    }*/
-
     private void onReceiveEditableHtml(String html) {
         EditableWebView.this.mHtml = html;
         if (mReceiveHtmlListener != null)
@@ -324,8 +258,6 @@ public class EditableWebView extends WebView {
      * @param formatsAsQuery
      */
     private void stateChange(String formatsAsQuery) {
-//        String state = text.replaceFirst(STATE_SCHEME, "").toUpperCase(Locale.ENGLISH);
-//        String[] typesStrings = state.split("&");
         String[] typesStrings = formatsAsQuery.split("&");
         Map<ActionType, String> types = new HashMap<>();
 
@@ -333,7 +265,7 @@ public class EditableWebView extends WebView {
             String[] typeParts = typeString.split("=");
             if (typeParts.length > 1) {
                 ActionType type = ActionType.parse(typeParts[0]);
-                String value = typeParts[1];
+                String value = (typeParts[1] != null) ? typeParts[1].toUpperCase() : "";
                 types.put(type, value);
             } else {
                 ActionType type = ActionType.parse(typeString);
@@ -341,28 +273,7 @@ public class EditableWebView extends WebView {
             }
         }
 
-//        for (ActionType type : ActionType.values()) {
-//            if (type.getR() == -1) {
-//                if (TextUtils.indexOf(state, type.name()) != -1) {
-//                    types.put(type, null);
-//                }
-//            } else {
-//                if (type.name().contains("FONT_COLOR")) {
-//                    String color = "FONT_COLOR_RGB(" + type.getR() + ", " + type.getG() + ", " + type.getB() + ")";
-//                    if (TextUtils.indexOf(state, color) != -1) {
-//                        types.put(type, null);
-//                    }
-//                } else if (type.name().contains("BACKGROUND_COLOR")) {
-//                    String color = "BACKGROUND_COLOR_RGB(" + type.getR() + ", " + type.getG() + ", " + type.getB() + ")";
-//                    if (TextUtils.indexOf(state, color) != -1) {
-//                        types.put(type, null);
-//                    }
-//                }
-//            }
-//        }
-
         if (mStateListener != null) {
-//            mStateListener.onStateChange(state, types);
             mStateListener.onStateChange(formatsAsQuery, types);
         }
     }
@@ -406,22 +317,6 @@ public class EditableWebView extends WebView {
 
         ta.recycle();
     }
-
-//    public void setHtml(String contents) {
-//        if (contents == null) {
-//            contents = "";
-//        }
-//        try {
-//            exec("javascript:RE.setHtml('" + URLEncoder.encode(contents, "UTF-8") + "');");
-//        } catch (UnsupportedEncodingException e) {
-//            // No handling
-//        }
-//        mHtml = contents;
-//    }
-
-//    public String getHtml() {
-//        return mHtml;
-//    }
 
     public EditableWebView setEditorFontColor(int color) {
         String hex = ColorUtils.colorToHexString(color);
