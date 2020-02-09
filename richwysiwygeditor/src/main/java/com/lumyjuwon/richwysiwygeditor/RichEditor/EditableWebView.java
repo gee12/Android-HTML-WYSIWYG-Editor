@@ -71,6 +71,29 @@ public class EditableWebView extends WebView {
         void onReceiveEditableHtml(String htmlText);
     }
 
+    /**
+     * Class with methods to be called from javascript page.
+     */
+    public class JavascriptInterface {
+
+        JavascriptInterface() { }
+
+        @android.webkit.JavascriptInterface
+        public void textChange(/*String text, */String html) {
+            EditableWebView.this.onTextChanged(/*text, */html);
+        }
+
+        @android.webkit.JavascriptInterface
+        public void stateChange(String formatsAsQuery, String selectedText) {
+            EditableWebView.this.onStateChanged(formatsAsQuery);
+        }
+
+        @android.webkit.JavascriptInterface
+        public void receiveHtml(String html) {
+            EditableWebView.this.onReceiveEditableHtml(html);
+        }
+    }
+
     public static final int EXEC_TRY_DELAY_MSEC = 100;
     public static final String EDITOR_JS_FILE = "editor.js";
 
@@ -107,97 +130,19 @@ public class EditableWebView extends WebView {
     }
 
     /**
-     * Class with methods to be called from javascript page.
+     * Page load event handler (caused by WebView).
      */
-    public class JavascriptInterface {
-
-        JavascriptInterface() { }
-
-        @android.webkit.JavascriptInterface
-        public void textChange(/*String text, */String html) {
-            EditableWebView.this.textChange(/*text, */html);
-        }
-
-        @android.webkit.JavascriptInterface
-        public void stateChange(String formatsAsQuery, String selectedText) {
-            EditableWebView.this.stateChange(formatsAsQuery);
-        }
-
-        // обработчик события загрузки страницы средствами Javascript
-        // (специально для получения исходного html-кода на старте)
-        // ---Теоретически вызывается раньше аналогичного обработчика средствами WebView,
-        //
-        @android.webkit.JavascriptInterface
-        public void receiveHtml(String html) {
-            EditableWebView.this.onReceiveEditableHtml(html);
-        }
-    }
-
-    private void textChange(/*String text, */String html) {
-//        this.text = text;
-        this.mHtml = html;
-        if (mTextChangeListener != null) {
-            mTextChangeListener.onTextChange(html);
-        }
-    }
-
-    // обработчик события загрузки страницы средствами WebView
-    // FIXME: можно заменить на JS pageLoaded(), если он заработает
     public void onPageLoaded() {
         // load main javascript code
         loadEditorScript();
         // send first javascript request to receive page html
-        if (!mIsPageLoaded) {
+//        if (!mIsPageLoaded) {
             makeEditableHtmlRequest();
-        }
+//        }
         mIsPageLoaded = true;
 
         if (mPageListener != null) {
             mPageListener.onPageLoaded();
-        }
-    }
-
-    public Boolean onUrlLoading(String url) {
-        // если не используется режим редактирования, то не обрабатываем события редактирования страницы
-        if (!mIsEditMode) {
-            if (mUrlLoadListener != null)
-                return mUrlLoadListener.onLinkLoad(url);
-        }
-
-        // User clicks the link that is youtube then post video id.
-        if (!Youtube.getVideoId(url).equals("error")) {
-            String videoid = Youtube.getVideoId(url);
-            if (!videoid.equals("error")) {
-                if (mLoadYoutubeLinkListener != null) {
-                    mLoadYoutubeLinkListener.onYoutubeLinkLoad(videoid);
-                }
-            }
-            return true;
-        } else if (mUrlLoadListener != null)
-            // ?
-            return mUrlLoadListener.onLinkLoad(url);
-        return null;
-    }
-
-
-    protected void exec(final String trigger) {
-        if (mIsPageLoaded) {
-            load(trigger);
-        } else {
-            postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    exec(trigger);
-                }
-            }, EXEC_TRY_DELAY_MSEC);
-        }
-    }
-
-    private void load(String trigger) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            evaluateJavascript(trigger, null);
-        } else {
-            loadUrl(trigger);
         }
     }
 
@@ -213,6 +158,12 @@ public class EditableWebView extends WebView {
      */
     public void makeEditableHtmlRequest() {
             load("javascript: Android.receiveHtml(RE.editor.innerHTML);");
+    }
+
+    private void onReceiveEditableHtml(String html) {
+        EditableWebView.this.mHtml = html;
+        if (mReceiveHtmlListener != null)
+            mReceiveHtmlListener.onReceiveEditableHtml(html);
     }
 
 /*    @JavascriptInterface
@@ -244,10 +195,12 @@ public class EditableWebView extends WebView {
         }
     }*/
 
-    private void onReceiveEditableHtml(String html) {
-        EditableWebView.this.mHtml = html;
-        if (mReceiveHtmlListener != null)
-            mReceiveHtmlListener.onReceiveEditableHtml(html);
+    private void onTextChanged(/*String text, */String html) {
+//        this.text = text;
+        this.mHtml = html;
+        if (mTextChangeListener != null) {
+            mTextChangeListener.onTextChange(html);
+        }
     }
 
     /**
@@ -257,7 +210,7 @@ public class EditableWebView extends WebView {
      *  4) если есть второй элемент - это значение (цвет, например)
      * @param formatsAsQuery
      */
-    private void stateChange(String formatsAsQuery) {
+    private void onStateChanged(String formatsAsQuery) {
         String[] typesStrings = formatsAsQuery.split("&");
         Map<ActionType, String> types = new HashMap<>();
 
@@ -275,6 +228,57 @@ public class EditableWebView extends WebView {
 
         if (mStateListener != null) {
             mStateListener.onStateChange(formatsAsQuery, types);
+        }
+    }
+
+    public Boolean onUrlLoading(String url) {
+        // если не используется режим редактирования, то не обрабатываем события редактирования страницы
+        if (!mIsEditMode) {
+            if (mUrlLoadListener != null)
+                return mUrlLoadListener.onLinkLoad(url);
+        }
+
+        // User clicks the link that is youtube then post video id.
+        if (!Youtube.getVideoId(url).equals("error")) {
+            String videoid = Youtube.getVideoId(url);
+            if (!videoid.equals("error")) {
+                if (mLoadYoutubeLinkListener != null) {
+                    mLoadYoutubeLinkListener.onYoutubeLinkLoad(videoid);
+                }
+            }
+            return true;
+        } else if (mUrlLoadListener != null)
+            // ?
+            return mUrlLoadListener.onLinkLoad(url);
+        return null;
+    }
+
+    /**
+     *
+     * @param trigger
+     */
+    protected void exec(final String trigger) {
+        if (mIsPageLoaded) {
+            load(trigger);
+        } else {
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    exec(trigger);
+                }
+            }, EXEC_TRY_DELAY_MSEC);
+        }
+    }
+
+    /**
+     *
+     * @param trigger
+     */
+    private void load(String trigger) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            evaluateJavascript(trigger, null);
+        } else {
+            loadUrl(trigger);
         }
     }
 
