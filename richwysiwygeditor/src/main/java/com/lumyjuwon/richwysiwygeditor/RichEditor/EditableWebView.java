@@ -161,6 +161,11 @@ public class EditableWebView extends WebView {
     }
 
     private void onReceiveEditableHtml(String html) {
+        // Javascript always returned html-text with excess line break ('\n') in the end,
+        // remove it
+        if (html.length() >= 2) {
+            html = html.substring(0, html.length()-2);
+        }
         EditableWebView.this.mHtml = html;
         if (mReceiveHtmlListener != null)
             mReceiveHtmlListener.onReceiveEditableHtml(html);
