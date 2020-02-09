@@ -157,14 +157,14 @@ public class EditableWebView extends WebView {
      * Запрос на получение html-текста редактируемого фрагмента страницы.
      */
     public void makeEditableHtmlRequest() {
-            load("javascript: Android.receiveHtml(RE.editor.innerHTML);");
+            load("javascript: Android.receiveHtml(RE.getHtml());");
     }
 
     private void onReceiveEditableHtml(String html) {
         // Javascript always returned html-text with excess line break ('\n') in the end,
         // remove it
-        if (html.length() >= 2) {
-            html = html.substring(0, html.length()-2);
+        if (html.length() >= 1) {
+            html = html.substring(0, html.length()-1);
         }
         EditableWebView.this.mHtml = html;
         if (mReceiveHtmlListener != null)
