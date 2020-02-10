@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Youtube"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
         android:id="@+id/userInputDialog"
@@ -19,4 +19,5 @@
         android:layout_height="wrap_content"
         android:hint="Youtube URL"
         android:inputType="text" />
+
 </LinearLayout>
