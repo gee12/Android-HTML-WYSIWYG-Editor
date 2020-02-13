@@ -265,7 +265,17 @@ public class EditableWebView extends WebView {
      * @param trigger
      */
     protected void execJavascript(final String trigger) {
+        execJavascript(trigger, true);
+    }
+
+    /**
+     *
+     * @param trigger
+     */
+    protected void execJavascript(final String trigger, boolean callStateChange) {
         exec(JAVASCRIPT + trigger);
+        if (callStateChange)
+            exec(JAVASCRIPT + "RE.stateChange();");
     }
 
     /**
@@ -329,7 +339,7 @@ public class EditableWebView extends WebView {
                 execJavascript("RE.setTextAlign(\"center\")");
                 break;
             case Gravity.CENTER:
-                execJavascript("RE.setVerticalAlign(\"middle\")");
+                execJavascript("RE.setVerticalAlign(\"middle\")", false);
                 execJavascript("RE.setTextAlign(\"center\")");
                 break;
         }
@@ -394,21 +404,21 @@ public class EditableWebView extends WebView {
     }
 
     public EditableWebView setEditorWidth(int px) {
-        execJavascript("RE.setWidth('" + px + "px');");
+        execJavascript("RE.setWidth('" + px + "px');", false);
         return this;
     }
 
     public EditableWebView setEditorHeight(int px) {
-        execJavascript("RE.setHeight('" + px + "px');");
+        execJavascript("RE.setHeight('" + px + "px');", false);
         return this;
     }
 
     public void setPlaceholder(String placeholder) {
-        execJavascript("RE.setPlaceholder('" + placeholder + "');");
+        execJavascript("RE.setPlaceholder('" + placeholder + "');", false);
     }
 
     public void setInputEnabled(Boolean inputEnabled) {
-        execJavascript("RE.setInputEnabled(" + inputEnabled + ")");
+        execJavascript("RE.setInputEnabled(" + inputEnabled + ")", false);
         this.mIsEditMode = inputEnabled;
     }
 
@@ -423,17 +433,15 @@ public class EditableWebView extends WebView {
 //                "    head.appendChild(link);" +
 //                "}) ();";
 //        execJavascript("" + jsCSSImport + "");
-        execJavascript("RE.insertCSS(" + cssFile + ")");
+        execJavascript("RE.insertCSS(" + cssFile + ")", false);
     }
 
     public void undo() {
         execJavascript("RE.undo();");
-        execJavascript("RE.stateChange();");
     }
 
     public void redo() {
         execJavascript("RE.redo();");
-        execJavascript("RE.stateChange();");
     }
 
     public void setBold() {
@@ -461,14 +469,14 @@ public class EditableWebView extends WebView {
     }
 
     public void setTextColor(int color) {
-        execJavascript("RE.prepareInsert();");
+        execJavascript("RE.prepareInsert();", false);
 
         String hex = ColorUtils.colorToHexString(color);
         execJavascript("RE.setTextColor('" + hex + "');");
     }
 
     public void setTextBackgroundColor(int color) {
-        execJavascript("RE.prepareInsert();");
+        execJavascript("RE.prepareInsert();", false);
 
         String hex = ColorUtils.colorToHexString(color);
         execJavascript("RE.setTextBackgroundColor('" + hex + "');");
@@ -529,22 +537,22 @@ public class EditableWebView extends WebView {
     }
 
     public void insertImage(String url, String alt) {
-        execJavascript("RE.prepareInsert();");
+        execJavascript("RE.prepareInsert();", false);
         execJavascript("RE.insertImage('" + url + "', '" + alt + "');");
     }
 
     public void insertYoutubeVideo(String url) {
-        execJavascript("RE.prepareInsert();");
+        execJavascript("RE.prepareInsert();", false);
         execJavascript("RE.insertYoutubeVideo('" + url + "');");
     }
 
     public void insertLink(String href, String title) {
-        execJavascript("RE.prepareInsert();");
+        execJavascript("RE.prepareInsert();", false);
         execJavascript("RE.insertLink('" + href + "', '" + title + "');");
     }
 
     public void createLink(String href) {
-        execJavascript("RE.prepareInsert();");
+        execJavascript("RE.prepareInsert();", false);
         execJavascript("RE.createLink(href);");
     }
 
@@ -553,26 +561,26 @@ public class EditableWebView extends WebView {
         execJavascript("RE.removeLink();");
     }
     public void insertTodo() {
-        execJavascript("RE.prepareInsert();");
+        execJavascript("RE.prepareInsert();", false);
         execJavascript("RE.setTodo('" + Utils.getCurrentTime() + "');");
     }
 
     public void insertLine() {
-        execJavascript("RE.prepareInsert();");
+        execJavascript("RE.prepareInsert();", false);
         execJavascript("RE.insertLine();");
     }
 
     public void focusEditor() {
         requestFocus();
-        execJavascript("RE.focus();");
+        execJavascript("RE.focus();", false);
     }
 
     public void clearFocusEditor() {
-        execJavascript("RE.clearFocus();");
+        execJavascript("RE.clearFocus();", false);
     }
 
     public void clearAndFocusEditor() {
-        execJavascript("RE.clearAndFocusEditor();");
+        execJavascript("RE.clearAndFocusEditor();", false);
     }
 
     public String getEditableHtml() {

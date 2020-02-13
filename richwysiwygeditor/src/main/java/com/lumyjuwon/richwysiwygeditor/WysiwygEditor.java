@@ -277,9 +277,10 @@ public class WysiwygEditor extends LinearLayout {
 
             case REMOVE_FORMAT: webView.removeFormat(); break;
         }
-        if (button.isCheckable() && !button.isPopup()) {
-            button.switchCheckedState();
-        }
+        // теперь вызывается stateChange
+//        if (button.isCheckable() && !button.isPopup()) {
+//            button.switchCheckedState();
+//        }
     }
 
     /**
@@ -289,11 +290,8 @@ public class WysiwygEditor extends LinearLayout {
     private void showTextSizePopupWindow(ActionButton button) {
         if (button == null) return;
 
-        // TODO: проверить
         Dialogs.createTextSizeDialog(getContext(), curTextSize, (size) -> {
             webView.setFontSize(size);
-//            button.setCheckedState(true);
-//                webView.focusEditor();
         });
 
     }
@@ -314,9 +312,10 @@ public class WysiwygEditor extends LinearLayout {
             popupButton.setOnClickListener(view -> {
                 closePopupWindow();
                 webView.setTextColor(ContextCompat.getColor(getContext().getApplicationContext(), value));
-                int color = ContextCompat.getColor(context, (value != R.color.white)
-                        ? value : ActionButton.RES_COLOR_BASE);
-                button.setCheckedState(true, color);
+                // теперь вызывается stateChange
+//                int color = ContextCompat.getColor(context, (value != R.color.white)
+//                        ? value : ActionButton.RES_COLOR_BASE);
+//                button.setCheckedState(true, color);
 //                webView.focusEditor();
             });
         }
@@ -338,9 +337,10 @@ public class WysiwygEditor extends LinearLayout {
             popupButton.setOnClickListener(view -> {
                 closePopupWindow();
                 webView.setTextBackgroundColor(ContextCompat.getColor(context, value));
-                int color = ContextCompat.getColor(context, (value != R.color.white)
-                        ? value : ActionButton.RES_COLOR_BASE);
-                button.setCheckedState(true, color);
+                // теперь вызывается stateChange
+//                int color = ContextCompat.getColor(context, (value != R.color.white)
+//                        ? value : ActionButton.RES_COLOR_BASE);
+//                button.setCheckedState(true, color);
 //                webView.focusEditor();
             });
         }
@@ -360,7 +360,8 @@ public class WysiwygEditor extends LinearLayout {
             closePopupWindow();
             webView.setAlignLeft();
 //            bTextAlign.switchCheckedState();
-            button.setCheckedState(true);
+            // теперь вызывается stateChange
+//            button.setCheckedState(true);
 //            Keyboard.showKeyboard(view1);
 //            webView.focusEditor();
         });
@@ -370,7 +371,8 @@ public class WysiwygEditor extends LinearLayout {
             closePopupWindow();
             webView.setAlignCenter();
 //            bTextAlign.switchCheckedState();
-            button.setCheckedState(true);
+            // теперь вызывается stateChange
+//            button.setCheckedState(true);
 //            Keyboard.showKeyboard(view12);
 //            webView.focusEditor();
         });
@@ -380,7 +382,8 @@ public class WysiwygEditor extends LinearLayout {
             closePopupWindow();
             webView.setAlignRight();
 //            bTextAlign.switchCheckedState();
-            button.setCheckedState(true);
+            // теперь вызывается stateChange
+//            button.setCheckedState(true);
 //            Keyboard.showKeyboard(view13);
 //            webView.focusEditor();
         });
@@ -427,7 +430,8 @@ public class WysiwygEditor extends LinearLayout {
             // диалог ввода ссылки и заголовка
             Dialogs.createInsertLinkDialog(getContext(), false, (link, title) -> {
                 webView.insertLink(link, title);
-                button.setCheckedState(true);
+                // теперь вызывается stateChange
+//                button.setCheckedState(true);
 //                webView.focusEditor();
             });
         }
