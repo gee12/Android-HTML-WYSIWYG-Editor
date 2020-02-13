@@ -39,7 +39,7 @@ RE.textChange = function() {
 
 
 // send state of selected text when user click or keyup
-RE.stateChange = function(e) {
+RE.stateChange = function() {
     var items = [];
 
     var parentNode = window.getSelection().getRangeAt(0).startContainer.parentNode;
@@ -77,12 +77,6 @@ RE.stateChange = function(e) {
     } else if (document.queryCommandState('insertUnorderedList')) {
         items.push('unordered_list');
     }
-//    if (document.queryCommandState('indent')) {
-//        items.push('indent');
-//    }
-//    if (document.queryCommandState('outdent')) {
-//        items.push('outdent');
-//    }
     if (document.queryCommandState('justifyCenter')) {
         items.push(encodeParam('text_align', 'center'));
     } else if (document.queryCommandState('justifyFull')) {
@@ -409,7 +403,7 @@ RE.editor.addEventListener("input", RE.textChange);
 RE.editor.addEventListener("keyup", function(e) {
     var KEY_LEFT = 37, KEY_RIGHT = 39;
     if (e.which == KEY_LEFT || e.which == KEY_RIGHT) {
-        RE.statechange(e);
+        RE.statechange();
     }
 });
 RE.editor.addEventListener("click", RE.stateChange);
