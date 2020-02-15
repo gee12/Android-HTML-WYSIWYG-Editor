@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -104,6 +105,13 @@ public class WysiwygEditor extends LinearLayout {
                 progressBar.setVisibility(View.GONE);
                 if (mPageLoadListener != null)
                     mPageLoadListener.onPageLoaded();
+            }
+        });
+        webView.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                closePopupWindow();
+                return false;
             }
         });
 
@@ -412,7 +420,7 @@ public class WysiwygEditor extends LinearLayout {
                 // диалог ввода ссылки (без заголовка)
                 Dialogs.createInsertLinkDialog(getContext(), true, (link, title) -> {
                     webView.createLink(link);
-                    button.setCheckedState(true);
+//                    button.setCheckedState(true);
 //                webView.focusEditor();
                 });
             });
@@ -422,7 +430,7 @@ public class WysiwygEditor extends LinearLayout {
             bRemoveLink.setOnClickListener(view -> {
                 closePopupWindow();
                 webView.removeLink();
-                button.setCheckedState(false);
+//                button.setCheckedState(false);
 //                webView.focusEditor();
             });
         } else {
