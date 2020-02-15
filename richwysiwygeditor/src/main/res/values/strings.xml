@@ -16,5 +16,5 @@
     <string name="link">Link</string>
     <string name="title">Title</string>
     <string name="text_size_hint">Value 1–7</string>
-    <string name="link_example">https://site.com/page or mytetra://note/record_id</string>
+    <string name="link_example">URL or Mytetra inner link</string>
 </resources>

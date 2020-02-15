@@ -25,18 +25,11 @@ RE.currentSelection = {
     "endContainer": 0,
     "endOffset": 0};
 
-//RE.editor = document.getElementById('editor');
 RE.editor = document.body;
-
-//
-//RE.pageLoaded = function() {
-//    Android.pageLoaded(RE.getHtml());
-//}
 
 RE.textChange = function() {
     Android.textChange(/*RE.getText(), */RE.getHtml());
 }
-
 
 // send state of selected text when user click or keyup
 RE.stateChange = function() {
@@ -293,7 +286,8 @@ RE.insertLink = function(url, text) {
     RE.restoreRange();
     var sel = document.getSelection();
     if (sel.toString().length == 0) {
-        document.execCommand("insertHTML",false,"<a href='"+url+"'>"+text+"</a>");
+        var html = "<a href='"+url+"'>"+text+"</a>";
+        document.execCommand("insertHTML", false, html);
     } else if (sel.rangeCount > 0) {
        var el = document.createElement("a");
        el.setAttribute("href", url);
@@ -327,7 +321,7 @@ RE.insertCSS = function(cssFile) {
     head.appendChild(link);
 }
 
-RE.setTodo = function(text) {
+RE.insertTodo = function(text) {
     var html = '<input type="checkbox" name="'+ text +'" value="'+ text +'"/> &nbsp;';
     document.execCommand('insertHTML', false, html);
 }
@@ -387,12 +381,6 @@ RE.clearAndFocusEditor = function() {
 }
 
 // event listeners
-//window.addEventListener("load",
-//    function load(event) {
-//        window.removeEventListener("load", load, false); //remove listener, no longer needed
-//        RE.pageLoaded();
-//    },false);
-
 document.addEventListener("selectionchange", RE.saveRange);
 //document.addEventListener("selectionchange", function() {
 //    RE.saveRange();

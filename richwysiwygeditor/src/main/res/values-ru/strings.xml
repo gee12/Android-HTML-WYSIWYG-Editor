@@ -17,5 +17,5 @@
     <string name="link">Ссылка</string>
     <string name="title">Заголовок</string>
     <string name="text_size_hint">Значение 1–7</string>
-    <string name="link_example">https://site.ru/page или mytetra://note/record_id</string>
+    <string name="link_example">URL или внутренняя ссылка MyTetra</string>
 </resources>

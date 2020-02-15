@@ -560,9 +560,9 @@ public class EditableWebView extends WebView {
 //        execJavascript("RE.prepareInsert();");
         execJavascript("RE.removeLink();");
     }
-    public void insertTodo() {
+    public void insertTodo(String item) {
         execJavascript("RE.prepareInsert();", false);
-        execJavascript("RE.setTodo('" + Utils.getCurrentTime() + "');");
+        execJavascript("RE.insertTodo('" + item + "');");
     }
 
     public void insertLine() {
