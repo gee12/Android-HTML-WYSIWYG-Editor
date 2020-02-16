@@ -12,7 +12,7 @@
     <string name="text_bold">Жирный текст</string>
     <string name="text_color">Цвет текста</string>
     <string name="text_italic">Наклонный текст</string>
-    <string name="text_size">Размер текста</string>
+    <string name="text_size">Размер текста (1-7)</string>
     <string name="text_strike">Зачеркнутый текст</string>
     <string name="link">Ссылка</string>
     <string name="title">Заголовок</string>

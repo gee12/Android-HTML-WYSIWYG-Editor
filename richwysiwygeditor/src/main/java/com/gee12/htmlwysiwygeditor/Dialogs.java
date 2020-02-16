@@ -50,6 +50,7 @@ public class Dialogs {
         EditText etSize = builder.getView().findViewById(R.id.edit_text_size);
         if (curSize >= 1 && curSize <= 7) {
             etSize.setText(String.format(Locale.getDefault(), "%d", curSize));
+            etSize.setSelection(0, etSize.getText().length());
         }
         builder.setPositiveButton(R.string.answer_ok, (dialog1, which) -> {
             int size = Integer.parseInt(etSize.getText().toString());
@@ -61,9 +62,11 @@ public class Dialogs {
         dialog.setOnShowListener(dialog12 -> {
             // получаем okButton уже после вызова show()
             final Button okButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-            okButton.setEnabled(false);
+            if (TextUtils.isEmpty(etSize.getText().toString())) {
+                okButton.setEnabled(false);
+            }
 //                Keyboard.showKeyboard(etSize);
-        Keyboard.showKeyboard(builder.getView());
+            Keyboard.showKeyboard(builder.getView());
         });
 
         dialog.show();

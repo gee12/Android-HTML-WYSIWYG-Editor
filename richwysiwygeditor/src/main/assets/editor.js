@@ -38,8 +38,12 @@ RE.stateChange = function() {
     if (window.getSelection) {
         var sel = window.getSelection();
         if (sel.rangeCount > 0) {
-    //        node = selection.getRangeAt(0).startContainer.parentNode;
+//            node = sel.getRangeAt(0).startContainer.parentNode;
             node = sel.getRangeAt(0).commonAncestorContainer;
+            // Make sure we have an element rather than a TEXT_NODE
+            if (node.nodeType == 3) {
+                node = node.parentNode;
+            }
         }
     } else if ((sel = document.selection) && sel.type != "Control") {
         node = sel.createRange().parentElement();
@@ -52,16 +56,19 @@ RE.stateChange = function() {
         items.push(encodeParam('color',
             window.getComputedStyle(node, "color").getPropertyValue('color')));
     }
-//    if (document.queryCommandState('fontSize')) {
-//    if (window.getComputedStyle(node, "font-size")) {
+//    if (window.getComputedStyle(node, "fontSize")) {        // +
+//    if (window.getComputedStyle(node, "font-size")) {        // +
 //        items.push('font-size');
 //        items.push(encodeParam('font-size',
-//            getStyle(node, "fontSize")));
-//            window.getComputedStyle(node).fontSize));
-//            window.getComputedStyle(node, null).getPropertyValue('font-size')
-//            window.getComputedStyle(node, null).getPropertyValue('fontSize')));
-//            window.getComputedStyle(node, "font-size").getPropertyValue('font-size')));
+//            window.getComputedStyle(node, "font-size").getPropertyValue('font-size'))); // +
+//            window.getComputedStyle(node, null).getPropertyValue('font-size')));  // +
+//            window.getComputedStyle(node).fontSize));     // +
+//            window.getComputedStyle(node, null).getPropertyValue('fontSize')));     // NULL
 //    }
+    var fontSize = document.queryCommandValue('fontSize');
+    if (fontSize.length > 0) {
+        items.push(encodeParam('font-size', fontSize));
+    }
     if (document.queryCommandState('bold')) {
         items.push('bold');
     }
@@ -106,20 +113,6 @@ RE.stateChange = function() {
     var formatsAsQuery = items.join('&');
     Android.stateChange(formatsAsQuery, RE.getText());
 }
-
-//function getStyle(elem, prop) {
-//    var res;
-//    if (elem.currentStyle) {
-//        res = elem.currentStyle.margin;
-//    } else if (window.getComputedStyle) {
-//        if (window.getComputedStyle.getPropertyValue) {
-//            res = window.getComputedStyle(elem, null).getPropertyValue(prop)
-//        } else {
-//            res = window.getComputedStyle(elem)[prop] };
-//        }
-//    }
-//    return res;
-//}
 
 function encodeParam(attr) {
 //    return encodeURIComponent(attr.toUpperCase());

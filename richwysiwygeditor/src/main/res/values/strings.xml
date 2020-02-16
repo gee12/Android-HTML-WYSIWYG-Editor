@@ -2,7 +2,7 @@
     <string name="app_name">RichWYSIWYGEditor</string>
     <string name="answer_ok">Ok</string>
     <string name="answer_cancel">Cancel</string>
-    <string name="text_size">Text size</string>
+    <string name="text_size">Text size (1-7)</string>
     <string name="text_color">Text color</string>
     <string name="text_bold">Bold</string>
     <string name="text_italic">Italic</string>
