@@ -34,19 +34,34 @@ RE.textChange = function() {
 // send state of selected text when user click or keyup
 RE.stateChange = function() {
     var items = [];
-
-    var parentNode = window.getSelection().getRangeAt(0).startContainer.parentNode;
-    if (window.getComputedStyle(parentNode, "background-color")) {
-        items.push(encodeParam('background_color',
-            window.getComputedStyle(parentNode, "background-color").getPropertyValue('background-color')));
-     }
-    if (window.getComputedStyle(parentNode, "color")) {
-         items.push(encodeParam('text_color',
-            window.getComputedStyle(parentNode, "color").getPropertyValue('color')));
-     }
-    if (document.queryCommandState('fontSize')) {
-        items.push('text_size');
+    var node;
+    if (window.getSelection) {
+        var sel = window.getSelection();
+        if (sel.rangeCount > 0) {
+    //        node = selection.getRangeAt(0).startContainer.parentNode;
+            node = sel.getRangeAt(0).commonAncestorContainer;
+        }
+    } else if ((sel = document.selection) && sel.type != "Control") {
+        node = sel.createRange().parentElement();
     }
+    if (window.getComputedStyle(node, "background-color")) {
+        items.push(encodeParam('background-color',
+            window.getComputedStyle(node, "background-color").getPropertyValue('background-color')));
+     }
+    if (window.getComputedStyle(node, "color")) {
+        items.push(encodeParam('color',
+            window.getComputedStyle(node, "color").getPropertyValue('color')));
+    }
+//    if (document.queryCommandState('fontSize')) {
+//    if (window.getComputedStyle(node, "font-size")) {
+//        items.push('font-size');
+//        items.push(encodeParam('font-size',
+//            getStyle(node, "fontSize")));
+//            window.getComputedStyle(node).fontSize));
+//            window.getComputedStyle(node, null).getPropertyValue('font-size')
+//            window.getComputedStyle(node, null).getPropertyValue('fontSize')));
+//            window.getComputedStyle(node, "font-size").getPropertyValue('font-size')));
+//    }
     if (document.queryCommandState('bold')) {
         items.push('bold');
     }
@@ -66,22 +81,22 @@ RE.stateChange = function() {
         items.push('underline');
     }
     if (document.queryCommandState('insertOrderedList')) {
-        items.push('ordered_list');
+        items.push('insertOrderedList');
     } else if (document.queryCommandState('insertUnorderedList')) {
-        items.push('unordered_list');
+        items.push('insertUnorderedList');
     }
     if (document.queryCommandState('justifyCenter')) {
-        items.push(encodeParam('text_align', 'center'));
+        items.push(encodeParam('justify', 'center'));
     } else if (document.queryCommandState('justifyFull')) {
-        items.push(encodeParam('text_align', 'full'));
+        items.push(encodeParam('justify', 'full'));
     } else if (document.queryCommandState('justifyLeft')) {
-        items.push(encodeParam('text_align', 'left'));
+        items.push(encodeParam('justify', 'left'));
     } else if (document.queryCommandState('justifyRight')) {
-        items.push(encodeParam('text_align', 'right'));
+        items.push(encodeParam('justify', 'right'));
     }
     // ?
     if (document.queryCommandState('createLink')) {
-        items.push('insert_link');
+        items.push('createLink');
     }
     var formatBlock = document.queryCommandValue('formatBlock');
     if (formatBlock.length > 0) {
@@ -91,6 +106,20 @@ RE.stateChange = function() {
     var formatsAsQuery = items.join('&');
     Android.stateChange(formatsAsQuery, RE.getText());
 }
+
+//function getStyle(elem, prop) {
+//    var res;
+//    if (elem.currentStyle) {
+//        res = elem.currentStyle.margin;
+//    } else if (window.getComputedStyle) {
+//        if (window.getComputedStyle.getPropertyValue) {
+//            res = window.getComputedStyle(elem, null).getPropertyValue(prop)
+//        } else {
+//            res = window.getComputedStyle(elem)[prop] };
+//        }
+//    }
+//    return res;
+//}
 
 function encodeParam(attr) {
 //    return encodeURIComponent(attr.toUpperCase());

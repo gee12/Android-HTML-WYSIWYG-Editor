@@ -203,7 +203,6 @@ public class WysiwygEditor extends LinearLayout {
      * @param types
      */
     private void updateButtonsState(Map<ActionType, String> types) {
-//        this.buttons = new ArrayList<>(Arrays.asList(bFgColor, bBgColor, bTextBold, bTextItalic, bTextUnderline, bTextStrike));
         ArrayList<ActionButton> buttons = new ArrayList<>(actionButtons.values());
 
         for (Map.Entry<ActionType,String> type : types.entrySet()){
