@@ -58,7 +58,7 @@ public class WysiwygEditor extends LinearLayout {
     protected ProgressBar progressBar;
     protected Map<ActionType, ActionButton> actionButtons;
     protected EditableWebView.IPageLoadListener mPageLoadListener;
-    protected boolean isActivateAllButtons = true;
+//    protected boolean isActivateAllButtons = true;
     private int curTextSize;
 
     public WysiwygEditor(Context context) {
