@@ -60,6 +60,7 @@ public class WysiwygEditor extends LinearLayout {
     protected EditableWebView.IPageLoadListener mPageLoadListener;
 //    protected boolean isActivateAllButtons = true;
     private int curTextSize;
+    protected boolean mIsEdited;
 
     public WysiwygEditor(Context context) {
         super(context);
@@ -85,6 +86,7 @@ public class WysiwygEditor extends LinearLayout {
         // webView
         webView = findViewById(R.id.web_view);
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null); // sdk 19 ChromeWebView ?
+        webView.setOnTextChangeListener(text -> setIsEdited(true) );
         webView.setOnStateChangeListener((text, types) ->  webView.post(new Runnable() {
             @Override
             public void run() {
@@ -107,6 +109,9 @@ public class WysiwygEditor extends LinearLayout {
                     mPageLoadListener.onPageLoaded();
             }
         });
+
+        // FIXME: обработчик не запустится, т.к. переопределяется в активности
+
         webView.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -288,6 +293,9 @@ public class WysiwygEditor extends LinearLayout {
 //        if (button.isCheckable() && !button.isPopup()) {
 //            button.switchCheckedState();
 //        }
+
+        // FIXME: проверить все ли команды меняют текст
+        setIsEdited(true);
     }
 
     /**
@@ -515,4 +523,11 @@ public class WysiwygEditor extends LinearLayout {
         this.mPageLoadListener = listener;
     }
 
+    public boolean isEdited() {
+        return mIsEdited;
+    }
+
+    public void setIsEdited(boolean isEdited) {
+        this.mIsEdited = isEdited;
+    }
 }
