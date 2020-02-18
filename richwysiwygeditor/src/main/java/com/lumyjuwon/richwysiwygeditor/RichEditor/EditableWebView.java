@@ -174,35 +174,6 @@ public class EditableWebView extends WebView {
             mReceiveHtmlListener.onReceiveEditableHtml(html);
     }
 
-/*    @JavascriptInterface
-    public void makeEditableHtmlRequest() {
-        //
-        if (!TextUtils.isEmpty(mHtml)) {
-            onReceiveEditableHtml(mHtml);
-            return;
-        }
-
-        if (Build.VERSION.SDK_INT >= 19) {
-            evaluateJavascript("(function() { return document.body.innerHTML; })();",
-                    new ValueCallback<String>() {
-                @Override
-                public void onReceiveValue(String value) {
-                    // delete unescape literals
-                    String html = StringEscapeUtils.unescapeJava(value);
-                    if (html != null && html.length() > 3) {
-                        // delete quotes
-                        html = html.substring(1, html.length() - 1);
-                    }
-                    onReceiveEditableHtml(html);
-                }
-            });
-        } else *//*if (Build.VERSION.SDK_INT <= 17)*//* {
-            //
-            addJavascriptInterface(new JavascriptHandler(), "AndroidFunction");
-            load(JAVASCRIPT + "AndroidFunction.onPageLoaded(document.body.innerHTML);");
-        }
-    }*/
-
     private void onTextChanged(/*String text, */String html) {
 //        this.text = text;
         this.mHtml = html;
@@ -419,22 +390,12 @@ public class EditableWebView extends WebView {
     }
 
     public void setInputEnabled(Boolean inputEnabled) {
-        execJavascript("RE.setInputEnabled(" + inputEnabled + ")", false);
+        execJavascript("RE.setInputEnabled(" + inputEnabled + ");", false);
         this.mIsEditMode = inputEnabled;
     }
 
     public void loadCSS(String cssFile) {
-//        String jsCSSImport = "(function() {" +
-//                "    var head  = document.getElementsByTagName(\"head\")[0];" +
-//                "    var link  = document.createElement(\"link\");" +
-//                "    link.rel  = \"stylesheet\";" +
-//                "    link.type = \"text/css\";" +
-//                "    link.href = \"" + cssFile + "\";" +
-//                "    link.media = \"all\";" +
-//                "    head.appendChild(link);" +
-//                "}) ();";
-//        execJavascript("" + jsCSSImport + "");
-        execJavascript("RE.insertCSS(" + cssFile + ")", false);
+        execJavascript("RE.insertCSS(" + cssFile + ");", false);
     }
 
     public void undo() {
