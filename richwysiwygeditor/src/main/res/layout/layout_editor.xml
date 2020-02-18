@@ -33,16 +33,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/bottom_border_white"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
+        android:background="#EEE"
         android:scrollbars="none">
+<!--        android:background="@drawable/bottom_border_white"-->
 
         <LinearLayout
             android:id="@+id/layout_toolbar_buttons"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="#EEE"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
             android:orientation="horizontal">
 
             <com.gee12.htmlwysiwygeditor.ActionButton
