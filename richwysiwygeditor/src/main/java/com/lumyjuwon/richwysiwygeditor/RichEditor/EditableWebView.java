@@ -141,7 +141,7 @@ public class EditableWebView extends WebView {
 //        if (!mIsPageLoaded) {
             makeEditableHtmlRequest();
 //        }
-        mIsPageLoaded = true;
+        this.mIsPageLoaded = true;
 
         if (mPageListener != null) {
             mPageListener.onPageLoaded();
