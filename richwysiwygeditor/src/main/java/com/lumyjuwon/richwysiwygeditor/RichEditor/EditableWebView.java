@@ -102,6 +102,7 @@ public class EditableWebView extends WebView {
     private boolean mIsPageLoaded = false;
     private boolean mIsEditMode = false;
     private String mHtml;
+    private String mBaseUrl;
     // listeners
     private ITextChangeListener mTextChangeListener;
     private ITextStateListener mStateListener;
@@ -549,6 +550,10 @@ public class EditableWebView extends WebView {
         return mHtml;
     }
 
+    public String getBaseUrl() {
+        return mBaseUrl;
+    }
+
     /**
      *
      * @param listener
@@ -602,6 +607,7 @@ public class EditableWebView extends WebView {
 
     @Override
     public void loadDataWithBaseURL(@Nullable String baseUrl, String data, @Nullable String mimeType, @Nullable String encoding, @Nullable String historyUrl) {
+        this.mBaseUrl = baseUrl;
         super.loadDataWithBaseURL(baseUrl, data, mimeType, encoding, historyUrl);
         onPageLoading();
     }
