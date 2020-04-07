@@ -5,31 +5,37 @@ import android.app.Activity;
 import com.esafirm.imagepicker.features.ImagePicker;
 import com.lumyjuwon.richwysiwygeditor.R;
 
-import java.util.List;
-
 public class ImgPicker {
 
     public interface IImgPicker {
-        void startPickImages(Activity activity, String newImagesFullDir);
-        void receiveSelectedImages(List<String> fileNames);
+        void startPicker();
+        void startCamera();
     }
 
-    private static ImagePicker imagePicker;
-
-    private static ImagePicker getImagePicker(Activity activity, String newImagesFullDir) {
-        imagePicker = ImagePicker.create(activity);
-
-        return imagePicker.limit(10) // max images can be selected (99 by default)
-                .toolbarFolderTitle("Gallery")
+    /**
+     * StartPicker image picker activity with request code
+     * @param activity
+     */
+    public static void startPicker(Activity activity) {
+        ImagePicker.create(activity)
+                .limit(10)
+                .toolbarFolderTitle(activity.getString(R.string.title_gallery))
                 .toolbarDoneButtonText(activity.getString(R.string.confirm_selected_images))
-                .showCamera(false) // show camera or not (true by default)
-                .folderMode(true)
+                .showCamera(false)
+                .folderMode(false)
                 .includeVideo(false)
-                .imageFullDirectory(newImagesFullDir);
+                .start();
     }
 
-    public static void start(Activity activity, String newImagesFullDir) {
-        getImagePicker(activity, newImagesFullDir).start(); // start image picker activity with request code
+    /**
+     * Start capture photo from camera with request code.
+     * @param activity
+     * @param newImagesFullDir
+     */
+    public static void startCamera(Activity activity, String newImagesFullDir, String newImagesDir) {
+        ImagePicker.cameraOnly()
+                .imageDirectory(newImagesDir)
+                .imageFullDirectory(newImagesFullDir)
+                .start(activity);
     }
-
 }

@@ -19,4 +19,5 @@
     <string name="text_size_hint">Значение 1–7</string>
     <string name="link_example">URL или ссылка MyTetra</string>
     <string name="confirm_selected_images">Выбрать</string>
+    <string name="title_gallery">Галерея</string>
 </resources>

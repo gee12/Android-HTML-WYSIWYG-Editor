@@ -1,6 +1,5 @@
 package com.lumyjuwon.richwysiwygeditor;
 
-import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -65,6 +64,7 @@ public class WysiwygEditor extends LinearLayout {
     private int curTextSize;
     protected boolean mIsEdited;
     protected String mImagesFolder;
+    protected ImgPicker.IImgPicker mImgPickerCallback;
 
     public WysiwygEditor(Context context) {
         super(context);
@@ -393,23 +393,23 @@ public class WysiwygEditor extends LinearLayout {
                webView.setAlignRight();
            setIsEdited();
         };
-        contentView.findViewById(R.id.text_alignLeft).setOnClickListener(listener);
-        contentView.findViewById(R.id.text_alignCenter).setOnClickListener(listener);
-        contentView.findViewById(R.id.text_alignRight).setOnClickListener(listener);
+        setClickListener(contentView, R.id.text_alignLeft, listener);
+        setClickListener(contentView, R.id.text_alignCenter, listener);
+        setClickListener(contentView, R.id.text_alignRight, listener);
     }
 
     /**
      * Обработчики вставки, изменения и удаления ссылок.
      * @param button
      */
-    public void showLinkPopupWindow(ActionButton button) {
+    private void showLinkPopupWindow(ActionButton button) {
         if (button == null) return;
 
         // TODO: проверить
         boolean isLinkExist = button.isChecked();
 
         if (isLinkExist) {
-            this.popupWindow = createPopupWindow(button, R.layout.popup_insert_link);
+            this.popupWindow = createPopupWindow(button, R.layout.popup_link);
             View contentView = popupWindow.getContentView();
 
             // кнопка изменения ссылки
@@ -453,11 +453,34 @@ public class WysiwygEditor extends LinearLayout {
      * Обработчики вставки изображений.
      * @param button
      */
-    public void showImagePopupWindow(ActionButton button) {
+    private void showImagePopupWindow(ActionButton button) {
         if (button == null) return;
-        closePopupWindow();
-        clearPopupButton();
-        ImgPicker.start((Activity)getContext(), mImagesFolder);
+//        closePopupWindow();
+//        clearPopupButton();
+
+        this.popupWindow = createPopupWindow(button, R.layout.popup_image);
+        View contentView = popupWindow.getContentView();
+
+        OnClickListener listener = v -> {
+            int id = v.getId();
+            closePopupWindow();
+            if (id == R.id.popup_insert_image) {
+//                ImgPicker.startPicker((Activity)getContext());
+                if (mImgPickerCallback != null) {
+                    mImgPickerCallback.startPicker();
+                }
+            } else if (id == R.id.popup_capture_photo) {
+//                ImgPicker.startCamera((Activity)getContext(), mImagesFolder);
+                if (mImgPickerCallback != null) {
+                    mImgPickerCallback.startCamera();
+                }
+            }
+//            else if (id == R.id.popup_edit_image)
+
+        };
+        setClickListener(contentView, R.id.popup_insert_image, listener);
+        setClickListener(contentView, R.id.popup_capture_photo, listener);
+        setClickListener(contentView, R.id.popup_edit_image, listener);
     }
 
     /**
@@ -470,13 +493,20 @@ public class WysiwygEditor extends LinearLayout {
         for (String fileName : imagesFileNames) {
             webView.insertImage(fileName, null);
         }
+        if (!imagesFileNames.isEmpty()) {
+            setIsEdited();
+        }
+    }
+
+    private void showEditImageDialog() {
+
     }
 
     /**
      * Обработчики вставки видео из Youtube.
      * @param button
      */
-    public void showVideoPopupWindow(ActionButton button) {
+    private void showVideoPopupWindow(ActionButton button) {
         if (button == null) return;
         closePopupWindow();
         clearPopupButton();
@@ -520,6 +550,10 @@ public class WysiwygEditor extends LinearLayout {
         }
     }
 
+    public void setClickListener(View parentView, int viewId, OnClickListener listener) {
+        parentView.findViewById(viewId).setOnClickListener(listener);
+    }
+
     public EditableWebView getWebView(){
         return webView;
     }
@@ -548,8 +582,12 @@ public class WysiwygEditor extends LinearLayout {
         this.mIsEdited = isEdited;
     }
 
-    public void setImagesFolder(String folderFullPath) {
-        this.mImagesFolder = folderFullPath;
+//    public void setImagesFolder(String folderFullPath) {
+//        this.mImagesFolder = folderFullPath;
+//    }
+
+    public void setImgPickerCallback(ImgPicker.IImgPicker callback) {
+        this.mImgPickerCallback = callback;
     }
 
 }

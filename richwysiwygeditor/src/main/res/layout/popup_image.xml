@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white">
 
     <ImageButton
-        android:id="@+id/text_alignLeft"
-        app:srcCompat="@drawable/ic_align_left_black"
+        android:id="@+id/popup_insert_image"
+        android:src="@drawable/ic_image"
         style="@style/ActionButton"/>
 
     <ImageButton
-        android:id="@+id/text_alignCenter"
-        app:srcCompat="@drawable/ic_align_center_black"
+        android:id="@+id/popup_capture_photo"
+        android:src="@drawable/ic_camera"
         style="@style/ActionButton"/>
 
     <ImageButton
-        android:id="@+id/text_alignRight"
-        app:srcCompat="@drawable/ic_align_right_black"
+        android:id="@+id/popup_edit_image"
+        android:enabled="false"
+        android:src="@android:drawable/ic_menu_edit"
         style="@style/ActionButton"/>
 
 </LinearLayout>
