@@ -1,25 +1,35 @@
 package com.lumyjuwon.richwysiwygeditor.WysiwygUtils;
 
-//import com.esafirm.imagepicker.features.ImagePicker;
+import android.app.Activity;
+
+import com.esafirm.imagepicker.features.ImagePicker;
+import com.lumyjuwon.richwysiwygeditor.R;
+
+import java.util.List;
 
 public class ImgPicker {
 
-//    private static ImagePicker imagePicker;
-//
-//    private static ImagePicker getImagePicker(View view) {
-//        imagePicker = ImagePicker.create((Activity) view.getContext());
-//
-//        return imagePicker.limit(10) // max images can be selected (99 by default)
-//                .toolbarFolderTitle("Gallery")
-//                .toolbarDoneButtonText("Confirm")
-//                .showCamera(false) // show camera or not (true by default)
-//                .folderMode(true)
-//                .includeVideo(false)
-//                .imageFullDirectory(Environment.getExternalStorageDirectory().getPath()); // can be full path
-//    }
-//
-//    public static void start(View view) {
-//        getImagePicker(view).start(); // start image picker activity with request code
-//    }
+    public interface IImgPicker {
+        void startPickImages(Activity activity, String newImagesFullDir);
+        void receiveSelectedImages(List<String> fileNames);
+    }
+
+    private static ImagePicker imagePicker;
+
+    private static ImagePicker getImagePicker(Activity activity, String newImagesFullDir) {
+        imagePicker = ImagePicker.create(activity);
+
+        return imagePicker.limit(10) // max images can be selected (99 by default)
+                .toolbarFolderTitle("Gallery")
+                .toolbarDoneButtonText(activity.getString(R.string.confirm_selected_images))
+                .showCamera(false) // show camera or not (true by default)
+                .folderMode(true)
+                .includeVideo(false)
+                .imageFullDirectory(newImagesFullDir);
+    }
+
+    public static void start(Activity activity, String newImagesFullDir) {
+        getImagePicker(activity, newImagesFullDir).start(); // start image picker activity with request code
+    }
 
 }

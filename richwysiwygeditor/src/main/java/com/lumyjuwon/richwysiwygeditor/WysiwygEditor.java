@@ -1,5 +1,6 @@
 package com.lumyjuwon.richwysiwygeditor;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -23,11 +24,13 @@ import com.gee12.htmlwysiwygeditor.ActionType;
 import com.gee12.htmlwysiwygeditor.ColorUtils;
 import com.gee12.htmlwysiwygeditor.Dialogs;
 import com.lumyjuwon.richwysiwygeditor.RichEditor.EditableWebView;
+import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.ImgPicker;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.TextColor;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.Youtube;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -61,6 +64,7 @@ public class WysiwygEditor extends LinearLayout {
 //    protected boolean isActivateAllButtons = true;
     private int curTextSize;
     protected boolean mIsEdited;
+    protected String mImagesFolder;
 
     public WysiwygEditor(Context context) {
         super(context);
@@ -177,7 +181,7 @@ public class WysiwygEditor extends LinearLayout {
         else if (id == R.id.button_insert_link)
             initActionButton(button, ActionType.INSERT_LINK, true, true);
         else if (id == R.id.button_insert_image)
-            initActionButton(button, ActionType.INSERT_IMAGE, true, true);
+            initActionButton(button, ActionType.INSERT_IMAGE, false, true);
         else if (id == R.id.button_insert_video)
             initActionButton(button, ActionType.INSERT_VIDEO, true, true);
         else if (id == R.id.button_insert_table)
@@ -378,56 +382,20 @@ public class WysiwygEditor extends LinearLayout {
         this.popupWindow = createPopupWindow(button, R.layout.popup_text_align);
         View contentView = popupWindow.getContentView();
 
-        ImageButton bAlignLeft = contentView.findViewById(R.id.text_alignLeft);
-//        bAlignLeft.setOnClickListener(view -> {
-//            closePopupWindow();
-//            webView.setAlignLeft();
-//
-////            bTextAlign.switchCheckedState();
-//            // теперь вызывается stateChange
-////            button.setCheckedState(true);
-////            Keyboard.showKeyboard(view1);
-////            webView.focusEditor();
-//        });
-
-        ImageButton bAlignCenter = contentView.findViewById(R.id.text_alignCenter);
-//        bAlignCenter.setOnClickListener(view -> {
-//            closePopupWindow();
-//            webView.setAlignCenter();
-////            bTextAlign.switchCheckedState();
-//            // теперь вызывается stateChange
-////            button.setCheckedState(true);
-////            Keyboard.showKeyboard(view12);
-////            webView.focusEditor();
-//        });
-
-        ImageButton bAlignRight = contentView.findViewById(R.id.text_alignRight);
-//        bAlignRight.setOnClickListener(view -> {
-//            closePopupWindow();
-//            webView.setAlignRight();
-////            bTextAlign.switchCheckedState();
-//            // теперь вызывается stateChange
-////            button.setCheckedState(true);
-////            Keyboard.showKeyboard(view13);
-////            webView.focusEditor();
-//        });
-        OnClickListener listener = new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               int id = v.getId();
-               closePopupWindow();
-               if (id == R.id.text_alignLeft)
-                   webView.setAlignLeft();
-               else if (id == R.id.text_alignCenter)
-                   webView.setAlignCenter();
-               else
-                   webView.setAlignRight();
-               setIsEdited();
-            }
+        OnClickListener listener = v -> {
+           int id = v.getId();
+           closePopupWindow();
+           if (id == R.id.text_alignLeft)
+               webView.setAlignLeft();
+           else if (id == R.id.text_alignCenter)
+               webView.setAlignCenter();
+           else
+               webView.setAlignRight();
+           setIsEdited();
         };
-        bAlignLeft.setOnClickListener(listener);
-        bAlignCenter.setOnClickListener(listener);
-        bAlignRight.setOnClickListener(listener);
+        contentView.findViewById(R.id.text_alignLeft).setOnClickListener(listener);
+        contentView.findViewById(R.id.text_alignCenter).setOnClickListener(listener);
+        contentView.findViewById(R.id.text_alignRight).setOnClickListener(listener);
     }
 
     /**
@@ -486,7 +454,22 @@ public class WysiwygEditor extends LinearLayout {
      * @param button
      */
     public void showImagePopupWindow(ActionButton button) {
+        if (button == null) return;
+        closePopupWindow();
+        clearPopupButton();
+        ImgPicker.start((Activity)getContext(), mImagesFolder);
+    }
 
+    /**
+     * Вставка выбранных изображений.
+     * @param imagesFileNames
+     */
+    public void onSelectImages(List<String> imagesFileNames) {
+        if (imagesFileNames != null)
+            return;
+        for (String fileName : imagesFileNames) {
+            webView.insertImage(fileName, null);
+        }
     }
 
     /**
@@ -564,4 +547,9 @@ public class WysiwygEditor extends LinearLayout {
     public void setIsEdited(boolean isEdited) {
         this.mIsEdited = isEdited;
     }
+
+    public void setImagesFolder(String folderFullPath) {
+        this.mImagesFolder = folderFullPath;
+    }
+
 }

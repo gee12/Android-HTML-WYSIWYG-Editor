@@ -36,7 +36,7 @@ public enum ActionType {
     INSERT_LINE,
     INSERT_LINK("CREATELINK"),
 //    REMOVE_LINK,
-    INSERT_IMAGE(false),
+    INSERT_IMAGE,
     INSERT_VIDEO(false),
     INSERT_TABLE(false),
     INSERT_FORMULA(false),

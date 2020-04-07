@@ -504,6 +504,11 @@ public class EditableWebView extends WebView {
         execJavascript("RE.insertImage('" + url + "', '" + alt + "');");
     }
 
+    public void insertImage(String url, int width, int height) {
+        execJavascript("RE.prepareInsert();", false);
+        execJavascript("RE.insertImage('" + url + "', " + width + ", " + height + ");");
+    }
+
     public void insertYoutubeVideo(String url) {
         execJavascript("RE.prepareInsert();", false);
         execJavascript("RE.insertYoutubeVideo('" + url + "');");

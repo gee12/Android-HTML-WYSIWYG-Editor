@@ -56,15 +56,6 @@ RE.stateChange = function() {
         items.push(encodeParam('color',
             window.getComputedStyle(node, "color").getPropertyValue('color')));
     }
-//    if (window.getComputedStyle(node, "fontSize")) {        // +
-//    if (window.getComputedStyle(node, "font-size")) {        // +
-//        items.push('font-size');
-//        items.push(encodeParam('font-size',
-//            window.getComputedStyle(node, "font-size").getPropertyValue('font-size'))); // +
-//            window.getComputedStyle(node, null).getPropertyValue('font-size')));  // +
-//            window.getComputedStyle(node).fontSize));     // +
-//            window.getComputedStyle(node, null).getPropertyValue('fontSize')));     // NULL
-//    }
     var fontSize = document.queryCommandValue('fontSize');
     if (fontSize.length > 0) {
         items.push(encodeParam('font-size', fontSize));
@@ -288,13 +279,18 @@ RE.insertLine = function() {
 }
 
 RE.insertImage = function(url, alt) {
-    var html = '<img src="' + url + '" alt="' + alt + '" /><br><br>';
+    var html = '<img src="' + url + '"' + (alt != null) ? ' alt="' + alt + '"' : '' + '/><br>';
+    RE.insertHTML(html);
+}
+
+RE.insertImage = function(url, width, height) {
+    var html = '<img src="' + url + '" width="' + width + ' height="' + height + '"/><br>';
     RE.insertHTML(html);
 }
 
 RE.insertYoutubeVideo = function(url) {
     var html = '<iframe id="player" type="text/html" src="https://www.youtube.com/embed/' + url
-        + '?enablejsapi=1" frameborder="0"></iframe><br><br>'
+        + '?enablejsapi=1" frameborder="0"></iframe><br>'
     RE.insertHTML(html);
 }
 
