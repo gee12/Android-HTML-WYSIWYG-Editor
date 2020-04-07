@@ -465,7 +465,7 @@ public class WysiwygEditor extends LinearLayout {
      * @param imagesFileNames
      */
     public void onSelectImages(List<String> imagesFileNames) {
-        if (imagesFileNames != null)
+        if (imagesFileNames == null)
             return;
         for (String fileName : imagesFileNames) {
             webView.insertImage(fileName, null);
