@@ -22,14 +22,13 @@ import com.gee12.htmlwysiwygeditor.ActionButton;
 import com.gee12.htmlwysiwygeditor.ActionType;
 import com.gee12.htmlwysiwygeditor.ColorUtils;
 import com.gee12.htmlwysiwygeditor.Dialogs;
+import com.gee12.htmlwysiwygeditor.IImagePicker;
 import com.lumyjuwon.richwysiwygeditor.RichEditor.EditableWebView;
-import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.IImagePicker;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.TextColor;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.Youtube;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -486,20 +485,36 @@ public class WysiwygEditor extends LinearLayout {
     /**
      * Вставка выбранных изображений.
      * @param imagesFileNames
-     */
+     *//*
+
     public void onSelectImages(List<String> imagesFileNames) {
         if (imagesFileNames == null)
             return;
-        for (String fileName : imagesFileNames) {
-            webView.insertImage(fileName, null);
-        }
-        if (!imagesFileNames.isEmpty()) {
+        int size = imagesFileNames.size();
+        if (size > 0) {
+            if (size == 1) {
+                // обрабатываем изображение только когда выбран один файл
+                showEditImageDialog(imagesFileNames.get(0));
+            } else {
+                for (String fileName : imagesFileNames) {
+                    webView.insertImage(fileName, null);
+                }
+            }
             setIsEdited();
         }
     }
+*/
 
-    private void showEditImageDialog() {
-
+    /**
+     * Обработка изображения перед добавлением.
+     * @param imageFullName
+     * @param srcWidth
+     * @param srcHeight
+     */
+    protected void showEditImageDialog(String imageFullName, int srcWidth, int srcHeight) {
+        Dialogs.createImageDimensDialog(getContext(), srcWidth, srcHeight, (width, height) -> {
+            webView.insertImage(imageFullName, width, height);
+        });
     }
 
     /**

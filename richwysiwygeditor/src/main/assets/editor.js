@@ -279,7 +279,7 @@ RE.insertLine = function() {
 }
 
 RE.insertImage = function(url, alt) {
-    var html = '<img src="' + url + '"' + (alt != null) ? ' alt="' + alt + '"' : '' + '/><br>';
+    var html = '<img src="' + url + '"' + (alt != null) ? ' alt="' + alt + '"' : '' + '/>';
     RE.insertHTML(html);
 }
 

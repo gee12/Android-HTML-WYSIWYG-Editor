@@ -52,8 +52,9 @@ public class Dialogs {
         EditText etSize = builder.getView().findViewById(R.id.edit_text_size);
         if (curSize >= 1 && curSize <= 7) {
             etSize.setText(String.format(Locale.getDefault(), "%d", curSize));
-            etSize.setSelection(0, etSize.getText().length());
         }
+        etSize.setSelection(0, etSize.getText().length());
+
         builder.setPositiveButton(R.string.answer_ok, (dialog1, which) -> {
             int size = Integer.parseInt(etSize.getText().toString());
             handler.onApply(size);
@@ -97,9 +98,10 @@ public class Dialogs {
         EditText etWidth = builder.getView().findViewById(R.id.edit_text_width);
         if (curWidth > 0) {
             etWidth.setText(String.format(Locale.getDefault(), "%d", curWidth));
-            etWidth.setSelection(0, etWidth.getText().length());
-            etWidth.requestFocus();
         }
+        etWidth.setSelection(0, etWidth.getText().length());
+//        etWidth.requestFocus();
+
         EditText etHeight = builder.getView().findViewById(R.id.edit_text_height);
         if (curHeight > 0) {
             etHeight.setText(String.format(Locale.getDefault(), "%d", curHeight));
