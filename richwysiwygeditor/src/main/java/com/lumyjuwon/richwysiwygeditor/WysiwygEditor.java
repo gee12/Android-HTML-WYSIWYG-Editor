@@ -1,8 +1,12 @@
 package com.lumyjuwon.richwysiwygeditor;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -530,16 +534,29 @@ public class WysiwygEditor extends LinearLayout {
 
     /**
      *
-     * @param anchor
+     * @param anchorView
      * @param contentViewId
      * @return
      */
-    private PopupWindow createPopupWindow(View anchor, int contentViewId) {
+    private PopupWindow createPopupWindow(View anchorView, int contentViewId) {
         View popupView = layoutInflater.inflate(contentViewId, null);
         PopupWindow popupWindow = new PopupWindow(popupView,
                 RelativeLayout.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        popupWindow.setFocusable(false); // если true - не будет кликабельно все вокруг popup
+        popupWindow.setOutsideTouchable(true); // true - клик за пределами popup закрывает его
+            // (в Android 4.4 не работает)
+        popupWindow.setBackgroundDrawable(new ColorDrawable()); // чтобы заработал setOutsideTouchable()
         popupWindow.setAnimationStyle(-1); // -1 - генерация анимации, 0 - отключить анимацию
-        popupWindow.showAsDropDown(anchor, 0, +15);
+        int xoff = 0;
+        int yoff = +10;
+        if (Build.VERSION.SDK_INT < 24) {
+            popupWindow.showAsDropDown(anchorView, xoff, yoff);
+        } else {
+            int[] location = new int[2];
+            anchorView.getLocationInWindow(location);
+            popupWindow.showAtLocation(((Activity)getContext()).getWindow().getDecorView(),
+                    Gravity.NO_GRAVITY, location[0] + xoff, location[1] - anchorView.getMeasuredHeight() - yoff);
+        }
         return popupWindow;
     }
 
