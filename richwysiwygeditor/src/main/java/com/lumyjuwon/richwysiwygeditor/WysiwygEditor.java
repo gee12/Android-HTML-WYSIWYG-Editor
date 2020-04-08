@@ -23,7 +23,7 @@ import com.gee12.htmlwysiwygeditor.ActionType;
 import com.gee12.htmlwysiwygeditor.ColorUtils;
 import com.gee12.htmlwysiwygeditor.Dialogs;
 import com.lumyjuwon.richwysiwygeditor.RichEditor.EditableWebView;
-import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.ImgPicker;
+import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.IImagePicker;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.TextColor;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.Youtube;
 
@@ -64,7 +64,7 @@ public class WysiwygEditor extends LinearLayout {
     private int curTextSize;
     protected boolean mIsEdited;
     protected String mImagesFolder;
-    protected ImgPicker.IImgPicker mImgPickerCallback;
+    protected IImagePicker mImgPickerCallback;
 
     public WysiwygEditor(Context context) {
         super(context);
@@ -586,7 +586,7 @@ public class WysiwygEditor extends LinearLayout {
 //        this.mImagesFolder = folderFullPath;
 //    }
 
-    public void setImgPickerCallback(ImgPicker.IImgPicker callback) {
+    public void setImgPickerCallback(IImagePicker callback) {
         this.mImgPickerCallback = callback;
     }
 

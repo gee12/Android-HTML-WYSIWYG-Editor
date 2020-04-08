@@ -7,28 +7,24 @@
     android:padding="16dp">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/link"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:text="@string/width_points"
+        style="@style/Label" />
 
     <EditText
-        android:id="@+id/edit_text_link"
+        android:id="@+id/edit_text_width"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/link_example"
-        android:inputType="textUri" />
+        android:inputType="numberDecimal" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/title"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:text="@string/height_points"
+        style="@style/Label" />
 
     <EditText
-        android:id="@+id/edit_text_title"
+        android:id="@+id/edit_text_height"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textUri" />
+        android:inputType="numberDecimal" />
 
 </LinearLayout>

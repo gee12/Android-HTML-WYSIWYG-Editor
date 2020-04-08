@@ -30,12 +30,14 @@ public class Dialogs {
 
     public interface ITextSizeResult {
         void onApply(int size);
-//        void onCancel();
     }
 
     public interface IInsertLinkResult {
         void onApply(String link, String title);
-//        void onCancel();
+    }
+
+    public interface IImageDimensResult {
+        void onApply(int width, int height);
     }
 
     /**
@@ -73,28 +75,70 @@ public class Dialogs {
 
         // получаем okButton тут отдельно после вызова show()
         final Button okButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        etSize.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) { }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (TextUtils.isEmpty(s)) {
-                    okButton.setEnabled(false);
-                } else {
-                    int size = Integer.parseInt(etSize.getText().toString());
-                    okButton.setEnabled(size >= 1 && size <= 7);
-                }
+        etSize.addTextChangedListener(new DimenTextWatcher(newText -> {
+            if (TextUtils.isEmpty(newText)) {
+                okButton.setEnabled(false);
+            } else {
+                int size = Integer.parseInt(etSize.getText().toString());
+                okButton.setEnabled(size >= 1 && size <= 7);
             }
-        });
-
+        }));
     }
 
     /**
-     *
+     * Диалог ввода размера изображения.
+     * Значение должно быть > 0.
+     * @param context
+     * @param handler
+     */
+    public static void createImageDimensDialog(Context context, int curWidth, int curHeight, IImageDimensResult handler) {
+        AskDialogBuilder builder = AskDialogBuilder.create(context, R.layout.dialog_edit_image);
+
+        EditText etWidth = builder.getView().findViewById(R.id.edit_text_width);
+        if (curWidth > 0) {
+            etWidth.setText(String.format(Locale.getDefault(), "%d", curWidth));
+            etWidth.setSelection(0, etWidth.getText().length());
+            etWidth.requestFocus();
+        }
+        EditText etHeight = builder.getView().findViewById(R.id.edit_text_height);
+        if (curHeight > 0) {
+            etHeight.setText(String.format(Locale.getDefault(), "%d", curHeight));
+        }
+        builder.setPositiveButton(R.string.answer_ok, (dialog1, which) -> {
+            int width = Integer.parseInt(etWidth.getText().toString());
+            int height = Integer.parseInt(etHeight.getText().toString());
+            handler.onApply(width, height);
+        }).setNegativeButton(R.string.answer_cancel, null);
+
+        final AlertDialog dialog = builder.create();
+
+        dialog.setOnShowListener(dialog12 -> {
+            // получаем okButton уже после вызова show()
+            final Button okButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            if (TextUtils.isEmpty(etWidth.getText().toString())
+                || TextUtils.isEmpty(etHeight.getText().toString())) {
+                okButton.setEnabled(false);
+            }
+//                Keyboard.showKeyboard(etWidth);
+            Keyboard.showKeyboard(builder.getView());
+        });
+
+        dialog.show();
+
+        // получаем okButton тут отдельно после вызова show()
+        final Button okButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        etWidth.addTextChangedListener(new DimenTextWatcher(newText -> {
+            if (TextUtils.isEmpty(newText)) {
+                okButton.setEnabled(false);
+            } else {
+                int dimen = Integer.parseInt(newText);
+                okButton.setEnabled(dimen > 0);
+            }
+        }));
+    }
+
+    /**
+     * Диалог ввода url ссылки.
      * @param context
      * @param onlyLink
      * @param handler
@@ -103,8 +147,9 @@ public class Dialogs {
         AskDialogBuilder builder = AskDialogBuilder.create(context, R.layout.dialog_insert_link);
         EditText etLink = builder.getView().findViewById(R.id.edit_text_link);
         EditText etTitle = builder.getView().findViewById(R.id.edit_text_title);
-        if (onlyLink)
+        if (onlyLink) {
             etTitle.setVisibility(View.GONE);
+        }
         builder.setPositiveButton(R.string.answer_ok, (dialog1, which) ->
                 handler.onApply(etLink.getText().toString(), etTitle.getText().toString()))
             .setNegativeButton(R.string.answer_cancel, null)
@@ -144,6 +189,37 @@ public class Dialogs {
             dialogBuilder.setView(dialogView);
             dialogBuilder.setCancelable(true);
             return dialogBuilder;
+        }
+    }
+
+    interface ITextChanged {
+        void onTextChanged(String newText);
+    }
+
+    /**
+     *
+     */
+    static class DimenTextWatcher implements TextWatcher {
+
+        ITextChanged mTextChangedCallback;
+
+        public DimenTextWatcher(ITextChanged callback) {
+            this.mTextChangedCallback = callback;
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (mTextChangedCallback != null) {
+                mTextChangedCallback.onTextChanged(s.toString());
+            }
         }
     }
 }

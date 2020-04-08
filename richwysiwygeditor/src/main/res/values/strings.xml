@@ -17,6 +17,6 @@
     <string name="title">Title</string>
     <string name="text_size_hint">Value 1–7</string>
     <string name="link_example">URL or Mytetra link</string>
-    <string name="confirm_selected_images">Confirm</string>
-    <string name="title_gallery">Gallery</string>
+    <string name="width_points">Width (points)</string>
+    <string name="height_points">Height (points)</string>
 </resources>
