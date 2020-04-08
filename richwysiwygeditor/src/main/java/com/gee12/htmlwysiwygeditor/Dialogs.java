@@ -100,7 +100,6 @@ public class Dialogs {
             etWidth.setText(String.format(Locale.getDefault(), "%d", curWidth));
         }
         etWidth.setSelection(0, etWidth.getText().length());
-//        etWidth.requestFocus();
 
         EditText etHeight = builder.getView().findViewById(R.id.edit_text_height);
         if (curHeight > 0) {
