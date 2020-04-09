@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#EEE"
+        android:background="@color/toolbar_background"
         android:scrollbars="none">
 <!--        android:background="@drawable/bottom_border_white"-->
 

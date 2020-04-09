@@ -66,7 +66,7 @@ public class Dialogs {
             if (TextUtils.isEmpty(etSize.getText().toString())) {
                 okButton.setEnabled(false);
             }
-//            etSize.setSelection(0, etSize.getText().length());
+            etSize.setSelection(etSize.getText().length());
 //            Keyboard.showKeyboard(etSize);
         });
 
@@ -117,7 +117,7 @@ public class Dialogs {
                 || TextUtils.isEmpty(etHeight.getText().toString())) {
                 okButton.setEnabled(false);
             }
-//            etWidth.setSelection(0, etWidth.getText().length());
+            etWidth.setSelection(etWidth.getText().length());
 //            Keyboard.showKeyboard(etWidth);
         });
 
