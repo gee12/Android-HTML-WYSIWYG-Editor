@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
 import com.lumyjuwon.richwysiwygeditor.R;
-import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.Keyboard;
 
 import java.util.Locale;
 
@@ -53,7 +52,6 @@ public class Dialogs {
         if (curSize >= 1 && curSize <= 7) {
             etSize.setText(String.format(Locale.getDefault(), "%d", curSize));
         }
-        etSize.setSelection(0, etSize.getText().length());
 
         builder.setPositiveButton(R.string.answer_ok, (dialog1, which) -> {
             int size = Integer.parseInt(etSize.getText().toString());
@@ -68,8 +66,8 @@ public class Dialogs {
             if (TextUtils.isEmpty(etSize.getText().toString())) {
                 okButton.setEnabled(false);
             }
-//                Keyboard.showKeyboard(etSize);
-            Keyboard.showKeyboard(builder.getView());
+//            etSize.setSelection(0, etSize.getText().length());
+//            Keyboard.showKeyboard(etSize);
         });
 
         dialog.show();
@@ -99,7 +97,6 @@ public class Dialogs {
         if (curWidth > 0) {
             etWidth.setText(String.format(Locale.getDefault(), "%d", curWidth));
         }
-        etWidth.setSelection(0, etWidth.getText().length());
 
         EditText etHeight = builder.getView().findViewById(R.id.edit_text_height);
         if (curHeight > 0) {
@@ -120,8 +117,8 @@ public class Dialogs {
                 || TextUtils.isEmpty(etHeight.getText().toString())) {
                 okButton.setEnabled(false);
             }
-//                Keyboard.showKeyboard(etWidth);
-            Keyboard.showKeyboard(builder.getView());
+//            etWidth.setSelection(0, etWidth.getText().length());
+//            Keyboard.showKeyboard(etWidth);
         });
 
         dialog.show();
