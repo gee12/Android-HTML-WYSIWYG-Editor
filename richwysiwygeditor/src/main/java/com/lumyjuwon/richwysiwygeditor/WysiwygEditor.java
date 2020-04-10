@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -27,6 +26,7 @@ import com.gee12.htmlwysiwygeditor.ActionType;
 import com.gee12.htmlwysiwygeditor.ColorUtils;
 import com.gee12.htmlwysiwygeditor.Dialogs;
 import com.gee12.htmlwysiwygeditor.IImagePicker;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.lumyjuwon.richwysiwygeditor.RichEditor.EditableWebView;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.TextColor;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.Youtube;
@@ -68,6 +68,7 @@ public class WysiwygEditor extends LinearLayout {
     protected boolean mIsEdited;
     protected String mImagesFolder;
     protected IImagePicker mImgPickerCallback;
+    private FloatingActionButton bScrollDown;
 
     public WysiwygEditor(Context context) {
         super(context);
@@ -94,12 +95,7 @@ public class WysiwygEditor extends LinearLayout {
         webView = findViewById(R.id.web_view);
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null); // sdk 19 ChromeWebView ?
         webView.setOnTextChangeListener(text -> setIsEdited(true) );
-        webView.setOnStateChangeListener((text, types) ->  webView.post(new Runnable() {
-            @Override
-            public void run() {
-                updateButtonsState(types);
-            }
-        }));
+        webView.setOnStateChangeListener((text, types) ->  webView.post(() -> updateButtonsState(types)));
 
         webView.setOnPageLoadListener(new EditableWebView.IPageLoadListener() {
             @Override
@@ -119,19 +115,54 @@ public class WysiwygEditor extends LinearLayout {
 
         // FIXME: обработчик не запустится, т.к. переопределяется в активности
 
-        webView.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                closePopupWindow();
-                return false;
-            }
-        });
+//        webView.setOnTouchListener((v, event) -> {
+//            closePopupWindow();
+//            return false;
+//        });
+
+        addScrollButtons();
 
         // toolBar
         this.toolBarPanel = findViewById(R.id.layout_toolbar);
         this.layoutButtons = findViewById(R.id.layout_toolbar_buttons);
 
         initToolbar();
+    }
+
+    /**
+     * Кнопки для пролистывания по конца вниз/вверх.
+     */
+    private void addScrollButtons() {
+        FloatingActionButton bScrollDown = findViewById(R.id.button_scroll_down);
+        FloatingActionButton bScrollUp = findViewById(R.id.button_scroll_top);
+        bScrollDown.setVisibility(VISIBLE);
+        webView.setScrollListener(new EditableWebView.IScrollListener() {
+            @Override
+            public void onScrolledToTop() {
+                bScrollDown.setVisibility(VISIBLE);
+            }
+
+            @Override
+            public void onScrolledToBottom() {
+                bScrollUp.setVisibility(VISIBLE);
+            }
+
+            @Override
+            public void onScrolled() {
+                bScrollDown.setVisibility(GONE);
+                bScrollUp.setVisibility(GONE);
+            }
+        });
+        final int density = (int) (getResources().getDisplayMetrics().density);
+        bScrollDown.setOnClickListener(v -> {
+            webView.scrollTo(0, webView.getContentHeight() * density);
+            bScrollDown.setVisibility(GONE);
+        });
+
+        bScrollUp.setOnClickListener(v -> {
+            webView.scrollTo(0, 0);
+            bScrollUp.setVisibility(GONE);
+        });
     }
 
     protected void initToolbar() {

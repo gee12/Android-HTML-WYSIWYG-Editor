@@ -73,6 +73,12 @@ public class EditableWebView extends WebView {
         void onReceiveEditableHtml(String htmlText);
     }
 
+    public interface IScrollListener {
+        void onScrolled();
+        void onScrolledToTop();
+        void onScrolledToBottom();
+    }
+
     /**
      * Class with methods to be called from javascript page.
      */
@@ -110,6 +116,7 @@ public class EditableWebView extends WebView {
     private ILinkLoadListener mUrlLoadListener;
     private IHtmlReceiveListener mReceiveHtmlListener;
     private IYoutubeLinkLoadListener mLoadYoutubeLinkListener;
+    private IScrollListener mScrollListener;
 
     public EditableWebView(Context context) {
         this(context, null);
@@ -559,6 +566,21 @@ public class EditableWebView extends WebView {
         return mBaseUrl;
     }
 
+    @Override
+    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+        super.onScrollChanged(l, t, oldl, oldt);
+        if (mScrollListener != null) {
+            if (!canScrollVertically(1)) {
+                mScrollListener.onScrolledToBottom();
+            }
+            else if (!canScrollVertically(-1)) {
+                mScrollListener.onScrolledToTop();
+            } else {
+                mScrollListener.onScrolled();
+            }
+        }
+    }
+
     /**
      *
      * @param listener
@@ -585,6 +607,10 @@ public class EditableWebView extends WebView {
 
     public void setYoutubeLoadLinkListener(IYoutubeLinkLoadListener listener) {
         this.mLoadYoutubeLinkListener = listener;
+    }
+
+    public void setScrollListener(IScrollListener listener) {
+        this.mScrollListener = listener;
     }
 
     private void onPageLoading() {
