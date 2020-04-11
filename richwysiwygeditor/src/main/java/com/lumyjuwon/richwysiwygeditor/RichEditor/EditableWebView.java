@@ -9,6 +9,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -45,23 +46,20 @@ public class EditableWebView extends WebView {
     public static final String JAVASCRIPT = "javascript:";
 
     public interface ITextChangeListener {
-
         void onTextChange(String text);
     }
 
     public interface ITextStateListener {
-
         void onStateChange(String text, Map<ActionType, String> types);
     }
 
     public interface IPageLoadListener {
-
         void onPageStartLoading();
         void onPageLoaded();
+        void onEditorJSLoaded();
     }
 
     public interface ILinkLoadListener {
-
         boolean onLinkLoad(String url);
     }
 
@@ -92,7 +90,7 @@ public class EditableWebView extends WebView {
         }
 
         @android.webkit.JavascriptInterface
-        public void stateChange(String formatsAsQuery, String selectedText) {
+        public void stateChange(String formatsAsQuery/*, String selectedText*/) {
             EditableWebView.this.onStateChanged(formatsAsQuery);
         }
 
@@ -106,6 +104,8 @@ public class EditableWebView extends WebView {
     public static final String EDITOR_JS_FILE = "editor.js";
 
     private boolean mIsPageLoaded = false;
+    private boolean mIsEditorJSLoaded = false;
+    private boolean mIsHtmlRequestMade = false;
     private boolean mIsEditMode = false;
     private String mHtml;
     private String mBaseUrl;
@@ -143,12 +143,12 @@ public class EditableWebView extends WebView {
      * Page load event handler (caused by WebView).
      */
     public void onPageLoaded() {
-        // load main javascript code
+/*        // load main javascript code
         loadEditorScript();
         // send first javascript request to receive page html
 //        if (!mIsPageLoaded) {
             makeEditableHtmlRequest();
-//        }
+//        }*/
         this.mIsPageLoaded = true;
 
         if (mPageListener != null) {
@@ -156,18 +156,33 @@ public class EditableWebView extends WebView {
         }
     }
 
-    public void loadEditorScript() {
-        byte[] buffer = Utils.readFileFromAssets(getContext(), EDITOR_JS_FILE);
-        if (buffer != null) {
-            load(JAVASCRIPT + new String(buffer));
+    public void loadEditorJSScript(boolean isMakeHtmlRequest) {
+        if (!mIsEditorJSLoaded) {
+//            this.mIsJavaScriptLoaded = true;
+
+            byte[] buffer = Utils.readFileFromAssets(getContext(), EDITOR_JS_FILE);
+            if (buffer != null) {
+                load(JAVASCRIPT + new String(buffer), value -> {
+                    this.mIsEditorJSLoaded = true;
+                    if (mPageListener != null) {
+                        mPageListener.onEditorJSLoaded();
+                    }
+                    if (isMakeHtmlRequest) {
+                        makeEditableHtmlRequest();
+                    }
+                });
+            }
+        } else if (isMakeHtmlRequest) {
+            makeEditableHtmlRequest();
         }
     }
 
     /**
-     * Запрос на получение html-текста редактируемого фрагмента страницы.
+     * Запрос на получение html-кода редактируемого фрагмента страницы.
      */
     public void makeEditableHtmlRequest() {
-            load(JAVASCRIPT + "Android.receiveHtml(RE.getHtml());");
+        load(JAVASCRIPT + "Android.receiveHtml(RE.getHtml());", null);
+        this.mIsHtmlRequestMade = true;
     }
 
     private void onReceiveEditableHtml(String html) {
@@ -264,7 +279,7 @@ public class EditableWebView extends WebView {
      */
     protected void exec(final String trigger) {
         if (mIsPageLoaded) {
-            load(trigger);
+            load(trigger, null);
         } else {
             postDelayed(new Runnable() {
                 @Override
@@ -279,9 +294,9 @@ public class EditableWebView extends WebView {
      *
      * @param trigger
      */
-    private void load(String trigger) {
+    private void load(String trigger, ValueCallback<String> callback) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            evaluateJavascript(trigger, null);
+            evaluateJavascript(trigger, callback);
         } else {
             loadUrl(trigger);
         }
@@ -566,6 +581,14 @@ public class EditableWebView extends WebView {
         return mBaseUrl;
     }
 
+    public boolean isEditorJSLoaded() {
+        return mIsEditorJSLoaded;
+    }
+
+    public boolean isHtmlRequestMade() {
+        return mIsHtmlRequestMade;
+    }
+
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
@@ -614,6 +637,8 @@ public class EditableWebView extends WebView {
     }
 
     private void onPageLoading() {
+        this.mIsEditorJSLoaded = false;
+        this.mIsHtmlRequestMade = false;
         if (mPageListener != null)
             mPageListener.onPageStartLoading();
     }
@@ -632,6 +657,7 @@ public class EditableWebView extends WebView {
 
     @Override
     public void loadData(String data, @Nullable String mimeType, @Nullable String encoding) {
+        this.mHtml = data;
         super.loadData(data, mimeType, encoding);
         onPageLoading();
     }
@@ -639,6 +665,7 @@ public class EditableWebView extends WebView {
     @Override
     public void loadDataWithBaseURL(@Nullable String baseUrl, String data, @Nullable String mimeType, @Nullable String encoding, @Nullable String historyUrl) {
         this.mBaseUrl = baseUrl;
+        this.mHtml = data;
         super.loadDataWithBaseURL(baseUrl, data, mimeType, encoding, historyUrl);
         onPageLoading();
     }

@@ -102,7 +102,7 @@ RE.stateChange = function() {
     }
 
     var formatsAsQuery = items.join('&');
-    Android.stateChange(formatsAsQuery, RE.getText());
+    Android.stateChange(formatsAsQuery/*, RE.getText()*/);
 }
 
 function encodeParam(attr) {

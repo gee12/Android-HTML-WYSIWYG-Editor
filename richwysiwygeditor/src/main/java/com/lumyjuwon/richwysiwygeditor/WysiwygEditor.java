@@ -56,16 +56,16 @@ import java.util.Map;
 
 public class WysiwygEditor extends LinearLayout {
 
-    protected LayoutInflater layoutInflater;
-    protected EditableWebView webView;
-    protected PopupWindow popupWindow;
-    protected HorizontalScrollView toolBarPanel;
-    protected LinearLayout layoutButtons;
-    protected ProgressBar progressBar;
-    protected Map<ActionType, ActionButton> actionButtons;
+    protected LayoutInflater mLayoutInflater;
+    protected EditableWebView mWebView;
+    protected PopupWindow mPopupWindow;
+    protected HorizontalScrollView mToolBarPanel;
+    protected LinearLayout mLayoutButtons;
+    protected ProgressBar mProgressBar;
+    protected Map<ActionType, ActionButton> mActionButtons;
     protected EditableWebView.IPageLoadListener mPageLoadListener;
 //    protected boolean isActivateAllButtons = true;
-    private int curTextSize;
+    private int mCurTextSize;
     protected boolean mIsEdited;
     protected IImagePicker mImgPickerCallback;
     private FloatingActionButton mButtonScrollDown;
@@ -89,30 +89,33 @@ public class WysiwygEditor extends LinearLayout {
 
     private void init(){
         inflate(getContext(), R.layout.layout_editor, this);
-        this.layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.mLayoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        this.progressBar = findViewById(R.id.progress_bar);
+        this.mProgressBar = findViewById(R.id.progress_bar);
 
         // webView
-        webView = findViewById(R.id.web_view);
-        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null); // sdk 19 ChromeWebView ?
-        webView.setOnTextChangeListener(text -> setIsEdited(true) );
-        webView.setOnStateChangeListener((text, types) ->  webView.post(() -> updateButtonsState(types)));
+        mWebView = findViewById(R.id.web_view);
+        mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null); // sdk 19 ChromeWebView ?
+        mWebView.setOnTextChangeListener(text -> setIsEdited(true) );
+        mWebView.setOnStateChangeListener((text, types) ->  mWebView.post(() -> updateButtonsState(types)));
 
-        webView.setOnPageLoadListener(new EditableWebView.IPageLoadListener() {
+        mWebView.setOnPageLoadListener(new EditableWebView.IPageLoadListener() {
             @Override
             public void onPageStartLoading() {
-                progressBar.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.VISIBLE);
                 if (mPageLoadListener != null)
                     mPageLoadListener.onPageStartLoading();
             }
 
             @Override
             public void onPageLoaded() {
-                progressBar.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.GONE);
                 if (mPageLoadListener != null)
                     mPageLoadListener.onPageLoaded();
             }
+
+            @Override
+            public void onEditorJSLoaded() {}
         });
 
         // FIXME: обработчик не запустится, т.к. переопределяется в активности
@@ -125,8 +128,8 @@ public class WysiwygEditor extends LinearLayout {
         addScrollButtons();
 
         // toolBar
-        this.toolBarPanel = findViewById(R.id.layout_toolbar);
-        this.layoutButtons = findViewById(R.id.layout_toolbar_buttons);
+        this.mToolBarPanel = findViewById(R.id.layout_toolbar);
+        this.mLayoutButtons = findViewById(R.id.layout_toolbar_buttons);
 
         initToolbar();
     }
@@ -158,20 +161,20 @@ public class WysiwygEditor extends LinearLayout {
 //        webView.setScrollListener(mScrollListener);
         final int density = (int) (getResources().getDisplayMetrics().density);
         mButtonScrollDown.setOnClickListener(v -> {
-            webView.scrollTo(0, webView.getContentHeight() * density);
+            mWebView.scrollTo(0, mWebView.getContentHeight() * density);
             mButtonScrollDown.setVisibility(GONE);
         });
 
         mButtonScrollUp.setOnClickListener(v -> {
-            webView.scrollTo(0, 0);
+            mWebView.scrollTo(0, 0);
             mButtonScrollUp.setVisibility(GONE);
         });
     }
 
     protected void initToolbar() {
-        this.actionButtons = new HashMap<>();
-        for (int i = 0; i < layoutButtons.getChildCount(); i++) {
-            View view = layoutButtons.getChildAt(i);
+        this.mActionButtons = new HashMap<>();
+        for (int i = 0; i < mLayoutButtons.getChildCount(); i++) {
+            View view = mLayoutButtons.getChildAt(i);
             if (view instanceof ActionButton) {
                 initActionButton((ActionButton) view);
             }
@@ -233,7 +236,7 @@ public class WysiwygEditor extends LinearLayout {
     protected void initActionButton(ActionButton button, ActionType type, boolean isCheckable, boolean isPopup) {
         button.init(type, isCheckable, isPopup, true);
         button.setOnClickListener(v -> onClickActionButton((ActionButton) v));
-        actionButtons.put(type, button);
+        mActionButtons.put(type, button);
     }
 
 //    private ActionButton addActionButton(ActionType type, int imageId, boolean isCheckable, boolean isPopup) {
@@ -249,10 +252,10 @@ public class WysiwygEditor extends LinearLayout {
      * @param types
      */
     private void updateButtonsState(Map<ActionType, String> types) {
-        ArrayList<ActionButton> buttons = new ArrayList<>(actionButtons.values());
+        ArrayList<ActionButton> buttons = new ArrayList<>(mActionButtons.values());
 
         for (Map.Entry<ActionType,String> type : types.entrySet()){
-            ActionButton button = actionButtons.get(type.getKey());
+            ActionButton button = mActionButtons.get(type.getKey());
             if (button == null) continue;
             String value = type.getValue();
 
@@ -260,7 +263,7 @@ public class WysiwygEditor extends LinearLayout {
                 case TEXT_SIZE:
                     if (!TextUtils.isEmpty(value)) {
                         try {
-                            this.curTextSize = Integer.parseInt(value);
+                            this.mCurTextSize = Integer.parseInt(value);
                         } catch (Exception ignored) {}
                     }
                     break;
@@ -304,32 +307,32 @@ public class WysiwygEditor extends LinearLayout {
 //        clearPopupButton();
 //        webView.clearAndFocusEditor();
         switch (button.getType()) {
-            case UNDO: webView.undo(); break;
-            case REDO: webView.redo(); break;
+            case UNDO: mWebView.undo(); break;
+            case REDO: mWebView.redo(); break;
             case TEXT_SIZE: showTextSizePopupWindow(button); break;
-            case BOLD: webView.setBold(); break;
-            case ITALIC: webView.setItalic(); break;
-            case UNDERLINE: webView.setUnderline(); break;
-            case STRIKETHROUGH: webView.setStrikeThrough(); break;
+            case BOLD: mWebView.setBold(); break;
+            case ITALIC: mWebView.setItalic(); break;
+            case UNDERLINE: mWebView.setUnderline(); break;
+            case STRIKETHROUGH: mWebView.setStrikeThrough(); break;
             case TEXT_COLOR: showColorPopupWindow(button); break;
 //            case BACKGROUND_COLOR: showBackgroundColorPopupWindow(button); break;
             case BACKGROUND_COLOR: showColorPopupWindow(button); break;
-            case CODE: webView.setCode(); break;
-            case QUOTE: webView.setBlockquote(); break;
+            case CODE: mWebView.setCode(); break;
+            case QUOTE: mWebView.setBlockquote(); break;
             case TEXT_ALIGN: showTextAlignPopupWindow(button); break;
-            case UNORDERED_LIST: webView.setBullets(); break;
-            case ORDERED_LIST: webView.setNumbers(); break;
-            case INDENT: webView.setIndent(); break;
-            case OUTDENT: webView.setOutdent(); break;
+            case UNORDERED_LIST: mWebView.setBullets(); break;
+            case ORDERED_LIST: mWebView.setNumbers(); break;
+            case INDENT: mWebView.setIndent(); break;
+            case OUTDENT: mWebView.setOutdent(); break;
 
-            case INSERT_LINE: webView.insertLine(); break;
+            case INSERT_LINE: mWebView.insertLine(); break;
             case INSERT_LINK: showLinkPopupWindow(button); break;
             case INSERT_IMAGE: showImagePopupWindow(button); break;
             case INSERT_VIDEO: showVideoPopupWindow(button); break;
             case INSERT_TABLE: break;
             case INSERT_FORMULA: break;
 
-            case REMOVE_FORMAT: webView.removeFormat(); break;
+            case REMOVE_FORMAT: mWebView.removeFormat(); break;
         }
         // теперь вызывается stateChange
 //        if (button.isCheckable() && !button.isPopup()) {
@@ -348,8 +351,8 @@ public class WysiwygEditor extends LinearLayout {
     private void showTextSizePopupWindow(ActionButton button) {
         if (button == null) return;
 
-        Dialogs.createTextSizeDialog(getContext(), curTextSize, (size) -> {
-            webView.setFontSize(size);
+        Dialogs.createTextSizeDialog(getContext(), mCurTextSize, (size) -> {
+            mWebView.setFontSize(size);
         });
 
     }
@@ -360,8 +363,8 @@ public class WysiwygEditor extends LinearLayout {
      */
     private void showColorPopupWindow(ActionButton button) {
         if (button == null) return;
-        this.popupWindow = createPopupWindow(button, R.layout.popup_text_color);
-        View contentView = popupWindow.getContentView();
+        this.mPopupWindow = createPopupWindow(button, R.layout.popup_text_color);
+        View contentView = mPopupWindow.getContentView();
 
         Context context = getContext().getApplicationContext();
         for (Integer key : TextColor.colorMap.keySet()){
@@ -370,9 +373,9 @@ public class WysiwygEditor extends LinearLayout {
             popupButton.setOnClickListener(view -> {
                 closePopupWindow();
                 if (button.getId() == R.id.button_text_color) {
-                    webView.setTextColor(ContextCompat.getColor(context, value));
+                    mWebView.setTextColor(ContextCompat.getColor(context, value));
                 } else {
-                    webView.setTextBackgroundColor(ContextCompat.getColor(context, value));
+                    mWebView.setTextBackgroundColor(ContextCompat.getColor(context, value));
                 }
                 setIsEdited();
                 // теперь вызывается stateChange
@@ -416,18 +419,18 @@ public class WysiwygEditor extends LinearLayout {
      */
     private void showTextAlignPopupWindow(ActionButton button) {
         if (button == null) return;
-        this.popupWindow = createPopupWindow(button, R.layout.popup_text_align);
-        View contentView = popupWindow.getContentView();
+        this.mPopupWindow = createPopupWindow(button, R.layout.popup_text_align);
+        View contentView = mPopupWindow.getContentView();
 
         OnClickListener listener = v -> {
            int id = v.getId();
            closePopupWindow();
            if (id == R.id.text_alignLeft)
-               webView.setAlignLeft();
+               mWebView.setAlignLeft();
            else if (id == R.id.text_alignCenter)
-               webView.setAlignCenter();
+               mWebView.setAlignCenter();
            else
-               webView.setAlignRight();
+               mWebView.setAlignRight();
            setIsEdited();
         };
         setClickListener(contentView, R.id.text_alignLeft, listener);
@@ -446,8 +449,8 @@ public class WysiwygEditor extends LinearLayout {
         boolean isLinkExist = button.isChecked();
 
         if (isLinkExist) {
-            this.popupWindow = createPopupWindow(button, R.layout.popup_link);
-            View contentView = popupWindow.getContentView();
+            this.mPopupWindow = createPopupWindow(button, R.layout.popup_link);
+            View contentView = mPopupWindow.getContentView();
 
             // кнопка изменения ссылки
             ImageButton bChangeLink = contentView.findViewById(R.id.popup_change_link);
@@ -457,7 +460,7 @@ public class WysiwygEditor extends LinearLayout {
                 // TODO: проверить
                 // диалог ввода ссылки (без заголовка)
                 Dialogs.createInsertLinkDialog(getContext(), true, (link, title) -> {
-                    webView.createLink(link);
+                    mWebView.createLink(link);
                     setIsEdited();
 //                    button.setCheckedState(true);
 //                webView.focusEditor();
@@ -468,7 +471,7 @@ public class WysiwygEditor extends LinearLayout {
             ImageButton bRemoveLink = contentView.findViewById(R.id.popup_remove_link);
             bRemoveLink.setOnClickListener(view -> {
                 closePopupWindow();
-                webView.removeLink();
+                mWebView.removeLink();
                 setIsEdited();
 //                button.setCheckedState(false);
 //                webView.focusEditor();
@@ -477,7 +480,7 @@ public class WysiwygEditor extends LinearLayout {
             // TODO: проверить
             // диалог ввода ссылки и заголовка
             Dialogs.createInsertLinkDialog(getContext(), false, (link, title) -> {
-                webView.insertLink(link, title);
+                mWebView.insertLink(link, title);
                 setIsEdited();
                 // теперь вызывается stateChange
 //                button.setCheckedState(true);
@@ -495,8 +498,8 @@ public class WysiwygEditor extends LinearLayout {
 //        closePopupWindow();
 //        clearPopupButton();
 
-        this.popupWindow = createPopupWindow(button, R.layout.popup_image);
-        View contentView = popupWindow.getContentView();
+        this.mPopupWindow = createPopupWindow(button, R.layout.popup_image);
+        View contentView = mPopupWindow.getContentView();
 
         OnClickListener listener = v -> {
             int id = v.getId();
@@ -551,7 +554,7 @@ public class WysiwygEditor extends LinearLayout {
      */
     protected void showEditImageDialog(String imageFullName, int srcWidth, int srcHeight) {
         Dialogs.createImageDimensDialog(getContext(), srcWidth, srcHeight, (width, height) -> {
-            webView.insertImage(imageFullName, width, height);
+            mWebView.insertImage(imageFullName, width, height);
         });
     }
 
@@ -563,7 +566,7 @@ public class WysiwygEditor extends LinearLayout {
         if (button == null) return;
         closePopupWindow();
         clearPopupButton();
-        Youtube.showYoutubeDialog(layoutInflater, webView, button);
+        Youtube.showYoutubeDialog(mLayoutInflater, mWebView, button);
     }
 
     /**
@@ -573,7 +576,7 @@ public class WysiwygEditor extends LinearLayout {
      * @return
      */
     private PopupWindow createPopupWindow(View anchorView, int contentViewId) {
-        View popupView = layoutInflater.inflate(contentViewId, null);
+        View popupView = mLayoutInflater.inflate(contentViewId, null);
         PopupWindow popupWindow = new PopupWindow(popupView,
                 RelativeLayout.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         popupWindow.setFocusable(false); // если true - не будет кликабельно все вокруг popup
@@ -598,9 +601,9 @@ public class WysiwygEditor extends LinearLayout {
      *
      */
     private void closePopupWindow(){
-        if (popupWindow != null) {
-            popupWindow.dismiss();
-            popupWindow = null;
+        if (mPopupWindow != null) {
+            mPopupWindow.dismiss();
+            mPopupWindow = null;
         }
     }
 
@@ -609,21 +612,21 @@ public class WysiwygEditor extends LinearLayout {
      * когда пользователь нажимает куда-то кроме всплывающей кнопки после ее нажатия.
      */
     private void clearPopupButton(){
-        for(ActionButton button : actionButtons.values()){
+        for(ActionButton button : mActionButtons.values()){
             if (button.isPopup()) {
                 button.setCheckedState(false);
             }
         }
     }
 
-    public void setScrollButtonsVisibility(boolean isVis) {
-        boolean canScrollToTop = webView.canScrollVertically(-1);
-        boolean canScrollToBottom = webView.canScrollVertically(1);
+    public void setScrollButtonsVisibility(boolean vis) {
+        boolean canScrollToTop = mWebView.canScrollVertically(-1);
+        boolean canScrollToBottom = mWebView.canScrollVertically(1);
         // нужно ли вообще отображать кнопки скроллинга (если контент полностью помещается)
         boolean canScroll = canScrollToTop || canScrollToBottom;
-        mButtonScrollDown.setVisibility(getVisibility(isVis && canScroll && !canScrollToTop));
-        mButtonScrollUp.setVisibility(getVisibility(isVis && canScroll && !canScrollToBottom));
-        webView.setScrollListener((isVis) ? mScrollListener : null);
+        mButtonScrollDown.setVisibility(getVisibility(vis && canScroll && !canScrollToTop));
+        mButtonScrollUp.setVisibility(getVisibility(vis && canScroll && !canScrollToBottom));
+        mWebView.setScrollListener((vis) ? mScrollListener : null);
     }
 
     public static int getVisibility(boolean isVisible) {
@@ -635,15 +638,19 @@ public class WysiwygEditor extends LinearLayout {
     }
 
     public EditableWebView getWebView(){
-        return webView;
+        return mWebView;
     }
 
-    public void setToolBarVisibility(boolean isVisible) {
-        toolBarPanel.setVisibility(getVisibility(isVisible));
+    public void setProgressBarVisibility(boolean vis) {
+        mProgressBar.setVisibility(getVisibility(vis));
+    }
+
+    public void setToolBarVisibility(boolean vis) {
+        mToolBarPanel.setVisibility(getVisibility(vis));
     }
 
     public void setEditMode(boolean isEditMode) {
-        webView.setInputEnabled(isEditMode);
+        mWebView.setInputEnabled(isEditMode);
     }
 
     public void setOnPageLoadListener(EditableWebView.IPageLoadListener listener) {
@@ -661,10 +668,6 @@ public class WysiwygEditor extends LinearLayout {
     public void setIsEdited(boolean isEdited) {
         this.mIsEdited = isEdited;
     }
-
-//    public void setImagesFolder(String folderFullPath) {
-//        this.mImagesFolder = folderFullPath;
-//    }
 
     public void setImgPickerCallback(IImagePicker callback) {
         this.mImgPickerCallback = callback;
