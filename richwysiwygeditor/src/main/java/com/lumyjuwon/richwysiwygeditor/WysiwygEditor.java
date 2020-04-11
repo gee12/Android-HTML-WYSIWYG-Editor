@@ -153,10 +153,25 @@ public class WysiwygEditor extends LinearLayout {
             }
 
             @Override
-            public void onScrolled() {
+            public void onScrolledVertical(int direction) {
+
+                // TODO: доделать
+
+                /*if (direction > 0) {
+                    mButtonScrollDown.setVisibility(VISIBLE);
+                    mButtonScrollUp.setVisibility(GONE);
+                } else {
+                    mButtonScrollUp.setVisibility(VISIBLE);
+                    mButtonScrollDown.setVisibility(GONE);
+                }*/
+            }
+
+            @Override
+            public void onScrollEnd() {
                 mButtonScrollDown.setVisibility(GONE);
                 mButtonScrollUp.setVisibility(GONE);
             }
+
         };
 //        webView.setScrollListener(mScrollListener);
         final int density = (int) (getResources().getDisplayMetrics().density);

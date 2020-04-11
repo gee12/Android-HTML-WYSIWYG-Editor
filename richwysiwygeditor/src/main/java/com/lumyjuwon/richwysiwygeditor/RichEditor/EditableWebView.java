@@ -72,9 +72,10 @@ public class EditableWebView extends WebView {
     }
 
     public interface IScrollListener {
-        void onScrolled();
+        void onScrolledVertical(int direction);
         void onScrolledToTop();
         void onScrolledToBottom();
+        void onScrollEnd();
     }
 
     /**
@@ -590,8 +591,8 @@ public class EditableWebView extends WebView {
     }
 
     @Override
-    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-        super.onScrollChanged(l, t, oldl, oldt);
+    protected void onScrollChanged(int x, int y, int oldX, int oldY) {
+        super.onScrollChanged(x, y, oldX, oldY);
         if (mScrollListener != null) {
             if (!canScrollVertically(1)) {
                 mScrollListener.onScrolledToBottom();
@@ -599,7 +600,14 @@ public class EditableWebView extends WebView {
             else if (!canScrollVertically(-1)) {
                 mScrollListener.onScrolledToTop();
             } else {
-                mScrollListener.onScrolled();
+                // положительно - вниз
+                // отрицательно - вверх
+                int direction = y - oldY;
+                if (Math.abs(direction) < 5) {
+                    mScrollListener.onScrollEnd();
+                } else {
+                    mScrollListener.onScrolledVertical(direction);
+                }
             }
         }
     }
