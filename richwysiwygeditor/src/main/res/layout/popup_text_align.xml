@@ -8,16 +8,16 @@
     <ImageButton
         android:id="@+id/text_alignLeft"
         app:srcCompat="@drawable/ic_align_left_black"
-        style="@style/ActionButton"/>
+        style="@style/action_button"/>
 
     <ImageButton
         android:id="@+id/text_alignCenter"
         app:srcCompat="@drawable/ic_align_center_black"
-        style="@style/ActionButton"/>
+        style="@style/action_button"/>
 
     <ImageButton
         android:id="@+id/text_alignRight"
         app:srcCompat="@drawable/ic_align_right_black"
-        style="@style/ActionButton"/>
+        style="@style/action_button"/>
 
 </LinearLayout>

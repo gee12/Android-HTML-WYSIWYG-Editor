@@ -47,19 +47,19 @@
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_undo"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:src="@drawable/ic_undo" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_redo"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:src="@drawable/ic_redo" />
 
-            <View style="@style/Separator"/>
+            <View style="@style/separ"/>
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_text_size"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:contentDescription="@string/text_size"
                 android:src="@drawable/ic_text_size_black" />
 
@@ -70,88 +70,88 @@
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_text_bold"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:contentDescription="@string/text_bold"
                 android:src="@drawable/ic_bold_black" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_text_italic"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:contentDescription="@string/text_italic"
                 android:src="@drawable/ic_italic" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_text_underLine"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:contentDescription="@string/text_align"
                 android:src="@drawable/ic_underline_black" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_text_strike"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:contentDescription="@string/text_strike"
                 android:src="@drawable/ic_strikethrough" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_text_color"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:contentDescription="@string/text_color"
                 android:src="@drawable/ic_text_color_black" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_background_color"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:contentDescription="@string/text_color"
                 android:src="@drawable/ic_background_color_black" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_code"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:src="@drawable/ic_code" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_quote"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:src="@drawable/ic_quote" />
 
-            <View style="@style/Separator"/>
+            <View style="@style/separ"/>
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_text_align"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:contentDescription="@string/text_align"
                 android:src="@drawable/ic_align_left_black" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_unordered_list"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:src="@drawable/ic_bullet_list" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_ordered_list"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:src="@drawable/ic_numbered_list" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_indent_inc"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:src="@drawable/ic_indent_inc" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_indent_dec"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:src="@drawable/ic_indent_dec" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_remove_format"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:src="@drawable/ic_clear_format"/>
 
-            <View style="@style/Separator"/>
+            <View style="@style/separ"/>
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_insert_link"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:contentDescription="@string/insert_link"
                 android:src="@drawable/ic_link"/>
 
@@ -163,30 +163,30 @@
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_insert_line"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:contentDescription="@string/insert_line"
                 android:src="@drawable/ic_line_black" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_insert_image"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:contentDescription="@string/insert_image"
                 android:src="@drawable/ic_image" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_insert_video"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:contentDescription="@string/insert_video"
                 android:src="@drawable/ic_video" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_insert_table"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:src="@drawable/ic_table" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_insert_formula"
-                style="@style/ActionButton"
+                style="@style/action_button"
                 android:src="@drawable/ic_formula" />
 
         </LinearLayout>
@@ -194,28 +194,23 @@
     </HorizontalScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/button_scroll_down"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentBottom="true"
-        android:src="@drawable/ic_arrow_down"
-        app:backgroundTint="@color/fab"
-        android:layout_marginTop="6dp"
-        android:layout_marginBottom="86dp"
-        android:layout_marginRight="6dp"
-        android:layout_marginLeft="6dp"
-        app:fabSize="mini"
-        android:visibility="gone"
-        style="@style/FloatingButtons"/>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button_scroll_top"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="false"
         android:src="@drawable/ic_arrow_up"
         app:backgroundTint="@color/fab"
-        android:layout_margin="6dp"
         app:fabSize="mini"
         android:visibility="gone"
-        style="@style/FloatingButtons"/>
+        style="@style/fab"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/button_scroll_down"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/ic_arrow_down"
+        app:backgroundTint="@color/fab"
+        app:fabSize="mini"
+        android:visibility="gone"
+        style="@style/fab"/>
 
 </RelativeLayout>

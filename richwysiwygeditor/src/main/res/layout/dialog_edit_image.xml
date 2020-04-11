@@ -8,7 +8,7 @@
 
     <TextView
         android:text="@string/width_points"
-        style="@style/Label" />
+        style="@style/label" />
 
     <EditText
         android:id="@+id/edit_text_width"
@@ -22,7 +22,7 @@
 
     <TextView
         android:text="@string/height_points"
-        style="@style/Label" />
+        style="@style/label" />
 
     <EditText
         android:id="@+id/edit_text_height"

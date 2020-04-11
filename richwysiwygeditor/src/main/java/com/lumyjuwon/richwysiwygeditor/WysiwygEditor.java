@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
@@ -66,9 +67,10 @@ public class WysiwygEditor extends LinearLayout {
 //    protected boolean isActivateAllButtons = true;
     private int curTextSize;
     protected boolean mIsEdited;
-    protected String mImagesFolder;
     protected IImagePicker mImgPickerCallback;
-    private FloatingActionButton bScrollDown;
+    private FloatingActionButton mButtonScrollDown;
+    private FloatingActionButton mButtonScrollUp;
+    private EditableWebView.IScrollListener mScrollListener;
 
     public WysiwygEditor(Context context) {
         super(context);
@@ -130,38 +132,39 @@ public class WysiwygEditor extends LinearLayout {
     }
 
     /**
-     * Кнопки для пролистывания по конца вниз/вверх.
+     * Кнопки для пролистывания WebView до упора вниз/вверх.
      */
     private void addScrollButtons() {
-        FloatingActionButton bScrollDown = findViewById(R.id.button_scroll_down);
-        FloatingActionButton bScrollUp = findViewById(R.id.button_scroll_top);
-        bScrollDown.setVisibility(VISIBLE);
-        webView.setScrollListener(new EditableWebView.IScrollListener() {
+        this.mButtonScrollDown = findViewById(R.id.button_scroll_down);
+        this.mButtonScrollUp = findViewById(R.id.button_scroll_top);
+//        mButtonScrollDown.setVisibility(VISIBLE);
+        this.mScrollListener = new EditableWebView.IScrollListener() {
             @Override
             public void onScrolledToTop() {
-                bScrollDown.setVisibility(VISIBLE);
+                mButtonScrollDown.setVisibility(VISIBLE);
             }
 
             @Override
             public void onScrolledToBottom() {
-                bScrollUp.setVisibility(VISIBLE);
+                mButtonScrollUp.setVisibility(VISIBLE);
             }
 
             @Override
             public void onScrolled() {
-                bScrollDown.setVisibility(GONE);
-                bScrollUp.setVisibility(GONE);
+                mButtonScrollDown.setVisibility(GONE);
+                mButtonScrollUp.setVisibility(GONE);
             }
-        });
+        };
+//        webView.setScrollListener(mScrollListener);
         final int density = (int) (getResources().getDisplayMetrics().density);
-        bScrollDown.setOnClickListener(v -> {
+        mButtonScrollDown.setOnClickListener(v -> {
             webView.scrollTo(0, webView.getContentHeight() * density);
-            bScrollDown.setVisibility(GONE);
+            mButtonScrollDown.setVisibility(GONE);
         });
 
-        bScrollUp.setOnClickListener(v -> {
+        mButtonScrollUp.setOnClickListener(v -> {
             webView.scrollTo(0, 0);
-            bScrollUp.setVisibility(GONE);
+            mButtonScrollUp.setVisibility(GONE);
         });
     }
 
@@ -613,6 +616,20 @@ public class WysiwygEditor extends LinearLayout {
         }
     }
 
+    public void setScrollButtonsVisibility(boolean isVis) {
+        boolean canScrollToTop = webView.canScrollVertically(-1);
+        boolean canScrollToBottom = webView.canScrollVertically(1);
+        // нужно ли вообще отображать кнопки скроллинга (если контент полностью помещается)
+        boolean canScroll = canScrollToTop || canScrollToBottom;
+        mButtonScrollDown.setVisibility(getVisibility(isVis && canScroll && !canScrollToTop));
+        mButtonScrollUp.setVisibility(getVisibility(isVis && canScroll && !canScrollToBottom));
+        webView.setScrollListener((isVis) ? mScrollListener : null);
+    }
+
+    public static int getVisibility(boolean isVisible) {
+        return (isVisible) ? ViewGroup.VISIBLE : ViewGroup.GONE;
+    }
+
     public void setClickListener(View parentView, int viewId, OnClickListener listener) {
         parentView.findViewById(viewId).setOnClickListener(listener);
     }
@@ -622,7 +639,7 @@ public class WysiwygEditor extends LinearLayout {
     }
 
     public void setToolBarVisibility(boolean isVisible) {
-        toolBarPanel.setVisibility((isVisible) ? VISIBLE : GONE);
+        toolBarPanel.setVisibility(getVisibility(isVisible));
     }
 
     public void setEditMode(boolean isEditMode) {

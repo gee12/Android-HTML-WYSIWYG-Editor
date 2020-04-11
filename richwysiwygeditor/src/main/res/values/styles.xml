@@ -17,20 +17,20 @@
         <item name="android:textColorPrimary">@color/black</item>
     </style>
 
-    <style name="ActionButton">
+    <style name="action_button">
         <item name="android:layout_width">@dimen/toolbar_icon_width_size</item>
         <item name="android:layout_height">@dimen/toolbar_icon_height_size</item>
         <item name="android:background">?attr/selectableItemBackground</item>
         <item name="android:scaleType">fitCenter</item>
     </style>
 
-    <style name="Label">
+    <style name="label">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
 
-    <style name="Separator">
+    <style name="separ">
         <item name="android:layout_width">1dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:background">#CCC</item>
@@ -40,12 +40,12 @@
         <item name="android:layout_marginBottom">3dp</item>
     </style>
 
-    <style name="FloatingButtons">
+    <style name="fab">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_alignParentBottom">true</item>
-        <item name="android:layout_margin">@dimen/fab_margin</item>
+        <item name="android:layout_margin">@dimen/fab_small_margin</item>
 <!--        <item name="fabSize">auto</item>-->
     </style>
 

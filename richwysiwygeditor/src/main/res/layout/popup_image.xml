@@ -7,17 +7,17 @@
     <ImageButton
         android:id="@+id/popup_insert_image"
         android:src="@drawable/ic_image"
-        style="@style/ActionButton"/>
+        style="@style/action_button"/>
 
     <ImageButton
         android:id="@+id/popup_capture_photo"
         android:src="@drawable/ic_camera"
-        style="@style/ActionButton"/>
+        style="@style/action_button"/>
 
     <ImageButton
         android:id="@+id/popup_edit_image"
         android:enabled="false"
         android:src="@android:drawable/ic_menu_edit"
-        style="@style/ActionButton"/>
+        style="@style/action_button"/>
 
 </LinearLayout>
