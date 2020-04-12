@@ -3,7 +3,7 @@
     <dimen name="toolbar_icon_width_size">38dp</dimen>
     <dimen name="toolbar_icon_height_size">35dp</dimen>
     <dimen name="color_button_size">35dp</dimen>
-    <dimen name="fab_margin">12dp</dimen>
-    <dimen name="fab_small_margin">6dp</dimen>
+<!--    <dimen name="fab_margin">12dp</dimen>-->
+<!--    <dimen name="fab_small_margin">6dp</dimen>-->
 
 </resources>

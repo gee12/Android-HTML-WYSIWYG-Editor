@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
@@ -28,7 +27,6 @@ import com.gee12.htmlwysiwygeditor.ActionType;
 import com.gee12.htmlwysiwygeditor.ColorUtils;
 import com.gee12.htmlwysiwygeditor.Dialogs;
 import com.gee12.htmlwysiwygeditor.IImagePicker;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.lumyjuwon.richwysiwygeditor.RichEditor.EditableWebView;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.TextColor;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.Youtube;
@@ -64,14 +62,16 @@ public class WysiwygEditor extends LinearLayout {
     protected LinearLayout mLayoutButtons;
     protected ProgressBar mProgressBar;
     protected Map<ActionType, ActionButton> mActionButtons;
+    private View mViewScrollBottom;
+    private View mViewScrollTop;
+
+    private EditableWebView.IScrollListener mScrollListener;
     protected EditableWebView.IPageLoadListener mPageLoadListener;
-//    protected boolean isActivateAllButtons = true;
+    protected IImagePicker mImgPickerListener;
+
+    //    protected boolean isActivateAllButtons = true;
     private int mCurTextSize;
     protected boolean mIsEdited;
-    protected IImagePicker mImgPickerCallback;
-    private FloatingActionButton mButtonScrollDown;
-    private FloatingActionButton mButtonScrollUp;
-    private EditableWebView.IScrollListener mScrollListener;
 
     public WysiwygEditor(Context context) {
         super(context);
@@ -119,19 +119,6 @@ public class WysiwygEditor extends LinearLayout {
             public void onEditorJSLoaded() {}
         });
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            mWebView.setFindListener(new WebView.FindListener() {
-                @Override
-                public void onFindResultReceived(int activeMatchOrdinal, int numberOfMatches, boolean isDoneCounting) {
-                    if (isDoneCounting) {
-
-                    }
-                }
-            });
-        }
-
-
-
         // FIXME: обработчик не запустится, т.к. переопределяется в активности
 
 //        webView.setOnTouchListener((v, event) -> {
@@ -139,7 +126,7 @@ public class WysiwygEditor extends LinearLayout {
 //            return false;
 //        });
 
-        addScrollButtons();
+//        addScrollButtons();
 
         // toolBar
         this.mToolBarPanel = findViewById(R.id.layout_toolbar);
@@ -151,23 +138,29 @@ public class WysiwygEditor extends LinearLayout {
     /**
      * Кнопки для пролистывания WebView до упора вниз/вверх.
      */
-    private void addScrollButtons() {
-        this.mButtonScrollDown = findViewById(R.id.button_scroll_down);
-        this.mButtonScrollUp = findViewById(R.id.button_scroll_top);
+    public void initScrollButtons(View scrollDownView, View scrollUpView) {
+        if (scrollDownView == null || scrollUpView == null) {
+            return;
+        }
+        this.mViewScrollBottom = scrollDownView;
+        this.mViewScrollTop = scrollUpView;
 //        mButtonScrollDown.setVisibility(VISIBLE);
         this.mScrollListener = new EditableWebView.IScrollListener() {
             @Override
             public void onScrolledToTop() {
-                mButtonScrollDown.setVisibility(VISIBLE);
+                mViewScrollBottom.setVisibility(VISIBLE);
             }
 
             @Override
             public void onScrolledToBottom() {
-                mButtonScrollUp.setVisibility(VISIBLE);
+                mViewScrollTop.setVisibility(VISIBLE);
             }
 
             @Override
             public void onScrolledVertical(int direction) {
+
+                mViewScrollBottom.setVisibility(GONE);
+                mViewScrollTop.setVisibility(GONE);
 
                 // TODO: доделать
 
@@ -182,21 +175,21 @@ public class WysiwygEditor extends LinearLayout {
 
             @Override
             public void onScrollEnd() {
-                mButtonScrollDown.setVisibility(GONE);
-                mButtonScrollUp.setVisibility(GONE);
+//                mViewScrollBottom.setVisibility(GONE);
+//                mViewScrollTop.setVisibility(GONE);
             }
 
         };
 //        webView.setScrollListener(mScrollListener);
         final int density = (int) (getResources().getDisplayMetrics().density);
-        mButtonScrollDown.setOnClickListener(v -> {
+        mViewScrollBottom.setOnClickListener(v -> {
             mWebView.scrollTo(0, mWebView.getContentHeight() * density);
-            mButtonScrollDown.setVisibility(GONE);
+            mViewScrollBottom.setVisibility(GONE);
         });
 
-        mButtonScrollUp.setOnClickListener(v -> {
+        mViewScrollTop.setOnClickListener(v -> {
             mWebView.scrollTo(0, 0);
-            mButtonScrollUp.setVisibility(GONE);
+            mViewScrollTop.setVisibility(GONE);
         });
     }
 
@@ -535,13 +528,13 @@ public class WysiwygEditor extends LinearLayout {
             closePopupWindow();
             if (id == R.id.popup_insert_image) {
 //                ImgPicker.startPicker((Activity)getContext());
-                if (mImgPickerCallback != null) {
-                    mImgPickerCallback.startPicker();
+                if (mImgPickerListener != null) {
+                    mImgPickerListener.startPicker();
                 }
             } else if (id == R.id.popup_capture_photo) {
 //                ImgPicker.startCamera((Activity)getContext(), mImagesFolder);
-                if (mImgPickerCallback != null) {
-                    mImgPickerCallback.startCamera();
+                if (mImgPickerListener != null) {
+                    mImgPickerListener.startCamera();
                 }
             }
 //            else if (id == R.id.popup_edit_image)
@@ -649,13 +642,41 @@ public class WysiwygEditor extends LinearLayout {
     }
 
     public void setScrollButtonsVisibility(boolean vis) {
+        if (mViewScrollBottom == null || mViewScrollTop == null)
+            return;
         boolean canScrollToTop = mWebView.canScrollVertically(-1);
         boolean canScrollToBottom = mWebView.canScrollVertically(1);
         // нужно ли вообще отображать кнопки скроллинга (если контент полностью помещается)
         boolean canScroll = canScrollToTop || canScrollToBottom;
-        mButtonScrollDown.setVisibility(getVisibility(vis && canScroll && !canScrollToTop));
-        mButtonScrollUp.setVisibility(getVisibility(vis && canScroll && !canScrollToBottom));
-        mWebView.setScrollListener((vis) ? mScrollListener : null);
+
+        // TODO: раскомментить для исправления
+//        mViewScrollBottom.setVisibility(getVisibility(vis && canScroll && !canScrollToTop));
+//        mViewScrollTop.setVisibility(getVisibility(vis && canScroll && !canScrollToBottom));
+//        mWebView.setScrollListener((vis) ? mScrollListener : null);
+    }
+
+    /**
+     * Запуск поиска текста.
+     * @param query
+     */
+    public void searchText(String query) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            mWebView.findAllAsync(query);
+        } else {
+            mWebView.findAll(query);
+        }
+    }
+
+    public void stopSearch() {
+
+    }
+
+    public void nextMatch() {
+        mWebView.findNext(true);
+    }
+
+    public void prevMatch() {
+        mWebView.findNext(false);
     }
 
     public static int getVisibility(boolean isVisible) {
@@ -699,7 +720,7 @@ public class WysiwygEditor extends LinearLayout {
     }
 
     public void setImgPickerCallback(IImagePicker callback) {
-        this.mImgPickerCallback = callback;
+        this.mImgPickerListener = callback;
     }
 
 }

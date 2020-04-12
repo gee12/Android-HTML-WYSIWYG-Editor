@@ -40,13 +40,13 @@
         <item name="android:layout_marginBottom">3dp</item>
     </style>
 
-    <style name="fab">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_alignParentRight">true</item>
-        <item name="android:layout_alignParentBottom">true</item>
-        <item name="android:layout_margin">@dimen/fab_small_margin</item>
-<!--        <item name="fabSize">auto</item>-->
-    </style>
+<!--    <style name="fab">-->
+<!--        <item name="android:layout_width">wrap_content</item>-->
+<!--        <item name="android:layout_height">wrap_content</item>-->
+<!--        <item name="android:layout_alignParentRight">true</item>-->
+<!--        <item name="android:layout_alignParentBottom">true</item>-->
+<!--        <item name="android:layout_margin">@dimen/fab_small_margin</item>-->
+<!--&lt;!&ndash;        <item name="fabSize">auto</item>&ndash;&gt;-->
+<!--    </style>-->
 
 </resources>
