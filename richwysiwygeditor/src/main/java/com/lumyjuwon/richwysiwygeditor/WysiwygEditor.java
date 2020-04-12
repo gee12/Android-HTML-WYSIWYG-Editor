@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
@@ -117,6 +118,19 @@ public class WysiwygEditor extends LinearLayout {
             @Override
             public void onEditorJSLoaded() {}
         });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            mWebView.setFindListener(new WebView.FindListener() {
+                @Override
+                public void onFindResultReceived(int activeMatchOrdinal, int numberOfMatches, boolean isDoneCounting) {
+                    if (isDoneCounting) {
+
+                    }
+                }
+            });
+        }
+
+
 
         // FIXME: обработчик не запустится, т.к. переопределяется в активности
 
