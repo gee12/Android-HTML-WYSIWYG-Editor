@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.webkit.WebSettings;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
@@ -97,6 +98,22 @@ public class WysiwygEditor extends LinearLayout {
         // webView
         mWebView = findViewById(R.id.web_view);
         mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null); // sdk 19 ChromeWebView ?
+
+        WebSettings settings = mWebView.getSettings();
+        settings.setBuiltInZoomControls(true);
+        settings.setDisplayZoomControls(false);
+        // set for clarity (default true)
+        settings.setAllowFileAccess(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            settings.setAllowFileAccessFromFileURLs(true);
+            settings.setAllowUniversalAccessFromFileURLs(true);
+        }
+        // resize contents to fit the screen
+        settings.setUseWideViewPort(true);
+        mWebView.setInitialScale(1);
+        // just in case
+        settings.setDefaultTextEncodingName("utf-8");
+
         mWebView.setOnTextChangeListener(text -> setIsEdited(true) );
         mWebView.setOnStateChangeListener((text, types) ->  mWebView.post(() -> updateButtonsState(types)));
 
@@ -668,7 +685,7 @@ public class WysiwygEditor extends LinearLayout {
     }
 
     public void stopSearch() {
-
+        mWebView.clearMatches();
     }
 
     public void nextMatch() {

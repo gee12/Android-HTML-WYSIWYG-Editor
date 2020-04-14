@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -131,8 +132,9 @@ public class EditableWebView extends WebView {
     public EditableWebView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        getSettings().setJavaScriptEnabled(true);
-        getSettings().setDomStorageEnabled(true);
+        WebSettings settings = getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setDomStorageEnabled(true);
 
         setWebChromeClient(new WebChromeClient());
         setWebViewClient(new EditorWebViewClient());
@@ -644,7 +646,7 @@ public class EditableWebView extends WebView {
         this.mScrollListener = listener;
     }
 
-    private void onPageLoading() {
+    private void onPageStarted() {
         this.mIsEditorJSLoaded = false;
         this.mIsHtmlRequestMade = false;
         if (mPageListener != null)
@@ -654,20 +656,20 @@ public class EditableWebView extends WebView {
     @Override
     public void loadUrl(String url) {
         super.loadUrl(url);
-        onPageLoading();
+        onPageStarted();
     }
 
     @Override
     public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
         super.loadUrl(url, additionalHttpHeaders);
-        onPageLoading();
+        onPageStarted();
     }
 
     @Override
     public void loadData(String data, @Nullable String mimeType, @Nullable String encoding) {
         this.mHtml = data;
         super.loadData(data, mimeType, encoding);
-        onPageLoading();
+        onPageStarted();
     }
 
     @Override
@@ -675,13 +677,19 @@ public class EditableWebView extends WebView {
         this.mBaseUrl = baseUrl;
         this.mHtml = data;
         super.loadDataWithBaseURL(baseUrl, data, mimeType, encoding, historyUrl);
-        onPageLoading();
+        onPageStarted();
     }
 
     /**
      *
      */
     protected class EditorWebViewClient extends WebViewClient {
+
+//        @Override
+//        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+//            EditableWebView.this.onPageStarted();
+//            super.onPageStarted(view, url, favicon);
+//        }
 
         @Override
         public void onPageFinished(WebView view, String url) {
