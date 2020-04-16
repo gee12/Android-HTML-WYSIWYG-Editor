@@ -109,8 +109,8 @@ public class WysiwygEditor extends LinearLayout {
             settings.setAllowUniversalAccessFromFileURLs(true);
         }
         // resize contents to fit the screen
-        settings.setUseWideViewPort(true);
-        mWebView.setInitialScale(1);
+//        settings.setUseWideViewPort(true);
+//        mWebView.setInitialScale(1);
         // just in case
         settings.setDefaultTextEncodingName("utf-8");
 
