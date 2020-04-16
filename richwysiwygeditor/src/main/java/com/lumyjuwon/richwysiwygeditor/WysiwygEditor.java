@@ -119,10 +119,10 @@ public class WysiwygEditor extends LinearLayout {
 
         mWebView.setOnPageLoadListener(new EditableWebView.IPageLoadListener() {
             @Override
-            public void onPageStartLoading() {
+            public void onStartPageLoading() {
                 mProgressBar.setVisibility(View.VISIBLE);
                 if (mPageLoadListener != null)
-                    mPageLoadListener.onPageStartLoading();
+                    mPageLoadListener.onStartPageLoading();
             }
 
             @Override
@@ -133,7 +133,17 @@ public class WysiwygEditor extends LinearLayout {
             }
 
             @Override
-            public void onEditorJSLoaded() {}
+            public void onStartEditorJSLoading() {
+                mProgressBar.setVisibility(View.VISIBLE);
+                if (mPageLoadListener != null)
+                    mPageLoadListener.onStartEditorJSLoading();
+            }
+            @Override
+            public void onEditorJSLoaded() {
+                mProgressBar.setVisibility(View.GONE);
+                if (mPageLoadListener != null)
+                    mPageLoadListener.onEditorJSLoaded();
+            }
         });
 
         // FIXME: обработчик не запустится, т.к. переопределяется в активности

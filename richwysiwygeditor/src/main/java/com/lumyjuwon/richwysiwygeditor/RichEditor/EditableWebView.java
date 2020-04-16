@@ -55,9 +55,10 @@ public class EditableWebView extends WebView {
     }
 
     public interface IPageLoadListener {
-        void onPageStartLoading();
+        void onStartPageLoading();
         void onPageLoaded();
         void onEditorJSLoaded();
+        void onStartEditorJSLoading();
     }
 
     public interface ILinkLoadListener {
@@ -165,6 +166,9 @@ public class EditableWebView extends WebView {
 
             byte[] buffer = Utils.readFileFromAssets(getContext(), EDITOR_JS_FILE);
             if (buffer != null) {
+                if (mPageListener != null) {
+                    mPageListener.onStartEditorJSLoading();
+                }
                 load(JAVASCRIPT + new String(buffer), value -> {
                     this.mIsEditorJSLoaded = true;
                     if (mPageListener != null) {
@@ -650,7 +654,7 @@ public class EditableWebView extends WebView {
         this.mIsEditorJSLoaded = false;
         this.mIsHtmlRequestMade = false;
         if (mPageListener != null)
-            mPageListener.onPageStartLoading();
+            mPageListener.onStartPageLoading();
     }
 
     @Override
