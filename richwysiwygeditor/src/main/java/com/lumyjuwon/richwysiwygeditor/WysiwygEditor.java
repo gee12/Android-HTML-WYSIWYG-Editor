@@ -97,11 +97,19 @@ public class WysiwygEditor extends LinearLayout {
 
         // webView
         mWebView = findViewById(R.id.web_view);
-        mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null); // sdk 19 ChromeWebView ?
+/*        boolean useHardwareAcceleration = true;
+        if (useHardwareAcceleration && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);  // ChromeWebView
+        } else {
+            mWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }*/
 
         WebSettings settings = mWebView.getSettings();
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        // deprecated
+        settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
         // set for clarity (default true)
         settings.setAllowFileAccess(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -111,6 +119,7 @@ public class WysiwygEditor extends LinearLayout {
         // resize contents to fit the screen
 //        settings.setUseWideViewPort(true);
 //        mWebView.setInitialScale(1);
+        mWebView.setScrollbarFadingEnabled(false);
         // just in case
         settings.setDefaultTextEncodingName("utf-8");
 
@@ -124,7 +133,6 @@ public class WysiwygEditor extends LinearLayout {
                 if (mPageLoadListener != null)
                     mPageLoadListener.onStartPageLoading();
             }
-
             @Override
             public void onPageLoaded() {
                 mProgressBar.setVisibility(View.GONE);

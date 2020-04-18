@@ -81,7 +81,7 @@ public class EditableWebView extends WebView {
     }
 
     /**
-     * Class with methods to be called from javascript page.
+     * Class with methods to be called from javascript.
      */
     public class JavascriptInterface {
 
