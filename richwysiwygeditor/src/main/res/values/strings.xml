@@ -19,4 +19,5 @@
     <string name="link_example">URL or Mytetra link</string>
     <string name="width_points">Width (points)</string>
     <string name="height_points">Height (points)</string>
+    <string name="invalid_number">Invalid number:&#160;</string>
 </resources>

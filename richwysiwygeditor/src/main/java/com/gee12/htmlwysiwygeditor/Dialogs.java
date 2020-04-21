@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -22,8 +23,7 @@ public class Dialogs {
         void onApply();
     }
 
-    public interface IApplyCancelResult {
-        void onApply();
+    public interface IApplyCancelResult extends IApplyResult {
         void onCancel();
     }
 
@@ -54,8 +54,14 @@ public class Dialogs {
         }
 
         builder.setPositiveButton(R.string.answer_ok, (dialog1, which) -> {
-            int size = Integer.parseInt(etSize.getText().toString());
-            handler.onApply(size);
+//            int size = Integer.parseInt(etSize.getText().toString());
+            String s = etSize.getText().toString();
+            Integer size = parseInt(s);
+            if (size != null) {
+                handler.onApply(size);
+            } else {
+                Toast.makeText(context, context.getString(R.string.invalid_number) + s, Toast.LENGTH_SHORT).show();
+            }
         }).setNegativeButton(R.string.answer_cancel, null);
 
         final AlertDialog dialog = builder.create();
@@ -75,12 +81,14 @@ public class Dialogs {
         // получаем okButton тут отдельно после вызова show()
         final Button okButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
         etSize.addTextChangedListener(new DimenTextWatcher(newText -> {
-            if (TextUtils.isEmpty(newText)) {
-                okButton.setEnabled(false);
-            } else {
-                int size = Integer.parseInt(etSize.getText().toString());
-                okButton.setEnabled(size >= 1 && size <= 7);
-            }
+//            if (TextUtils.isEmpty(newText)) {
+//                okButton.setEnabled(false);
+//            } else {
+//                int size = Integer.parseInt(etSize.getText().toString());
+//                okButton.setEnabled(size >= 1 && size <= 7);
+                Integer size = parseInt(etSize.getText().toString());
+                okButton.setEnabled(size != null && size >= 1 && size <= 7);
+//            }
         }));
     }
 
@@ -103,9 +111,22 @@ public class Dialogs {
             etHeight.setText(String.format(Locale.getDefault(), "%d", curHeight));
         }
         builder.setPositiveButton(R.string.answer_ok, (dialog1, which) -> {
-            int width = Integer.parseInt(etWidth.getText().toString());
-            int height = Integer.parseInt(etHeight.getText().toString());
-            handler.onApply(width, height);
+//            int width = Integer.parseInt(etWidth.getText().toString());
+//            int height = Integer.parseInt(etHeight.getText().toString());
+//            handler.onApply(width, height);
+            String s = etWidth.getText().toString();
+            Integer width = parseInt(s);
+            if (width != null) {
+                s = etHeight.getText().toString();
+                Integer height = parseInt(s);
+                if (height != null) {
+                    handler.onApply(width, height);
+                } else {
+                    Toast.makeText(context, context.getString(R.string.invalid_number) + s, Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(context, context.getString(R.string.invalid_number) + s, Toast.LENGTH_SHORT).show();
+            }
         }).setNegativeButton(R.string.answer_cancel, null);
 
         final AlertDialog dialog = builder.create();
@@ -125,14 +146,18 @@ public class Dialogs {
 
         // получаем okButton тут отдельно после вызова show()
         final Button okButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        etWidth.addTextChangedListener(new DimenTextWatcher(newText -> {
-            if (TextUtils.isEmpty(newText)) {
-                okButton.setEnabled(false);
-            } else {
-                int dimen = Integer.parseInt(newText);
-                okButton.setEnabled(dimen > 0);
-            }
-        }));
+        DimenTextWatcher textWatcher = new DimenTextWatcher(newText -> {
+//            if (TextUtils.isEmpty(newText)) {
+//                okButton.setEnabled(false);
+//            } else {
+//                int dimen = Integer.parseInt(newText);
+//                okButton.setEnabled(dimen > 0);
+//            }
+            Integer size = parseInt(newText);
+            okButton.setEnabled(size != null && size > 0);
+        });
+        etWidth.addTextChangedListener(textWatcher);
+        etHeight.addTextChangedListener(textWatcher);
     }
 
     /**
@@ -152,6 +177,16 @@ public class Dialogs {
                 handler.onApply(etLink.getText().toString(), etTitle.getText().toString()))
             .setNegativeButton(R.string.answer_cancel, null)
             .create().show();
+    }
+
+    public static Integer parseInt(String s) {
+        if (s == null || s.length() == 0)
+            return null;
+        try {
+            int res = Integer.parseInt(s);
+            return res;
+        } catch(Exception ignored) {}
+        return null;
     }
 
     /**
