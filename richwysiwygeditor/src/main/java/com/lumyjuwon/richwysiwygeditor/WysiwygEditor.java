@@ -134,12 +134,16 @@ public class WysiwygEditor extends LinearLayout {
                     mPageLoadListener.onStartPageLoading();
             }
             @Override
+            public void onPageLoading(int progress) {
+                if (mPageLoadListener != null)
+                    mPageLoadListener.onPageLoading(progress);
+            }
+            @Override
             public void onPageLoaded() {
                 mProgressBar.setVisibility(View.GONE);
                 if (mPageLoadListener != null)
                     mPageLoadListener.onPageLoaded();
             }
-
             @Override
             public void onStartEditorJSLoading() {
                 mProgressBar.setVisibility(View.VISIBLE);

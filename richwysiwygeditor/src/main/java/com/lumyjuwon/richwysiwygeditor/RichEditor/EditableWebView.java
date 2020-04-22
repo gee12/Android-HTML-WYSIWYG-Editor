@@ -56,6 +56,7 @@ public class EditableWebView extends WebView {
 
     public interface IPageLoadListener {
         void onStartPageLoading();
+        void onPageLoading(int progress);
         void onPageLoaded();
         void onEditorJSLoaded();
         void onStartEditorJSLoading();
@@ -137,7 +138,7 @@ public class EditableWebView extends WebView {
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
 
-        setWebChromeClient(new WebChromeClient());
+        setWebChromeClient(new TetroidWebChromeClient());
         setWebViewClient(new EditorWebViewClient());
         applyAttributes(context, attrs);
         addJavascriptInterface(new JavascriptInterface(), "Android");
@@ -653,8 +654,9 @@ public class EditableWebView extends WebView {
     private void onPageStarted() {
         this.mIsEditorJSLoaded = false;
         this.mIsHtmlRequestMade = false;
-        if (mPageListener != null)
+        if (mPageListener != null) {
             mPageListener.onStartPageLoading();
+        }
     }
 
     @Override
@@ -687,6 +689,20 @@ public class EditableWebView extends WebView {
     /**
      *
      */
+    protected class TetroidWebChromeClient extends WebChromeClient {
+
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            if (mPageListener != null) {
+                mPageListener.onPageLoading(newProgress);
+            }
+            super.onProgressChanged(view, newProgress);
+        }
+    }
+
+    /**
+     *
+     */
     protected class EditorWebViewClient extends WebViewClient {
 
 //        @Override
@@ -694,6 +710,12 @@ public class EditableWebView extends WebView {
 //            EditableWebView.this.onPageStarted();
 //            super.onPageStarted(view, url, favicon);
 //        }
+
+
+        @Override
+        public void onLoadResource(WebView view, String url) {
+            super.onLoadResource(view, url);
+        }
 
         @Override
         public void onPageFinished(WebView view, String url) {
