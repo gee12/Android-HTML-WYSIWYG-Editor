@@ -9,8 +9,11 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
+import android.webkit.MimeTypeMap;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -715,6 +718,30 @@ public class EditableWebView extends WebView {
         @Override
         public void onLoadResource(WebView view, String url) {
             super.onLoadResource(view, url);
+        }
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+            return super.shouldOverrideUrlLoading(view, request);
+        }
+
+        @Nullable
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+            String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+
+            return super.shouldInterceptRequest(view, url);
+        }
+
+        @Nullable
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+            if (android.os.Build.VERSION.SDK_INT >= 21) {
+                String url = request.getUrl().toString();
+                String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+
+            }
+            return super.shouldInterceptRequest(view, request);
         }
 
         @Override
