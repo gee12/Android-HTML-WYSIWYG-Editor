@@ -195,7 +195,8 @@ public class EditableWebView extends WebView {
 
     private void onReceiveEditableHtml(String html) {
 
-        // FIXED? Javascript always returned html-text with excess line break ('\n') in the end,
+        // FIXED?
+        // Javascript always returned html-text with excess line break ('\n') in the end,
         // remove it
 //        if (html.length() >= 1) {
 //            html = html.substring(0, html.length()-1);
@@ -710,7 +711,6 @@ public class EditableWebView extends WebView {
 //            EditableWebView.this.onPageStarted();
 //            super.onPageStarted(view, url, favicon);
 //        }
-
 
         @Override
         public void onLoadResource(WebView view, String url) {
