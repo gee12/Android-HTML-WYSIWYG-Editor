@@ -2,6 +2,8 @@
     <string name="app_name">RichWYSIWYGEditor</string>
     <string name="answer_ok">Ok</string>
     <string name="answer_cancel">Cancel</string>
+    <string name="answer_yes">Yes</string>
+    <string name="answer_no">No</string>
     <string name="text_size">Text size (1-7)</string>
     <string name="text_color">Text color</string>
     <string name="text_bold">Bold</string>
@@ -20,4 +22,5 @@
     <string name="width_points">Width (points)</string>
     <string name="height_points">Height (points)</string>
     <string name="invalid_number">Invalid number:&#160;</string>
+    <string name="set_similar_image_params">Set similar parameters for other images</string>
 </resources>

@@ -3,6 +3,8 @@
     <string name="app_name">RichWYSIWYGEditor</string>
     <string name="answer_ok">Ок</string>
     <string name="answer_cancel">Отмена</string>
+    <string name="answer_yes">Да</string>
+    <string name="answer_no">Нет</string>
     <string name="insert_image">Вставить изображение</string>
     <string name="insert_line">Вставить линию</string>
     <string name="insert_link">Вставить ссылку</string>
@@ -21,4 +23,5 @@
     <string name="width_points">Ширина (точек)</string>
     <string name="height_points">Высота (точек)</string>
     <string name="invalid_number">Недопустимое число:&#160;</string>
+    <string name="set_similar_image_params">Установить аналогичные параметры для остальных изображений</string>
 </resources>

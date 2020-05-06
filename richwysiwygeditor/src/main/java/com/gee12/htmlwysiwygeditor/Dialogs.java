@@ -1,12 +1,14 @@
 package com.gee12.htmlwysiwygeditor;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -36,7 +38,7 @@ public class Dialogs {
     }
 
     public interface IImageDimensResult {
-        void onApply(int width, int height);
+        void onApply(int width, int height, boolean setSimilar);
     }
 
     /**
@@ -98,7 +100,8 @@ public class Dialogs {
      * @param context
      * @param handler
      */
-    public static void createImageDimensDialog(Context context, int curWidth, int curHeight, IImageDimensResult handler) {
+    public static void createImageDimensDialog(Context context, int curWidth, int curHeight, boolean isSeveral,
+                                               IImageDimensResult handler) {
         AskDialogBuilder builder = AskDialogBuilder.create(context, R.layout.dialog_edit_image);
 
         EditText etWidth = builder.getView().findViewById(R.id.edit_text_width);
@@ -110,17 +113,19 @@ public class Dialogs {
         if (curHeight > 0) {
             etHeight.setText(String.format(Locale.getDefault(), "%d", curHeight));
         }
+
+        CheckBox checkBox = builder.getView().findViewById(R.id.check_box_similar);
+        checkBox.setVisibility((isSeveral) ? View.VISIBLE : View.GONE);
+
         builder.setPositiveButton(R.string.answer_ok, (dialog1, which) -> {
-//            int width = Integer.parseInt(etWidth.getText().toString());
-//            int height = Integer.parseInt(etHeight.getText().toString());
-//            handler.onApply(width, height);
             String s = etWidth.getText().toString();
             Integer width = parseInt(s);
             if (width != null) {
                 s = etHeight.getText().toString();
                 Integer height = parseInt(s);
                 if (height != null) {
-                    handler.onApply(width, height);
+                    boolean setSimilarParams = checkBox.isChecked();
+                    handler.onApply(width, height, setSimilarParams);
                 } else {
                     Toast.makeText(context, context.getString(R.string.invalid_number) + s, Toast.LENGTH_SHORT).show();
                 }
@@ -255,4 +260,18 @@ public class Dialogs {
             }
         }
     }
+
+    public static void showAlertDialog(Context context, int messageRes,
+                                       DialogInterface.OnClickListener yesListener, DialogInterface.OnClickListener noListerener) {
+        showAlertDialog(context, context.getString(messageRes), yesListener, noListerener);
+    }
+
+    public static void showAlertDialog(Context context, String message,
+                                       DialogInterface.OnClickListener yesListener, DialogInterface.OnClickListener noListerener) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
+        builder.setMessage(message)
+                .setPositiveButton(R.string.answer_yes, yesListener)
+                .setNegativeButton(R.string.answer_no, noListerener).show();
+    }
+
 }

@@ -613,8 +613,8 @@ public class WysiwygEditor extends LinearLayout {
      * @param srcWidth
      * @param srcHeight
      */
-    protected void showEditImageDialog(String imageFullName, int srcWidth, int srcHeight) {
-        Dialogs.createImageDimensDialog(getContext(), srcWidth, srcHeight, (width, height) -> {
+    protected void showEditImageDialog(String imageFullName, int srcWidth, int srcHeight, boolean isSeveral) {
+        Dialogs.createImageDimensDialog(getContext(), srcWidth, srcHeight, isSeveral, (width, height, similar) -> {
             mWebView.insertImage(imageFullName, width, height);
         });
     }
