@@ -2,9 +2,7 @@ package com.gee12.htmlwysiwygeditor;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -82,7 +80,7 @@ public class Dialogs {
 
         // получаем okButton тут отдельно после вызова show()
         final Button okButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        etSize.addTextChangedListener(new DimenTextWatcher(newText -> {
+        etSize.addTextChangedListener(new ViewUtils.TextChangedListener(newText -> {
 //            if (TextUtils.isEmpty(newText)) {
 //                okButton.setEnabled(false);
 //            } else {
@@ -151,7 +149,7 @@ public class Dialogs {
 
         // получаем okButton тут отдельно после вызова show()
         final Button okButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        DimenTextWatcher textWatcher = new DimenTextWatcher(newText -> {
+        ViewUtils.TextChangedListener textWatcher = new ViewUtils.TextChangedListener(newText -> {
 //            if (TextUtils.isEmpty(newText)) {
 //                okButton.setEnabled(false);
 //            } else {
@@ -227,37 +225,6 @@ public class Dialogs {
             dialogBuilder.setView(dialogView);
             dialogBuilder.setCancelable(true);
             return dialogBuilder;
-        }
-    }
-
-    interface ITextChanged {
-        void onTextChanged(String newText);
-    }
-
-    /**
-     *
-     */
-    static class DimenTextWatcher implements TextWatcher {
-
-        ITextChanged mTextChangedCallback;
-
-        public DimenTextWatcher(ITextChanged callback) {
-            this.mTextChangedCallback = callback;
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            if (mTextChangedCallback != null) {
-                mTextChangedCallback.onTextChanged(s.toString());
-            }
         }
     }
 
