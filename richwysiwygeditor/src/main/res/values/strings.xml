@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RichWYSIWYGEditor</string>
+    <string name="app_name" translatable="false">RichWYSIWYGEditor</string>
     <string name="answer_ok">Ok</string>
     <string name="answer_cancel">Cancel</string>
     <string name="answer_yes">Yes</string>
