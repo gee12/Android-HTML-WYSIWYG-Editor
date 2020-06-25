@@ -233,7 +233,7 @@ public class Dialogs {
         showAlertDialog(context, context.getString(messageRes), yesListener, noListerener);
     }
 
-    public static void showAlertDialog(Context context, String message,
+    public static void showAlertDialog(Context context, CharSequence message,
                                        DialogInterface.OnClickListener yesListener, DialogInterface.OnClickListener noListerener) {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
         builder.setMessage(message)
