@@ -17,7 +17,6 @@
  */
 
 var RE = {};
-var backup_color;
 
 RE.currentSelection = {
     "startContainer": 0,
@@ -400,10 +399,6 @@ RE.clearAndFocusEditor = function() {
 
 // event listeners
 document.addEventListener("selectionchange", RE.saveRange);
-//document.addEventListener("selectionchange", function() {
-//    RE.saveRange();
-//    RE.selectionChange();
-//});
 
 RE.editor.addEventListener("input", RE.textChange);
 RE.editor.addEventListener("keyup", function(e) {
