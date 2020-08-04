@@ -28,9 +28,12 @@ import com.gee12.htmlwysiwygeditor.ActionType;
 import com.gee12.htmlwysiwygeditor.ColorUtils;
 import com.gee12.htmlwysiwygeditor.Dialogs;
 import com.gee12.htmlwysiwygeditor.IImagePicker;
+import com.gee12.htmlwysiwygeditor.OnSwipeTouchListener;
 import com.lumyjuwon.richwysiwygeditor.RichEditor.EditableWebView;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.TextColor;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.Youtube;
+
+import net.cachapa.expandablelayout.ExpandableLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,6 +62,7 @@ public class WysiwygEditor extends LinearLayout {
     protected LayoutInflater mLayoutInflater;
     protected EditableWebView mWebView;
     protected PopupWindow mPopupWindow;
+    protected ExpandableLayout mClipboardPanel;
     protected HorizontalScrollView mToolBarPanel;
     protected LinearLayout mLayoutButtons;
     protected ProgressBar mProgressBar;
@@ -155,6 +159,19 @@ public class WysiwygEditor extends LinearLayout {
                 mProgressBar.setVisibility(View.GONE);
                 if (mPageLoadListener != null)
                     mPageLoadListener.onEditorJSLoaded();
+            }
+        });
+
+        this.mClipboardPanel = findViewById(R.id.layout_right_expander);
+
+        mWebView.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
+            @Override
+            public void onSwipeLeft() {
+                mClipboardPanel.expand();
+            }
+            @Override
+            public void onSwipeRight() {
+                mClipboardPanel.collapse();
             }
         });
 
