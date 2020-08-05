@@ -441,6 +441,14 @@ public class EditableWebView extends WebView {
         execJavascript("RE.redo();");
     }
 
+    public void left() {
+        execJavascript("RE.moveCursor(-1);");
+    }
+
+    public void right() {
+        execJavascript("RE.moveCursor(1);");
+    }
+
     public void setBold() {
         execJavascript("RE.setBold();");
     }

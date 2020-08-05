@@ -42,9 +42,14 @@
         app:el_parallax="0.5">
 
         <android.widget.GridLayout
+            android:id="@+id/layout_right_buttons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:rowCount="4"
+            android:columnCount="2"
             >
+<!--            android:background="@color/toolbar_background"-->
+
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_undo"
@@ -63,28 +68,34 @@
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_up"
                 style="@style/action_button"
+                android:layout_gravity="center_horizontal"
                 android:layout_row="1"
+                android:layout_column="0"
                 android:layout_columnSpan="2"
-                android:src="@drawable/ic_image" />
+                android:src="@drawable/ic_arrow_up" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_left"
                 style="@style/action_button"
                 android:layout_row="2"
-                android:src="@drawable/ic_image" />
+                android:layout_column="0"
+                android:src="@drawable/ic_arrow_left" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_right"
                 style="@style/action_button"
                 android:layout_row="2"
-                android:src="@drawable/ic_image" />
+                android:layout_column="1"
+                android:src="@drawable/ic_arrow_right" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_down"
                 style="@style/action_button"
+                android:layout_gravity="center_horizontal"
                 android:layout_row="3"
+                android:layout_column="0"
                 android:layout_columnSpan="2"
-                android:src="@drawable/ic_image" />
+                android:src="@drawable/ic_arrow_down" />
 
         </android.widget.GridLayout>
 
@@ -95,9 +106,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/toolbar_background"
         android:scrollbars="none">
 <!--        android:background="@drawable/bottom_border_white"-->
+<!--        android:background="@color/toolbar_background"-->
 
         <LinearLayout
             android:id="@+id/layout_toolbar_buttons"

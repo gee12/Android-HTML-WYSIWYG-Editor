@@ -26,6 +26,7 @@
     <color name="green">#008000</color>
 
     <color name="toolbar_background">#EEE</color>
+    <color name="rightbar_background">#E8EDFF</color>
     <color name="fab">#4D86B945</color>
 
 </resources>

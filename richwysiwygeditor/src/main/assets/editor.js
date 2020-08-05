@@ -186,6 +186,38 @@ RE.redo = function() {
     document.execCommand('redo', false, null);
 }
 
+RE.moveCursor = function(offset) {
+    //var tag = document.getElementById("editable");
+
+    // Creates range object
+//    var setpos = document.createRange();
+
+    // Creates object for selection
+    var sel = window.getSelection();
+
+    if (sel.rangeCount > 0) {
+        var textNode = sel.focusNode;
+        var newOffset = sel.focusOffset + offset;
+        sel.collapse(textNode, Math.min(textNode.length, newOffset));
+    }
+
+    // Set start position of range
+//    setpos.setStart(RE.editor.childNodes[0], pos);
+//
+//    // Collapse range within its boundary points
+//    // Returns boolean
+//    setpos.collapse(true);
+//
+//    // Remove all ranges set
+//    sel.removeAllRanges();
+//
+//    // Add range with respect to range object.
+//    sel.addRange(setpos);
+//
+//    // Set cursor on focus
+//    tag.focus();
+}
+
 RE.setBold = function() {
     document.execCommand('bold', false, null);
 

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -62,9 +63,10 @@ public class WysiwygEditor extends LinearLayout {
     protected LayoutInflater mLayoutInflater;
     protected EditableWebView mWebView;
     protected PopupWindow mPopupWindow;
-    protected ExpandableLayout mClipboardPanel;
     protected HorizontalScrollView mToolBarPanel;
-    protected LinearLayout mLayoutButtons;
+    protected ExpandableLayout mClipboardPanel;
+    protected LinearLayout mToolbarButtonsLayout;
+    protected GridLayout mRightButtonsLayout;
     protected ProgressBar mProgressBar;
     protected Map<ActionType, ActionButton> mActionButtons;
     private View mViewScrollBottom;
@@ -163,6 +165,7 @@ public class WysiwygEditor extends LinearLayout {
         });
 
         this.mClipboardPanel = findViewById(R.id.layout_right_expander);
+        this.mRightButtonsLayout = findViewById(R.id.layout_right_buttons);
 
         mWebView.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
             @Override
@@ -186,9 +189,10 @@ public class WysiwygEditor extends LinearLayout {
 
         // toolBar
         this.mToolBarPanel = findViewById(R.id.layout_toolbar);
-        this.mLayoutButtons = findViewById(R.id.layout_toolbar_buttons);
+        this.mToolbarButtonsLayout = findViewById(R.id.layout_toolbar_buttons);
 
         initToolbar();
+        initRightbar();
     }
 
     /**
@@ -251,8 +255,17 @@ public class WysiwygEditor extends LinearLayout {
 
     protected void initToolbar() {
         this.mActionButtons = new HashMap<>();
-        for (int i = 0; i < mLayoutButtons.getChildCount(); i++) {
-            View view = mLayoutButtons.getChildAt(i);
+        for (int i = 0; i < mToolbarButtonsLayout.getChildCount(); i++) {
+            View view = mToolbarButtonsLayout.getChildAt(i);
+            if (view instanceof ActionButton) {
+                initActionButton((ActionButton) view);
+            }
+        }
+    }
+
+    protected void initRightbar() {
+        for (int i = 0; i < mRightButtonsLayout.getChildCount(); i++) {
+            View view = mRightButtonsLayout.getChildAt(i);
             if (view instanceof ActionButton) {
                 initActionButton((ActionButton) view);
             }
@@ -261,11 +274,7 @@ public class WysiwygEditor extends LinearLayout {
 
     protected void initActionButton(ActionButton button) {
         int id = button.getId();
-        if (id == R.id.button_undo)
-            initActionButton(button, ActionType.UNDO, false, false);
-        else if (id == R.id.button_redo)
-            initActionButton(button, ActionType.REDO, false, false);
-        else if (id == R.id.button_text_size)
+        if (id == R.id.button_text_size)
             initActionButton(button, ActionType.TEXT_SIZE, false, true);
         else if (id == R.id.button_text_bold)
             initActionButton(button, ActionType.BOLD, true, false);
@@ -309,6 +318,20 @@ public class WysiwygEditor extends LinearLayout {
 
         else if (id == R.id.button_remove_format)
             initActionButton(button, ActionType.REMOVE_FORMAT, false, false);
+
+        // right panel
+        else if (id == R.id.button_undo)
+            initRightButton(button, ActionType.UNDO);
+        else if (id == R.id.button_redo)
+            initRightButton(button, ActionType.REDO);
+        else if (id == R.id.button_up)
+            initRightButton(button, ActionType.UP);
+        else if (id == R.id.button_left)
+            initRightButton(button, ActionType.LEFT);
+        else if (id == R.id.button_right)
+            initRightButton(button, ActionType.RIGHT);
+        else if (id == R.id.button_down)
+            initRightButton(button, ActionType.DOWN);
     }
 
     protected void initActionButton(ActionButton button, ActionType type, boolean isCheckable, boolean isPopup) {
@@ -317,13 +340,10 @@ public class WysiwygEditor extends LinearLayout {
         mActionButtons.put(type, button);
     }
 
-//    private ActionButton addActionButton(ActionType type, int imageId, boolean isCheckable, boolean isPopup) {
-//        ActionButton button = new ActionButton(getContext(), type, imageId, isCheckable, isPopup);
-//        button.setOnClickListener(v -> onClickActionButton((ActionButton) v));
-//        layoutButtons.addView(button);
-//        actionButtons.put(type, button);
-//        return button;
-//    }
+    protected void initRightButton(ActionButton button, ActionType type) {
+        button.init(type, false, false, true);
+        button.setOnClickListener(v -> onClickActionButton((ActionButton) v));
+    }
 
     /**
      *
@@ -385,8 +405,6 @@ public class WysiwygEditor extends LinearLayout {
 //        clearPopupButton();
 //        webView.clearAndFocusEditor();
         switch (button.getType()) {
-            case UNDO: mWebView.undo(); break;
-            case REDO: mWebView.redo(); break;
             case TEXT_SIZE: showTextSizePopupWindow(button); break;
             case BOLD: mWebView.setBold(); break;
             case ITALIC: mWebView.setItalic(); break;
@@ -411,6 +429,14 @@ public class WysiwygEditor extends LinearLayout {
             case INSERT_FORMULA: break;
 
             case REMOVE_FORMAT: mWebView.removeFormat(); break;
+
+            // right panel
+            case UNDO: mWebView.undo(); break;
+            case REDO: mWebView.redo(); break;
+            case UP:  break;
+            case DOWN:  break;
+            case LEFT:  break;
+            case RIGHT:  break;
         }
         // теперь вызывается stateChange
 //        if (button.isCheckable() && !button.isPopup()) {
