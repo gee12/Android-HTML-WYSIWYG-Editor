@@ -37,6 +37,7 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:orientation="horizontal"
+        android:paddingBottom="30dp"
         app:el_duration="300"
         app:el_expanded="false"
         app:el_parallax="0.5">
@@ -45,7 +46,7 @@
             android:id="@+id/layout_right_buttons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:rowCount="4"
+            android:rowCount="8"
             android:columnCount="2"
             >
 <!--            android:background="@color/toolbar_background"-->
@@ -97,6 +98,55 @@
                 android:layout_columnSpan="2"
                 android:src="@drawable/ic_arrow_down" />
 
+            <com.gee12.htmlwysiwygeditor.ActionButton
+                android:id="@+id/button_select_start"
+                style="@style/action_button"
+                android:layout_row="4"
+                android:layout_column="0"
+                android:src="@drawable/ic_select_all" />
+
+            <com.gee12.htmlwysiwygeditor.ActionButton
+                android:id="@+id/button_select_word"
+                style="@style/action_button"
+                android:layout_row="5"
+                android:layout_column="0"
+                android:src="@drawable/ic_select_all" />
+
+            <com.gee12.htmlwysiwygeditor.ActionButton
+                android:id="@+id/button_select_all"
+                style="@style/action_button"
+                android:layout_row="5"
+                android:layout_column="1"
+                android:src="@drawable/ic_select_all" />
+
+            <com.gee12.htmlwysiwygeditor.ActionButton
+                android:id="@+id/button_copy"
+                style="@style/action_button"
+                android:layout_row="6"
+                android:layout_column="0"
+                android:src="@drawable/ic_copy" />
+
+            <com.gee12.htmlwysiwygeditor.ActionButton
+                android:id="@+id/button_cut"
+                style="@style/action_button"
+                android:layout_row="6"
+                android:layout_column="1"
+                android:src="@drawable/ic_cut" />
+
+            <com.gee12.htmlwysiwygeditor.ActionButton
+                android:id="@+id/button_insert"
+                style="@style/action_button"
+                android:layout_row="7"
+                android:layout_column="0"
+                android:src="@drawable/ic_paste" />
+
+            <com.gee12.htmlwysiwygeditor.ActionButton
+                android:id="@+id/button_insert_text"
+                style="@style/action_button"
+                android:layout_row="7"
+                android:layout_column="1"
+                android:src="@drawable/ic_paste" />
+
         </android.widget.GridLayout>
 
     </net.cachapa.expandablelayout.ExpandableLayout>
@@ -114,11 +164,14 @@
             android:id="@+id/layout_toolbar_buttons"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:background="@color/white"
             android:orientation="horizontal">
+<!--            android:paddingTop="2dp"-->
+<!--            android:paddingBottom="2dp"-->
 
-            <View style="@style/separ"/>
+<!--            <View style="@style/separ"/>-->
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_text_size"

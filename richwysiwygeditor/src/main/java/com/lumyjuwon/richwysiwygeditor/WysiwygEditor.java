@@ -343,6 +343,7 @@ public class WysiwygEditor extends LinearLayout {
     protected void initRightButton(ActionButton button, ActionType type) {
         button.init(type, false, false, true);
         button.setOnClickListener(v -> onClickActionButton((ActionButton) v));
+        button.setOnLongClickListener(v -> onLongClickActionButton((ActionButton) v));
     }
 
     /**
@@ -446,6 +447,15 @@ public class WysiwygEditor extends LinearLayout {
         if (!button.isPopup()) {
             setIsEdited();
         }
+    }
+
+    /**
+     *
+     * @param button
+     */
+    public boolean onLongClickActionButton(ActionButton button) {
+
+        return true;
     }
 
     /**
