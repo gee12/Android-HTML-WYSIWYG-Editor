@@ -10,6 +10,7 @@ public enum ActionType {
     DOWN,
     LEFT,
     RIGHT,
+    SELECTION_MODE,
     TEXT_SIZE("FONT-SIZE"),
     FONT_FAMILY,
     HEADERING,

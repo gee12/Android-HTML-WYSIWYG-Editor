@@ -13,6 +13,7 @@ public class ActionButton extends androidx.appcompat.widget.AppCompatImageButton
     public static final int RES_COLOR_CHECKED = R.color.sky_blue;
     public static final int RES_COLOR_DISABLED = R.color.gray;
     private ActionType type;
+    private boolean isEditable;
     private boolean isCheckable;
     private boolean isToggle;
     private boolean isChecked;
@@ -24,17 +25,18 @@ public class ActionButton extends androidx.appcompat.widget.AppCompatImageButton
 
     public ActionButton(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(ActionType.NONE, false, false, true);
+        init(ActionType.NONE, false, false, false, true);
     }
 
-    public ActionButton(Context context, ActionType type, boolean isCheckable, boolean isPopup, boolean isEnabled) {
+    public ActionButton(Context context, boolean isEditable, ActionType type, boolean isCheckable, boolean isPopup, boolean isEnabled) {
         super(context);
-        init(type, isCheckable, isPopup, isEnabled);
+        init(type, isEditable, isCheckable, isPopup, isEnabled);
 //        initVisual(imageId);
     }
 
-    public void init(ActionType type, boolean isCheckable, boolean isPopup, boolean isEnabled) {
+    public void init(ActionType type, boolean isEditable, boolean isCheckable, boolean isPopup, boolean isEnabled) {
         this.type = type;
+        this.isEditable = isEditable;
         this.isCheckable = isCheckable;
         this.isPopup = isPopup;
         this.mBaseColor = ContextCompat.getColor(getContext().getApplicationContext(), RES_COLOR_BASE);
@@ -131,5 +133,9 @@ public class ActionButton extends androidx.appcompat.widget.AppCompatImageButton
 
     public boolean isPopup() {
         return isPopup;
+    }
+
+    public boolean isEditable() {
+        return isEditable;
     }
 }

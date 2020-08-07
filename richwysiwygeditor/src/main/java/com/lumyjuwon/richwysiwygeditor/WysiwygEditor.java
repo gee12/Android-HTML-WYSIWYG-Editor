@@ -304,7 +304,7 @@ public class WysiwygEditor extends LinearLayout {
             initActionButton(button, ActionType.OUTDENT, false, false);
 
         else if (id == R.id.button_insert_line)
-            initActionButton(button, ActionType.INSERT_LINE, false, false);
+            initButton(button, ActionType.INSERT_LINE, true, false, false, false);
         else if (id == R.id.button_insert_link)
             initActionButton(button, ActionType.INSERT_LINK, true, true);
         else if (id == R.id.button_insert_image)
@@ -321,29 +321,37 @@ public class WysiwygEditor extends LinearLayout {
 
         // right panel
         else if (id == R.id.button_undo)
-            initRightButton(button, ActionType.UNDO);
+            initButton(button, ActionType.UNDO, true, false, false, false);
         else if (id == R.id.button_redo)
-            initRightButton(button, ActionType.REDO);
+            initButton(button, ActionType.REDO, true, false, false, false);
         else if (id == R.id.button_up)
-            initRightButton(button, ActionType.UP);
+            initNoEditButton(button, ActionType.UP);
         else if (id == R.id.button_left)
-            initRightButton(button, ActionType.LEFT);
+            initNoEditButton(button, ActionType.LEFT);
         else if (id == R.id.button_right)
-            initRightButton(button, ActionType.RIGHT);
+            initNoEditButton(button, ActionType.RIGHT);
         else if (id == R.id.button_down)
-            initRightButton(button, ActionType.DOWN);
+            initNoEditButton(button, ActionType.DOWN);
+        else if (id == R.id.button_selection_mode)
+            initButton(button, ActionType.SELECTION_MODE, false,true, false, true);
+    }
+
+    protected void initButton(ActionButton button, ActionType type,
+                                    boolean isEditable, boolean isCheckable, boolean isPopup, boolean isAction) {
+        button.init(type, isEditable, isCheckable, isPopup, true);
+        button.setOnClickListener(v -> onClickActionButton((ActionButton) v));
+        button.setOnLongClickListener(v -> onLongClickActionButton((ActionButton) v));
+        if (isAction) {
+            mActionButtons.put(type, button);
+        }
     }
 
     protected void initActionButton(ActionButton button, ActionType type, boolean isCheckable, boolean isPopup) {
-        button.init(type, isCheckable, isPopup, true);
-        button.setOnClickListener(v -> onClickActionButton((ActionButton) v));
-        mActionButtons.put(type, button);
+        initButton(button, type, true, isCheckable, isPopup, true);
     }
 
-    protected void initRightButton(ActionButton button, ActionType type) {
-        button.init(type, false, false, true);
-        button.setOnClickListener(v -> onClickActionButton((ActionButton) v));
-        button.setOnLongClickListener(v -> onLongClickActionButton((ActionButton) v));
+    protected void initNoEditButton(ActionButton button, ActionType type) {
+        initButton(button, type, false, false, false, false);
     }
 
     /**
@@ -392,7 +400,9 @@ public class WysiwygEditor extends LinearLayout {
         }
 
         for (ActionButton button : buttons) {
-            button.setCheckedState(false);
+            if (button.getType() != ActionType.SELECTION_MODE) {
+                button.setCheckedState(false);
+            }
         }
     }
 
@@ -436,21 +446,34 @@ public class WysiwygEditor extends LinearLayout {
             case REDO: mWebView.redo(); break;
             case UP:  break;
             case DOWN:  break;
-            case LEFT:  break;
-            case RIGHT:  break;
+            case LEFT: mWebView.left(isSelectionMode()); break;
+            case RIGHT: mWebView.right(isSelectionMode()); break;
+            case SELECTION_MODE: toggleSelectionMode(); break;
         }
         // теперь вызывается stateChange
 //        if (button.isCheckable() && !button.isPopup()) {
 //            button.switchCheckedState();
 //        }
 
-        if (!button.isPopup()) {
+        if (button.isEditable() && !button.isPopup()) {
             setIsEdited();
         }
     }
 
+    private boolean isSelectionMode() {
+        ActionButton button = mActionButtons.get(ActionType.SELECTION_MODE);
+        return (button != null && button.isChecked());
+    }
+
+    private void toggleSelectionMode() {
+        ActionButton button = mActionButtons.get(ActionType.SELECTION_MODE);
+        if (button != null) {
+            button.setCheckedState(!button.isChecked());
+        }
+    }
+
     /**
-     *
+     * Отображение подсказки.
      * @param button
      */
     public boolean onLongClickActionButton(ActionButton button) {

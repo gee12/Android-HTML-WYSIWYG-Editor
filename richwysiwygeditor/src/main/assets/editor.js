@@ -193,13 +193,13 @@ RE.moveCursor = function(offset) {
 //    var setpos = document.createRange();
 
     // Creates object for selection
-    var sel = window.getSelection();
+/*    var sel = window.getSelection();
 
     if (sel.rangeCount > 0) {
         var textNode = sel.focusNode;
         var newOffset = sel.focusOffset + offset;
         sel.collapse(textNode, Math.min(textNode.length, newOffset));
-    }
+    }*/
 
     // Set start position of range
 //    setpos.setStart(RE.editor.childNodes[0], pos);
@@ -216,7 +216,50 @@ RE.moveCursor = function(offset) {
 //
 //    // Set cursor on focus
 //    tag.focus();
+
+    var selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+        var before = selection.getRangeAt(0);
+        selection.removeAllRanges();
+        var after = document.createRange();
+        after.setStart(before.endContainer, before.endOffset + offset);
+        after.setEnd(before.endContainer, before.endOffset + offset);
+        selection.addRange(after);
+    }
 }
+
+
+RE.moveSelection = function(offset) {
+    var selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+        var before = selection.getRangeAt(0);
+        selection.removeAllRanges();
+        var after = document.createRange();
+        after.setStart(before.startContainer, before.startOffset);
+        after.setEnd(before.endContainer, before.endOffset + offset);
+        selection.addRange(after);
+//        rangeBefore.setEnd(rangeBefore.endContainer, rangeBefore.endOffset + offset);
+    }
+}
+
+/*
+function moveCaret(window, offset) {
+    var sel, range;
+    if (window.getSelection) {
+        sel = window.getSelection();
+        if (sel.rangeCount > 0) {
+            var textNode = sel.focusNode;
+            var newOffset = sel.focusOffset + offset;
+            sel.collapse(textNode, Math.min(textNode.length, newOffset));
+        }
+    } else if ( (sel = window.document.selection) ) {
+        if (sel.type != "Control") {
+            range = sel.createRange();
+            range.move("character", offset);
+            range.select();
+        }
+    }
+}*/
 
 RE.setBold = function() {
     document.execCommand('bold', false, null);
