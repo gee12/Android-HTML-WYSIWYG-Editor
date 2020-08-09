@@ -101,25 +101,32 @@
                 android:src="@drawable/ic_arrow_down" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
-                android:id="@+id/button_selection_mode"
-                style="@style/action_button"
-                android:layout_row="4"
-                android:layout_column="0"
-                android:src="@drawable/ic_selection_mode" />
-
-            <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_select_word"
                 style="@style/action_button"
-                android:layout_row="5"
+                android:layout_row="4"
                 android:layout_column="0"
                 android:src="@drawable/ic_select_all" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_select_all"
                 style="@style/action_button"
-                android:layout_row="5"
+                android:layout_row="4"
                 android:layout_column="1"
                 android:src="@drawable/ic_select_all" />
+
+            <com.gee12.htmlwysiwygeditor.ActionButton
+                android:id="@+id/button_selection_mode"
+                style="@style/action_button"
+                android:layout_row="5"
+                android:layout_column="0"
+                android:src="@drawable/ic_selection_mode" />
+
+            <com.gee12.htmlwysiwygeditor.ActionButton
+                android:id="@+id/button_forward_del"
+                style="@style/action_button"
+                android:layout_row="5"
+                android:layout_column="1"
+                android:src="@android:drawable/ic_delete" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
                 android:id="@+id/button_copy"
@@ -136,14 +143,14 @@
                 android:src="@drawable/ic_cut" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
-                android:id="@+id/button_insert"
+                android:id="@+id/button_paste"
                 style="@style/action_button"
                 android:layout_row="7"
                 android:layout_column="0"
                 android:src="@drawable/ic_paste" />
 
             <com.gee12.htmlwysiwygeditor.ActionButton
-                android:id="@+id/button_insert_text"
+                android:id="@+id/button_paste_text"
                 style="@style/action_button"
                 android:layout_row="7"
                 android:layout_column="1"

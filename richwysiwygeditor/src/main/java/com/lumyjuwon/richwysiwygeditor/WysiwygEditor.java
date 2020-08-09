@@ -334,8 +334,20 @@ public class WysiwygEditor extends LinearLayout {
             initNoEditButton(button, ActionType.DOWN);
         else if (id == R.id.button_selection_mode)
             initButton(button, ActionType.SELECTION_MODE, false,true, false, true);
-    }
+        else if (id == R.id.button_select_all)
+            initNoEditButton(button, ActionType.SELECT_ALL);
 
+        else if (id == R.id.button_copy)
+            initNoEditButton(button, ActionType.COPY);
+        else if (id == R.id.button_cut)
+            initEditButton(button, ActionType.CUT);
+        else if (id == R.id.button_paste)
+            initEditButton(button, ActionType.PASTE);
+        else if (id == R.id.button_paste_text)
+            initEditButton(button, ActionType.PASTE_TEXT);
+        else if (id == R.id.button_forward_del)
+            initEditButton(button, ActionType.FORWARD_DEL);
+    }
     protected void initButton(ActionButton button, ActionType type,
                                     boolean isEditable, boolean isCheckable, boolean isPopup, boolean isAction) {
         button.init(type, isEditable, isCheckable, isPopup, true);
@@ -348,6 +360,10 @@ public class WysiwygEditor extends LinearLayout {
 
     protected void initActionButton(ActionButton button, ActionType type, boolean isCheckable, boolean isPopup) {
         initButton(button, type, true, isCheckable, isPopup, true);
+    }
+
+    protected void initEditButton(ActionButton button, ActionType type) {
+        initButton(button, type, true, false, false, false);
     }
 
     protected void initNoEditButton(ActionButton button, ActionType type) {
@@ -449,6 +465,13 @@ public class WysiwygEditor extends LinearLayout {
             case LEFT: mWebView.left(isSelectionMode()); break;
             case RIGHT: mWebView.right(isSelectionMode()); break;
             case SELECTION_MODE: toggleSelectionMode(); break;
+            case SELECT_ALL: mWebView.selectAll(); break;
+
+            case COPY: mWebView.copy(); break;
+            case CUT: mWebView.cut(); break;
+            case PASTE: mWebView.paste(); break;
+            case PASTE_TEXT: mWebView.pasteTextOnly(); break;
+            case FORWARD_DEL: mWebView.forwardDelete(); break;
         }
         // теперь вызывается stateChange
 //        if (button.isCheckable() && !button.isPopup()) {

@@ -217,28 +217,30 @@ RE.moveCursor = function(offset) {
 //    // Set cursor on focus
 //    tag.focus();
 
-    var selection = window.getSelection();
-    if (selection.rangeCount > 0) {
-        var before = selection.getRangeAt(0);
-        selection.removeAllRanges();
-        var after = document.createRange();
-        after.setStart(before.endContainer, before.endOffset + offset);
-        after.setEnd(before.endContainer, before.endOffset + offset);
-        selection.addRange(after);
+    var sel = window.getSelection();
+    if (sel.rangeCount > 0) {
+        var before = sel.getRangeAt(0);
+        sel.removeAllRanges();
+//        var after = document.createRange();
+//        after.setStart(before.endContainer, before.endOffset + offset);
+//        after.setEnd(before.endContainer, before.endOffset + offset);
+//        sel.addRange(after);
+        sel.setPosition(before.endContainer, before.endOffset + offset);
     }
 }
 
-
 RE.moveSelection = function(offset) {
-    var selection = window.getSelection();
-    if (selection.rangeCount > 0) {
-        var before = selection.getRangeAt(0);
-        selection.removeAllRanges();
-        var after = document.createRange();
-        after.setStart(before.startContainer, before.startOffset);
-        after.setEnd(before.endContainer, before.endOffset + offset);
-        selection.addRange(after);
-//        rangeBefore.setEnd(rangeBefore.endContainer, rangeBefore.endOffset + offset);
+    var sel = window.getSelection();
+    if (sel.rangeCount > 0) {
+        var before = sel.getRangeAt(0);
+//        sel.removeAllRanges();
+//        var after = document.createRange();
+//        after.setStart(before.startContainer, before.startOffset);
+//        after.setEnd(before.endContainer, before.endOffset + offset);
+//        sel.addRange(after);
+
+        sel.setBaseAndExtent(before.startContainer, before.startOffset,
+            before.endContainer, before.endOffset + offset);
     }
 }
 
@@ -260,6 +262,30 @@ function moveCaret(window, offset) {
         }
     }
 }*/
+
+RE.selectAll = function() {
+    document.execCommand('selectAll', false, null);
+}
+
+RE.copy = function() {
+    document.execCommand('copy', false, null);
+}
+
+RE.cut = function() {
+    document.execCommand('cut', false, null);
+}
+
+RE.paste = function() {
+    document.execCommand('paste', false, null);
+}
+
+RE.pasteTextOnly = function() {
+    document.execCommand('insertText', false, null);
+}
+
+RE.forwardDelete = function() {
+    document.execCommand('forwardDelete', false, null);
+}
 
 RE.setBold = function() {
     document.execCommand('bold', false, null);

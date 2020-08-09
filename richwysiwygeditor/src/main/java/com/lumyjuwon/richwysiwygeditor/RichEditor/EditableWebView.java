@@ -449,6 +449,30 @@ public class EditableWebView extends WebView {
         execJavascript((withSelection) ?"RE.moveSelection(1);" : "RE.moveCursor(1);");
     }
 
+    public void selectAll() {
+        execJavascript("RE.selectAll();");
+    }
+
+    public void copy() {
+        execJavascript("RE.copy();");
+    }
+
+    public void cut() {
+        execJavascript("RE.cut();");
+    }
+
+    public void paste() {
+        execJavascript("RE.paste();");
+    }
+
+    public void pasteTextOnly() {
+        execJavascript("RE.pasteTextOnly();");
+    }
+
+    public void forwardDelete() {
+        execJavascript("RE.forwardDelete();");
+    }
+
     public void setBold() {
         execJavascript("RE.setBold();");
     }
