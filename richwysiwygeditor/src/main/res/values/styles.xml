@@ -22,11 +22,11 @@
         <item name="android:layout_height">@dimen/toolbar_icon_height_size</item>
 <!--        <item name="android:background">?attr/selectableItemBackground</item>-->
         <item name="android:scaleType">fitCenter</item>
-        <item name="android:layout_marginLeft">1dp</item>
-        <item name="android:layout_marginRight">1dp</item>
-        <item name="android:layout_marginTop">3dp</item>
-        <item name="android:layout_marginBottom">3dp</item>
-        <item name="android:padding">4dp</item>
+        <item name="android:layout_marginLeft">0dp</item>
+        <item name="android:layout_marginRight">0dp</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
+        <item name="android:padding">2dp</item>
         <item name="android:background">@color/action_background</item>
     </style>
 
@@ -37,13 +37,13 @@
     </style>
 
     <style name="separ">
-        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_width">3dp</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:background">#999</item>
-        <item name="android:layout_marginLeft">6dp</item>
-        <item name="android:layout_marginRight">6dp</item>
-        <item name="android:layout_marginTop">3dp</item>
-        <item name="android:layout_marginBottom">3dp</item>
+        <item name="android:background">#FFF</item>
+<!--        <item name="android:layout_marginLeft">2dp</item>-->
+<!--        <item name="android:layout_marginRight">2dp</item>-->
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
     </style>
 
 <!--    <style name="fab">-->

@@ -13,13 +13,13 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.widget.Button;
-import android.widget.GridLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -29,12 +29,9 @@ import com.gee12.htmlwysiwygeditor.ActionType;
 import com.gee12.htmlwysiwygeditor.ColorUtils;
 import com.gee12.htmlwysiwygeditor.Dialogs;
 import com.gee12.htmlwysiwygeditor.IImagePicker;
-import com.gee12.htmlwysiwygeditor.OnSwipeTouchListener;
 import com.lumyjuwon.richwysiwygeditor.RichEditor.EditableWebView;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.TextColor;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.Youtube;
-
-import net.cachapa.expandablelayout.ExpandableLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,10 +60,11 @@ public class WysiwygEditor extends LinearLayout {
     protected LayoutInflater mLayoutInflater;
     protected EditableWebView mWebView;
     protected PopupWindow mPopupWindow;
-    protected HorizontalScrollView mToolBarPanel;
-    protected ExpandableLayout mClipboardPanel;
-    protected LinearLayout mToolbarButtonsLayout;
-    protected GridLayout mRightButtonsLayout;
+    protected RelativeLayout mToolBarPanel;
+    protected HorizontalScrollView mScrollviewActions;
+    protected LinearLayout mToolbarActions;
+    protected HorizontalScrollView mScrollviewClipboard;
+    protected LinearLayout mToolbarClipboard;
     protected ProgressBar mProgressBar;
     protected Map<ActionType, ActionButton> mActionButtons;
     private View mViewScrollBottom;
@@ -164,19 +162,27 @@ public class WysiwygEditor extends LinearLayout {
             }
         });
 
-        this.mClipboardPanel = findViewById(R.id.layout_right_expander);
-        this.mRightButtonsLayout = findViewById(R.id.layout_right_buttons);
+        // toolBar
+        this.mToolBarPanel = findViewById(R.id.layout_toolbar);
 
-        mWebView.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
+        this.mScrollviewActions = findViewById(R.id.scrollview_actions);
+        this.mToolbarActions = findViewById(R.id.toolbar_actions);
+
+        this.mScrollviewClipboard = findViewById(R.id.scrollview_clipboard);
+        this.mToolbarClipboard = findViewById(R.id.toolbar_clipboard);
+
+        ((ActionButton)findViewById(R.id.button_switch_toolbar)).setOnClickListener(v -> switchToolbars());
+
+        /*mWebView.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
             @Override
             public void onSwipeLeft() {
-                mClipboardPanel.expand();
+                mScrollviewClipboard.expand();
             }
             @Override
             public void onSwipeRight() {
-                mClipboardPanel.collapse();
+                mScrollviewClipboard.collapse();
             }
-        });
+        });*/
 
         // FIXME: обработчик не запустится, т.к. переопределяется в активности
 
@@ -187,12 +193,21 @@ public class WysiwygEditor extends LinearLayout {
 
 //        addScrollButtons();
 
-        // toolBar
-        this.mToolBarPanel = findViewById(R.id.layout_toolbar);
-        this.mToolbarButtonsLayout = findViewById(R.id.layout_toolbar_buttons);
+        this.mActionButtons = new HashMap<>();
+//        initToolbarActions();
+//        initToolbarClipboard();
+        initToolbar(mToolbarActions);
+        initToolbar(mToolbarClipboard);
+    }
 
-        initToolbar();
-        initRightbar();
+    protected void switchToolbars() {
+        if (mScrollviewActions.getVisibility() == VISIBLE) {
+            mScrollviewActions.setVisibility(GONE);
+            mScrollviewClipboard.setVisibility(VISIBLE);
+        } else {
+            mScrollviewActions.setVisibility(VISIBLE);
+            mScrollviewClipboard.setVisibility(GONE);
+        }
     }
 
     /**
@@ -253,24 +268,33 @@ public class WysiwygEditor extends LinearLayout {
         });
     }
 
-    protected void initToolbar() {
-        this.mActionButtons = new HashMap<>();
-        for (int i = 0; i < mToolbarButtonsLayout.getChildCount(); i++) {
-            View view = mToolbarButtonsLayout.getChildAt(i);
+    protected void initToolbar(LinearLayout layout) {
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View view = layout.getChildAt(i);
             if (view instanceof ActionButton) {
                 initActionButton((ActionButton) view);
             }
         }
     }
 
-    protected void initRightbar() {
-        for (int i = 0; i < mRightButtonsLayout.getChildCount(); i++) {
-            View view = mRightButtonsLayout.getChildAt(i);
+   /* protected void initToolbarActions() {
+        this.mActionButtons = new HashMap<>();
+        for (int i = 0; i < mToolbarActions.getChildCount(); i++) {
+            View view = mToolbarActions.getChildAt(i);
             if (view instanceof ActionButton) {
                 initActionButton((ActionButton) view);
             }
         }
     }
+
+    protected void initToolbarClipboard() {
+        for (int i = 0; i < mToolbarClipboard.getChildCount(); i++) {
+            View view = mToolbarClipboard.getChildAt(i);
+            if (view instanceof ActionButton) {
+                initActionButton((ActionButton) view);
+            }
+        }
+    }*/
 
     protected void initActionButton(ActionButton button) {
         int id = button.getId();
@@ -348,6 +372,7 @@ public class WysiwygEditor extends LinearLayout {
         else if (id == R.id.button_forward_del)
             initEditButton(button, ActionType.FORWARD_DEL);
     }
+
     protected void initButton(ActionButton button, ActionType type,
                                     boolean isEditable, boolean isCheckable, boolean isPopup, boolean isAction) {
         button.init(type, isEditable, isCheckable, isPopup, true);
@@ -467,7 +492,7 @@ public class WysiwygEditor extends LinearLayout {
             case SELECTION_MODE: toggleSelectionMode(); break;
             case SELECT_ALL: mWebView.selectAll(); break;
 
-            case COPY: mWebView.copy(); break;
+            case COPY: mWebView.copy(); toast("Скопировано"); break;
             case CUT: mWebView.cut(); break;
             case PASTE: mWebView.paste(); break;
             case PASTE_TEXT: mWebView.pasteTextOnly(); break;
@@ -483,12 +508,20 @@ public class WysiwygEditor extends LinearLayout {
         }
     }
 
-    private boolean isSelectionMode() {
+    protected void toast(int stringId) {
+        toast(getResources().getString(stringId));
+    }
+
+    protected void toast(String text) {
+        Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+    }
+
+    protected boolean isSelectionMode() {
         ActionButton button = mActionButtons.get(ActionType.SELECTION_MODE);
         return (button != null && button.isChecked());
     }
 
-    private void toggleSelectionMode() {
+    protected void toggleSelectionMode() {
         ActionButton button = mActionButtons.get(ActionType.SELECTION_MODE);
         if (button != null) {
             button.setCheckedState(!button.isChecked());
