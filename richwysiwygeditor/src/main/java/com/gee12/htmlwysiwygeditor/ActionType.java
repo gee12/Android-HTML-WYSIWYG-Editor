@@ -11,6 +11,7 @@ public enum ActionType {
     LEFT,
     RIGHT,
     SELECTION_MODE,
+    SELECT_WORD,
     SELECT_ALL,
     COPY,
     CUT,

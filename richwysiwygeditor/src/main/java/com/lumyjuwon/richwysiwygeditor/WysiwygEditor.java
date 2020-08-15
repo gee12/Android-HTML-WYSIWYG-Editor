@@ -164,8 +164,13 @@ public class WysiwygEditor extends LinearLayout {
         });
         mWebView.setClipboardListener(new EditableWebView.IClipboardListener() {
             @Override
-            public void onReceiveSelectedText(String text) {
-                Utils.writeToClipboard(getContext(), "", text);
+            public void onReceiveSelectedText(String text, String html) {
+                Utils.writeToClipboard(getContext(), "", text, html);
+            }
+
+            @Override
+            public String getClipboardContent(boolean isHtml) {
+                return Utils.readFromClipboard(getContext(), isHtml);
             }
         });
 
@@ -284,25 +289,6 @@ public class WysiwygEditor extends LinearLayout {
         }
     }
 
-   /* protected void initToolbarActions() {
-        this.mActionButtons = new HashMap<>();
-        for (int i = 0; i < mToolbarActions.getChildCount(); i++) {
-            View view = mToolbarActions.getChildAt(i);
-            if (view instanceof ActionButton) {
-                initActionButton((ActionButton) view);
-            }
-        }
-    }
-
-    protected void initToolbarClipboard() {
-        for (int i = 0; i < mToolbarClipboard.getChildCount(); i++) {
-            View view = mToolbarClipboard.getChildAt(i);
-            if (view instanceof ActionButton) {
-                initActionButton((ActionButton) view);
-            }
-        }
-    }*/
-
     protected void initActionButton(ActionButton button) {
         int id = button.getId();
         if (id == R.id.button_text_size)
@@ -365,6 +351,8 @@ public class WysiwygEditor extends LinearLayout {
             initNoEditButton(button, ActionType.DOWN);
         else if (id == R.id.button_selection_mode)
             initButton(button, ActionType.SELECTION_MODE, false,true, false, true);
+        else if (id == R.id.button_select_word)
+            initNoEditButton(button, ActionType.SELECT_WORD);
         else if (id == R.id.button_select_all)
             initNoEditButton(button, ActionType.SELECT_ALL);
 
@@ -498,6 +486,7 @@ public class WysiwygEditor extends LinearLayout {
             case RIGHT: mWebView.right(isSelectionMode()); break;
             case SELECTION_MODE: toggleSelectionMode(); break;
             case SELECT_ALL: mWebView.selectAll(); break;
+            case SELECT_WORD: mWebView.selectWord(); break;
 
             case COPY: mWebView.copy(); toast("Скопировано"); break;
             case CUT: mWebView.cut(); break;

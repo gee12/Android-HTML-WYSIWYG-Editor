@@ -78,7 +78,8 @@ public class EditableWebView extends WebView {
     }
 
     public interface IClipboardListener {
-        void onReceiveSelectedText(String text);
+        void onReceiveSelectedText(String text, String html);
+        String getClipboardContent(boolean isHtml);
     }
 
     public interface IScrollListener {
@@ -111,8 +112,8 @@ public class EditableWebView extends WebView {
         }
 
         @android.webkit.JavascriptInterface
-        public void receiveSelectedText(String text, boolean isCopyToClipboard) {
-            EditableWebView.this.onReceiveSelectedText(text, isCopyToClipboard);
+        public void receiveSelectedText(String text, String html, boolean isCopyToClipboard) {
+            EditableWebView.this.onReceiveSelectedText(text, html, isCopyToClipboard);
         }
     }
 
@@ -215,13 +216,14 @@ public class EditableWebView extends WebView {
 //            html = html.substring(0, html.length()-1);
 //        }
         EditableWebView.this.mHtml = html;
-        if (mReceiveHtmlListener != null)
+        if (mReceiveHtmlListener != null) {
             mReceiveHtmlListener.onReceiveEditableHtml(html);
+        }
     }
 
-    private void onReceiveSelectedText(String text, boolean isCopyToClipboard) {
+    private void onReceiveSelectedText(String text, String html, boolean isCopyToClipboard) {
         if (isCopyToClipboard && mClipboardListener != null) {
-            mClipboardListener.onReceiveSelectedText(text);
+            mClipboardListener.onReceiveSelectedText(text, html);
         }
     }
 
@@ -470,23 +472,34 @@ public class EditableWebView extends WebView {
         execJavascript("RE.selectAll();");
     }
 
+    public void selectWord() {
+        execJavascript("RE.selectWord();");
+    }
+
     public void copy() {
 //        execJavascript("RE.copy();");
-        load(JAVASCRIPT + "Android.receiveSelectedText(RE.getSelectedText(),true);", null);
+        load(JAVASCRIPT + "Android.receiveSelectedText(RE.getSelectedText(),RE.getSelectedHtml(),true);", null);
     }
 
     public void cut() {
 //        execJavascript("RE.cut();");
-        load(JAVASCRIPT + "Android.receiveSelectedText(RE.getSelectedText(),true);", null);
+        load(JAVASCRIPT + "Android.receiveSelectedText(RE.getSelectedText(),RE.getSelectedHtml(),true);", null);
         execJavascript("RE.deleteSelected();");
     }
 
     public void paste() {
-        execJavascript("RE.paste();");
+//        execJavascript("RE.paste();");
+        if (mClipboardListener != null) {
+            String text = mClipboardListener.getClipboardContent(true);
+            execJavascript("RE.paste('" + text + "');");
+        }
     }
 
     public void pasteTextOnly() {
-        execJavascript("RE.pasteTextOnly();");
+        if (mClipboardListener != null) {
+            String text = mClipboardListener.getClipboardContent(false);
+            execJavascript("RE.pasteTextOnly('" + text + "');");
+        }
     }
 
     public void forwardDelete() {

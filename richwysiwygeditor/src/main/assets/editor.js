@@ -186,88 +186,50 @@ RE.redo = function() {
     document.execCommand('redo', false, null);
 }
 
-RE.moveCursor = function(offset) {
-    //var tag = document.getElementById("editable");
-
-    // Creates range object
-//    var setpos = document.createRange();
-
-    // Creates object for selection
-/*    var sel = window.getSelection();
-
-    if (sel.rangeCount > 0) {
-        var textNode = sel.focusNode;
-        var newOffset = sel.focusOffset + offset;
-        sel.collapse(textNode, Math.min(textNode.length, newOffset));
-    }*/
-
-    // Set start position of range
-//    setpos.setStart(RE.editor.childNodes[0], pos);
-//
-//    // Collapse range within its boundary points
-//    // Returns boolean
-//    setpos.collapse(true);
-//
-//    // Remove all ranges set
-//    sel.removeAllRanges();
-//
-//    // Add range with respect to range object.
-//    sel.addRange(setpos);
-//
-//    // Set cursor on focus
-//    tag.focus();
-
+RE.moveCursor = function(direction) {
     var sel = window.getSelection();
-    if (sel.rangeCount > 0) {
-        var before = sel.getRangeAt(0);
-        sel.removeAllRanges();
-//        var after = document.createRange();
-//        after.setStart(before.endContainer, before.endOffset + offset);
-//        after.setEnd(before.endContainer, before.endOffset + offset);
-//        sel.addRange(after);
-        sel.setPosition(before.endContainer, before.endOffset + offset);
-    }
+    sel.modify('move', (direction > 0) ? 'forward' : 'backward', 'character');
 }
 
-RE.moveSelection = function(offset) {
+RE.moveSelection = function(direction) {
     var sel = window.getSelection();
-    if (sel.rangeCount > 0) {
-        var before = sel.getRangeAt(0);
-//        sel.removeAllRanges();
-//        var after = document.createRange();
-//        after.setStart(before.startContainer, before.startOffset);
-//        after.setEnd(before.endContainer, before.endOffset + offset);
-//        sel.addRange(after);
-
-        sel.setBaseAndExtent(before.startContainer, before.startOffset,
-            before.endContainer, before.endOffset + offset);
-    }
+    sel.modify('extend', (direction > 0) ? 'forward' : 'backward', 'character');
 }
 
-/*
-function moveCaret(window, offset) {
-    var sel, range;
-    if (window.getSelection) {
-        sel = window.getSelection();
-        if (sel.rangeCount > 0) {
-            var textNode = sel.focusNode;
-            var newOffset = sel.focusOffset + offset;
-            sel.collapse(textNode, Math.min(textNode.length, newOffset));
+RE.selectWord = function() {
+    var sel = window.getSelection();
+    if (!sel.isCollapsed) {
+        // Detect if selection is backwards
+        var range = document.createRange();
+        range.setStart(sel.anchorNode, sel.anchorOffset);
+        range.setEnd(sel.focusNode, sel.focusOffset);
+        var backwards = range.collapsed;
+        range.detach();
+
+        // modify() works on the focus of the selection
+        var endNode = sel.focusNode, endOffset = sel.focusOffset;
+        sel.collapse(sel.anchorNode, sel.anchorOffset);
+
+        var direction = [];
+        if (backwards) {
+            direction = ['backward', 'forward'];
+        } else {
+            direction = ['forward', 'backward'];
         }
-    } else if ( (sel = window.document.selection) ) {
-        if (sel.type != "Control") {
-            range = sel.createRange();
-            range.move("character", offset);
-            range.select();
-        }
+
+        sel.modify("move", direction[0], "character");
+        sel.modify("move", direction[1], "word");
+        sel.extend(endNode, endOffset);
+        sel.modify("extend", direction[1], "character");
+        sel.modify("extend", direction[0], "word");
     }
-}*/
+}
 
 RE.selectAll = function() {
     document.execCommand('selectAll');
 }
 
-RE.copy = function() {
+/*RE.copy = function() {
     document.execCommand('copy');
 }
 
@@ -278,21 +240,33 @@ RE.cut = function() {
 RE.paste = function() {
     document.execCommand('paste');
 }
+}*/
 
-RE.pasteTextOnly = function() {
-    document.execCommand('insertText');
+RE.pasteTextOnly = function(text) {
+    document.execCommand('insertText', false, text);
+}
+
+RE.paste = function(text) {
+//    var sel = window.getSelection();
+    document.execCommand('insertHTML', false, text);
 }
 
 RE.forwardDelete = function() {
-    document.execCommand('forwardDelete', false, null);
+    document.execCommand('forwardDelete');
 }
 
-RE.getSelectedText() {
+RE.getSelectedText = function() {
     var sel = window.getSelection();
-    return sel.toString()
+    return sel.toString();
 }
 
-RE.deleteSelected() {
+// FIXME: дописать
+RE.getSelectedHtml = function() {
+    var sel = window.getSelection();
+    return sel.toString();
+}
+
+RE.deleteSelected = function() {
     var sel = window.getSelection();
     if (sel.rangeCount > 0) {
         var range = sel.getRangeAt(0);

@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.Base64;
 
 import org.jetbrains.annotations.NotNull;
@@ -87,9 +88,14 @@ public final class Utils {
      * @param label
      * @param text
      */
-    public static void writeToClipboard(Context context, String label, String text) {
+    public static void writeToClipboard(Context context, String label, String text, String html) {
         ClipboardManager clipboard = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText(label, text);
+        ClipData clip = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            clip = ClipData.newHtmlText(label, text, html);
+        } else {
+            clip = ClipData.newPlainText(label, text);
+        }
         clipboard.setPrimaryClip(clip);
     }
 
@@ -98,9 +104,21 @@ public final class Utils {
      * @param context
      * @return
      */
-    public static String readFromClipboard(Context context) {
+    public static String readFromClipboard(Context context, boolean isHtml) {
         ClipboardManager clipboard = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = clipboard.getPrimaryClip();
-        return (clip != null) ? clip.toString() : null;
+        if (clip.getItemCount() > 0) {
+            ClipData.Item item = clip.getItemAt(0);
+            if (isHtml) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    return item.getHtmlText();
+                } else {
+                    return item.coerceToHtmlText(context);
+                }
+            } else {
+                return item.getText().toString();
+            }
+        }
+        return null;
     }
 }
