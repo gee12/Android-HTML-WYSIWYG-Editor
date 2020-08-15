@@ -264,27 +264,40 @@ function moveCaret(window, offset) {
 }*/
 
 RE.selectAll = function() {
-    document.execCommand('selectAll', false, null);
+    document.execCommand('selectAll');
 }
 
 RE.copy = function() {
-    document.execCommand('copy', false, null);
+    document.execCommand('copy');
 }
 
 RE.cut = function() {
-    document.execCommand('cut', false, null);
+    document.execCommand('cut');
 }
 
 RE.paste = function() {
-    document.execCommand('paste', false, null);
+    document.execCommand('paste');
 }
 
 RE.pasteTextOnly = function() {
-    document.execCommand('insertText', false, null);
+    document.execCommand('insertText');
 }
 
 RE.forwardDelete = function() {
     document.execCommand('forwardDelete', false, null);
+}
+
+RE.getSelectedText() {
+    var sel = window.getSelection();
+    return sel.toString()
+}
+
+RE.deleteSelected() {
+    var sel = window.getSelection();
+    if (sel.rangeCount > 0) {
+        var range = sel.getRangeAt(0);
+        range.deleteContents();
+    }
 }
 
 RE.setBold = function() {

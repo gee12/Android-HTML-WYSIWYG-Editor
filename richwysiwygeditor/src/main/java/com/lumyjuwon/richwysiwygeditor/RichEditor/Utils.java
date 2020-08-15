@@ -1,5 +1,7 @@
 package com.lumyjuwon.richwysiwygeditor.RichEditor;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -77,5 +79,28 @@ public final class Utils {
             e.printStackTrace();
         }
         return buffer;
+    }
+
+    /**
+     * Запись текста в буфер обмена.
+     * @param context
+     * @param label
+     * @param text
+     */
+    public static void writeToClipboard(Context context, String label, String text) {
+        ClipboardManager clipboard = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText(label, text);
+        clipboard.setPrimaryClip(clip);
+    }
+
+    /**
+     * Получение текста из буфера обмена.
+     * @param context
+     * @return
+     */
+    public static String readFromClipboard(Context context) {
+        ClipboardManager clipboard = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = clipboard.getPrimaryClip();
+        return (clip != null) ? clip.toString() : null;
     }
 }

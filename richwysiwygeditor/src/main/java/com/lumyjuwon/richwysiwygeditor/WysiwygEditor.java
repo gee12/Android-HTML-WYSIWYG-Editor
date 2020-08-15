@@ -30,6 +30,7 @@ import com.gee12.htmlwysiwygeditor.ColorUtils;
 import com.gee12.htmlwysiwygeditor.Dialogs;
 import com.gee12.htmlwysiwygeditor.IImagePicker;
 import com.lumyjuwon.richwysiwygeditor.RichEditor.EditableWebView;
+import com.lumyjuwon.richwysiwygeditor.RichEditor.Utils;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.TextColor;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.Youtube;
 
@@ -159,6 +160,12 @@ public class WysiwygEditor extends LinearLayout {
                 mProgressBar.setVisibility(View.GONE);
                 if (mPageLoadListener != null)
                     mPageLoadListener.onEditorJSLoaded();
+            }
+        });
+        mWebView.setClipboardListener(new EditableWebView.IClipboardListener() {
+            @Override
+            public void onReceiveSelectedText(String text) {
+                Utils.writeToClipboard(getContext(), "", text);
             }
         });
 

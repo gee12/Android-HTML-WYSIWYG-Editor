@@ -77,6 +77,10 @@ public class EditableWebView extends WebView {
         void onReceiveEditableHtml(String htmlText);
     }
 
+    public interface IClipboardListener {
+        void onReceiveSelectedText(String text);
+    }
+
     public interface IScrollListener {
         void onScrolledVertical(int direction);
         void onScrolledToTop();
@@ -105,6 +109,11 @@ public class EditableWebView extends WebView {
         public void receiveHtml(String html) {
             EditableWebView.this.onReceiveEditableHtml(html);
         }
+
+        @android.webkit.JavascriptInterface
+        public void receiveSelectedText(String text, boolean isCopyToClipboard) {
+            EditableWebView.this.onReceiveSelectedText(text, isCopyToClipboard);
+        }
     }
 
     public static final int EXEC_TRY_DELAY_MSEC = 100;
@@ -122,6 +131,7 @@ public class EditableWebView extends WebView {
     private IPageLoadListener mPageListener;
     private ILinkLoadListener mUrlLoadListener;
     private IHtmlReceiveListener mReceiveHtmlListener;
+    private IClipboardListener mClipboardListener;
     private IYoutubeLinkLoadListener mLoadYoutubeLinkListener;
     private IScrollListener mScrollListener;
 
@@ -209,6 +219,12 @@ public class EditableWebView extends WebView {
             mReceiveHtmlListener.onReceiveEditableHtml(html);
     }
 
+    private void onReceiveSelectedText(String text, boolean isCopyToClipboard) {
+        if (isCopyToClipboard && mClipboardListener != null) {
+            mClipboardListener.onReceiveSelectedText(text);
+        }
+    }
+
     private void onTextChanged(/*String text, */String html) {
 //        this.text = text;
         this.mHtml = html;
@@ -281,8 +297,9 @@ public class EditableWebView extends WebView {
      */
     protected void execJavascript(final String trigger, boolean callStateChange) {
         exec(JAVASCRIPT + trigger);
-        if (callStateChange)
+        if (callStateChange) {
             exec(JAVASCRIPT + "RE.stateChange();");
+        }
     }
 
     /**
@@ -454,11 +471,14 @@ public class EditableWebView extends WebView {
     }
 
     public void copy() {
-        execJavascript("RE.copy();");
+//        execJavascript("RE.copy();");
+        load(JAVASCRIPT + "Android.receiveSelectedText(RE.getSelectedText(),true);", null);
     }
 
     public void cut() {
-        execJavascript("RE.cut();");
+//        execJavascript("RE.cut();");
+        load(JAVASCRIPT + "Android.receiveSelectedText(RE.getSelectedText(),true);", null);
+        execJavascript("RE.deleteSelected();");
     }
 
     public void paste() {
@@ -677,6 +697,10 @@ public class EditableWebView extends WebView {
 
     public void setOnHtmlReceiveListener(IHtmlReceiveListener listener) {
         mReceiveHtmlListener = listener;
+    }
+
+    public void setClipboardListener(IClipboardListener listener) {
+        mClipboardListener = listener;
     }
 
     public void setYoutubeLoadLinkListener(IYoutubeLinkLoadListener listener) {
