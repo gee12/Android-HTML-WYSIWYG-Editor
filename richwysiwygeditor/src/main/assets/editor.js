@@ -198,30 +198,12 @@ RE.moveSelection = function(direction) {
 
 RE.selectWord = function() {
     var sel = window.getSelection();
-    if (!sel.isCollapsed) {
-        // Detect if selection is backwards
-        var range = document.createRange();
-        range.setStart(sel.anchorNode, sel.anchorOffset);
-        range.setEnd(sel.focusNode, sel.focusOffset);
-        var backwards = range.collapsed;
-        range.detach();
-
-        // modify() works on the focus of the selection
-        var endNode = sel.focusNode, endOffset = sel.focusOffset;
-        sel.collapse(sel.anchorNode, sel.anchorOffset);
-
-        var direction = [];
-        if (backwards) {
-            direction = ['backward', 'forward'];
-        } else {
-            direction = ['forward', 'backward'];
-        }
-
-        sel.modify("move", direction[0], "character");
-        sel.modify("move", direction[1], "word");
-        sel.extend(endNode, endOffset);
-        sel.modify("extend", direction[1], "character");
-        sel.modify("extend", direction[0], "word");
+	if (sel.rangeCount > 0) {
+         sel.collapse(sel.anchorNode, sel.focusOffset);
+         sel.modify("move", 'forward', "character");
+         sel.modify("move", 'backward', "word");
+         sel.modify("extend", 'backward', "character");
+         sel.modify("extend", 'forward', "word");
     }
 }
 
@@ -242,13 +224,15 @@ RE.paste = function() {
 }
 }*/
 
+// FIXME:
+//  не вставляется многострочнй текст (с разделителями '\n')
 RE.pasteTextOnly = function(text) {
     document.execCommand('insertText', false, text);
 }
 
-RE.paste = function(text) {
+RE.paste = function(html) {
 //    var sel = window.getSelection();
-    document.execCommand('insertHTML', false, text);
+    document.execCommand('insertHTML', false, html);
 }
 
 RE.forwardDelete = function() {
@@ -260,10 +244,18 @@ RE.getSelectedText = function() {
     return sel.toString();
 }
 
-// FIXME: дописать
+// FIXME:
+//  метод не учитывает "родительские" стили, накладываемые на выделение
+//  При этом, команда копирования в стандартном ActionMode копирует верно (со стилями)
 RE.getSelectedHtml = function() {
     var sel = window.getSelection();
-    return sel.toString();
+    if (sel.rangeCount > 0) {
+        var range = sel.getRangeAt(0);
+        var container = document.createElement("div");
+        container.appendChild(range.cloneContents());
+        return container.innerHTML;
+    }
+    return "";
 }
 
 RE.deleteSelected = function() {

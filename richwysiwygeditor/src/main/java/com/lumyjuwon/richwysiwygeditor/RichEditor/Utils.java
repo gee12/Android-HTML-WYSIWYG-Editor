@@ -90,7 +90,7 @@ public final class Utils {
      */
     public static void writeToClipboard(Context context, String label, String text, String html) {
         ClipboardManager clipboard = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = null;
+        ClipData clip;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
             clip = ClipData.newHtmlText(label, text, html);
         } else {
@@ -101,13 +101,16 @@ public final class Utils {
 
     /**
      * Получение текста из буфера обмена.
+     * FIXME: нужно у обычного текста заменять символы '\n' на <br>
      * @param context
+     * @param isHtml
+     * @param isPlainText
      * @return
      */
-    public static String readFromClipboard(Context context, boolean isHtml) {
+    public static String readFromClipboard(Context context, boolean isHtml/*, boolean isPlainText*/) {
         ClipboardManager clipboard = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = clipboard.getPrimaryClip();
-        if (clip.getItemCount() > 0) {
+        if (clipboard.hasPrimaryClip() && clip.getItemCount() > 0) {
             ClipData.Item item = clip.getItemAt(0);
             if (isHtml) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -115,8 +118,17 @@ public final class Utils {
                 } else {
                     return item.coerceToHtmlText(context);
                 }
+//            } else if (isPlainText) {
+//                return item.getText().toString();
+//            } else {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+//                    return item.coerceToHtmlText(context);
+//                } else {
+//                    return item.getText().toString();
+//                }
             } else {
-                return item.getText().toString();
+//                return item.coerceToText(context).toString();
+                    return item.getText().toString();
             }
         }
         return null;
