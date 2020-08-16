@@ -4,6 +4,7 @@
     <string name="answer_cancel">Cancel</string>
     <string name="answer_yes">Yes</string>
     <string name="answer_no">No</string>
+
     <string name="text_size">Text size (1-7)</string>
     <string name="text_color">Text color</string>
     <string name="text_bold">Bold</string>
@@ -15,6 +16,30 @@
     <string name="insert_link">Insert link</string>
     <string name="remove_link">Remove link</string>
     <string name="insert_line">Insert line</string>
+    <string name="insert_formula">Insert formula</string>
+    <string name="insert_table">Insert table</string>
+    <string name="clear_format">Clear format</string>
+    <string name="indent_dec">Decrease indent</string>
+    <string name="indent_inc">Increase indent</string>
+    <string name="number_list">Numbered list</string>
+    <string name="bulled_list">Non ordered list</string>
+    <string name="quotes">Quotes</string>
+    <string name="code">Code</string>
+    <string name="undo">Undo</string>
+    <string name="redo">Redo</string>
+    <string name="up">Up</string>
+    <string name="left">Left</string>
+    <string name="right">Right</string>
+    <string name="down">Down</string>
+    <string name="selection_mode">Enable selection mode</string>
+    <string name="select_word">Select word</string>
+    <string name="select_all">Select all</string>
+    <string name="copy">Copy</string>
+    <string name="cut">Cut</string>
+    <string name="paste">Paste</string>
+    <string name="paste_text">Paste text only</string>
+    <string name="forward_delete">Forward delete</string>
+
     <string name="link">Link</string>
     <string name="title">Title</string>
     <string name="text_size_hint">Value 1–7</string>

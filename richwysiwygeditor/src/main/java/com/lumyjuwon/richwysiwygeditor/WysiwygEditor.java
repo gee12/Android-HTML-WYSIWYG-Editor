@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.TooltipCompat;
 import androidx.core.content.ContextCompat;
 
 import com.gee12.htmlwysiwygeditor.ActionButton;
@@ -372,7 +373,7 @@ public class WysiwygEditor extends LinearLayout {
                                     boolean isEditable, boolean isCheckable, boolean isPopup, boolean isAction) {
         button.init(type, isEditable, isCheckable, isPopup, true);
         button.setOnClickListener(v -> onClickActionButton((ActionButton) v));
-        button.setOnLongClickListener(v -> onLongClickActionButton((ActionButton) v));
+        TooltipCompat.setTooltipText(button, button.getContentDescription());
         if (isAction) {
             mActionButtons.put(type, button);
         }
@@ -522,15 +523,6 @@ public class WysiwygEditor extends LinearLayout {
         if (button != null) {
             button.setCheckedState(!button.isChecked());
         }
-    }
-
-    /**
-     * Отображение подсказки.
-     * @param button
-     */
-    public boolean onLongClickActionButton(ActionButton button) {
-
-        return true;
     }
 
     /**
