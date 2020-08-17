@@ -373,7 +373,12 @@ public class WysiwygEditor extends LinearLayout {
                                     boolean isEditable, boolean isCheckable, boolean isPopup, boolean isAction) {
         button.init(type, isEditable, isCheckable, isPopup, true);
         button.setOnClickListener(v -> onClickActionButton((ActionButton) v));
-        TooltipCompat.setTooltipText(button, button.getContentDescription());
+        boolean needToolTip = type != ActionType.LEFT && type != ActionType.RIGHT;
+        if (needToolTip) {
+            TooltipCompat.setTooltipText(button, button.getContentDescription());
+        } else {
+            button.setOnLongClickListener(v -> { return onLongClickActionButton((ActionButton) v); });
+        }
         if (isAction) {
             mActionButtons.put(type, button);
         }
@@ -483,8 +488,8 @@ public class WysiwygEditor extends LinearLayout {
             case REDO: mWebView.redo(); break;
             case UP:  break;
             case DOWN:  break;
-            case LEFT: mWebView.left(isSelectionMode()); break;
-            case RIGHT: mWebView.right(isSelectionMode()); break;
+            case LEFT: mWebView.left(isSelectionMode(), EditableWebView.Granularities.Character); break;
+            case RIGHT: mWebView.right(isSelectionMode(), EditableWebView.Granularities.Character); break;
             case SELECTION_MODE: toggleSelectionMode(); break;
             case SELECT_ALL: mWebView.selectAll(); break;
             case SELECT_WORD: mWebView.selectWord(); break;
@@ -503,6 +508,23 @@ public class WysiwygEditor extends LinearLayout {
         if (button.isEditable() && !button.isPopup()) {
             setIsEdited();
         }
+    }
+
+    /**
+     *
+     * @param button
+     * @return
+     */
+    public boolean onLongClickActionButton(ActionButton button) {
+        if (button == null) return false;
+        closePopupWindow();
+        switch (button.getType()) {
+            case LEFT: mWebView.left(isSelectionMode(), EditableWebView.Granularities.Word); break;
+            case RIGHT: mWebView.right(isSelectionMode(), EditableWebView.Granularities.Word); break;
+            default:
+                return false;
+        }
+        return true;
     }
 
     protected void toast(int stringId) {

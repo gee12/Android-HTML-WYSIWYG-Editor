@@ -48,59 +48,59 @@ RE.stateChange = function() {
         node = sel.createRange().parentElement();
     }
     if (window.getComputedStyle(node, "background-color")) {
-        items.push(encodeParam('background-color',
-            window.getComputedStyle(node, "background-color").getPropertyValue('background-color')));
+        items.push(encodeParam("background-color",
+            window.getComputedStyle(node, "background-color").getPropertyValue("background-color")));
      }
     if (window.getComputedStyle(node, "color")) {
-        items.push(encodeParam('color',
-            window.getComputedStyle(node, "color").getPropertyValue('color')));
+        items.push(encodeParam("color",
+            window.getComputedStyle(node, "color").getPropertyValue("color")));
     }
-    var fontSize = document.queryCommandValue('fontSize');
+    var fontSize = document.queryCommandValue("fontSize");
     if (fontSize.length > 0) {
-        items.push(encodeParam('font-size', fontSize));
+        items.push(encodeParam("font-size", fontSize));
     }
-    if (document.queryCommandState('bold')) {
-        items.push('bold');
+    if (document.queryCommandState("bold")) {
+        items.push("bold");
     }
-    if (document.queryCommandState('italic')) {
-        items.push('italic');
+    if (document.queryCommandState("italic")) {
+        items.push("italic");
     }
-    if (document.queryCommandState('subscript')) {
-        items.push('subscript');
+    if (document.queryCommandState("subscript")) {
+        items.push("subscript");
     }
-    if (document.queryCommandState('superscript')) {
-        items.push('superscript');
+    if (document.queryCommandState("superscript")) {
+        items.push("superscript");
     }
-    if (document.queryCommandState('strikeThrough')) {
-        items.push('strikeThrough');
+    if (document.queryCommandState("strikeThrough")) {
+        items.push("strikeThrough");
     }
-    if (document.queryCommandState('underline')) {
-        items.push('underline');
+    if (document.queryCommandState("underline")) {
+        items.push("underline");
     }
-    if (document.queryCommandState('insertOrderedList')) {
-        items.push('insertOrderedList');
-    } else if (document.queryCommandState('insertUnorderedList')) {
-        items.push('insertUnorderedList');
+    if (document.queryCommandState("insertOrderedList")) {
+        items.push("insertOrderedList");
+    } else if (document.queryCommandState("insertUnorderedList")) {
+        items.push("insertUnorderedList");
     }
-    if (document.queryCommandState('justifyCenter')) {
-        items.push(encodeParam('justify', 'center'));
-    } else if (document.queryCommandState('justifyFull')) {
-        items.push(encodeParam('justify', 'full'));
-    } else if (document.queryCommandState('justifyLeft')) {
-        items.push(encodeParam('justify', 'left'));
-    } else if (document.queryCommandState('justifyRight')) {
-        items.push(encodeParam('justify', 'right'));
+    if (document.queryCommandState("justifyCenter")) {
+        items.push(encodeParam("justify", "center"));
+    } else if (document.queryCommandState("justifyFull")) {
+        items.push(encodeParam("justify", "full"));
+    } else if (document.queryCommandState("justifyLeft")) {
+        items.push(encodeParam("justify", "left"));
+    } else if (document.queryCommandState("justifyRight")) {
+        items.push(encodeParam("justify", "right"));
     }
     // ?
-    if (document.queryCommandState('createLink')) {
-        items.push('createLink');
+    if (document.queryCommandState("createLink")) {
+        items.push("createLink");
     }
-    var formatBlock = document.queryCommandValue('formatBlock');
+    var formatBlock = document.queryCommandValue("formatBlock");
     if (formatBlock.length > 0) {
         items.push(formatBlock);
     }
 
-    var formatsAsQuery = items.join('&');
+    var formatsAsQuery = items.join("&");
     Android.stateChange(formatsAsQuery/*, RE.getText()*/);
 }
 
@@ -110,12 +110,12 @@ function encodeParam(attr) {
 }
 
 function encodeParam(attr, value) {
-//    return encodeURIComponent(attr.toUpperCase()) + '=' + encodeURIComponent(value.toUpperCase());
-    return (attr) + '=' + (value);
+//    return encodeURIComponent(attr.toUpperCase()) + "=" + encodeURIComponent(value.toUpperCase());
+    return (attr) + "=" + (value);
 }
 
 RE.setHtml = function(contents) {
-    RE.editor.innerHTML = decodeURIComponent(contents.replace(/\+/g, '%20'));
+    RE.editor.innerHTML = decodeURIComponent(contents.replace(/\+/g, "%20"));
 }
 
 RE.getHtml = function() {
@@ -179,64 +179,63 @@ RE.getInputEnabled = function() {
 }
 
 RE.undo = function() {
-    document.execCommand('undo', false, null);
+    document.execCommand("undo", false, null);
 }
 
 RE.redo = function() {
-    document.execCommand('redo', false, null);
+    document.execCommand("redo", false, null);
 }
 
-RE.moveCursor = function(direction) {
+RE.moveCursor = function(direction, granularity) {
     var sel = window.getSelection();
-    sel.modify('move', (direction > 0) ? 'forward' : 'backward', 'character');
+    sel.modify("move", (direction > 0) ? "forward" : "backward", granularity);
 }
 
-RE.moveSelection = function(direction) {
+RE.moveSelection = function(direction, granularity) {
     var sel = window.getSelection();
-    sel.modify('extend', (direction > 0) ? 'forward' : 'backward', 'character');
+    sel.modify("extend", (direction > 0) ? "forward" : "backward", granularity);
 }
 
 RE.selectWord = function() {
     var sel = window.getSelection();
 	if (sel.rangeCount > 0) {
-         sel.collapse(sel.anchorNode, sel.focusOffset);
-         sel.modify("move", 'forward', "character");
-         sel.modify("move", 'backward', "word");
-         sel.modify("extend", 'backward', "character");
-         sel.modify("extend", 'forward', "word");
+         sel.collapse(sel.focusNode, sel.focusOffset);
+         sel.modify("move", "forward", "character");
+         sel.modify("move", "backward", "word");
+         sel.modify("extend", "forward", "word");
     }
 }
 
 RE.selectAll = function() {
-    document.execCommand('selectAll');
+    document.execCommand("selectAll");
 }
 
-/*RE.copy = function() {
-    document.execCommand('copy');
+RE.copy = function() {
+    document.execCommand("copy");
 }
 
 RE.cut = function() {
-    document.execCommand('cut');
+    document.execCommand("cut");
 }
-
+/*
 RE.paste = function() {
-    document.execCommand('paste');
+    document.execCommand("paste");
 }
 }*/
 
 // FIXME:
-//  не вставляется многострочнй текст (с разделителями '\n')
+//  не вставляется многострочнй текст (с разделителями "\n")
 RE.pasteTextOnly = function(text) {
-    document.execCommand('insertText', false, text);
+    document.execCommand("insertText", false, text);
 }
 
 RE.paste = function(html) {
 //    var sel = window.getSelection();
-    document.execCommand('insertHTML', false, html);
+    document.execCommand("insertHTML", false, html);
 }
 
 RE.forwardDelete = function() {
-    document.execCommand('forwardDelete');
+    document.execCommand("forwardDelete");
 }
 
 RE.getSelectedText = function() {
@@ -261,55 +260,56 @@ RE.getSelectedHtml = function() {
 RE.deleteSelected = function() {
     var sel = window.getSelection();
     if (sel.rangeCount > 0) {
-        var range = sel.getRangeAt(0);
-        range.deleteContents();
+        //var range = sel.getRangeAt(0);
+        //range.deleteContents();
+	    sel.deleteFromDocument();
     }
 }
 
 RE.setBold = function() {
-    document.execCommand('bold', false, null);
+    document.execCommand("bold", false, null);
 
 }
 
 RE.setItalic = function() {
-    document.execCommand('italic', false, null);
+    document.execCommand("italic", false, null);
 }
 
 RE.setSubscript = function() {
-    document.execCommand('subscript', false, null);
+    document.execCommand("subscript", false, null);
 }
 
 RE.setSuperscript = function() {
-    document.execCommand('superscript', false, null);
+    document.execCommand("superscript", false, null);
 }
 
 RE.setStrikeThrough = function() {
-    document.execCommand('strikeThrough', false, null);
+    document.execCommand("strikeThrough", false, null);
 }
 
 RE.setUnderline = function() {
-    document.execCommand('underline', false, null);
+    document.execCommand("underline", false, null);
 }
 
 RE.setBullets = function() {
-    document.execCommand('insertUnorderedList', false, null);
+    document.execCommand("insertUnorderedList", false, null);
 }
 
 RE.setNumbers = function() {
-    document.execCommand('insertOrderedList', false, null);
+    document.execCommand("insertOrderedList", false, null);
 }
 
 RE.setTextColor = function(color) {
     RE.restoreRange();
     document.execCommand("styleWithCSS", null, true);
-    document.execCommand('foreColor', false, color);
+    document.execCommand("foreColor", false, color);
     document.execCommand("styleWithCSS", null, false);
 }
 
 RE.setTextBackgroundColor = function(color) {
     RE.restoreRange();
     document.execCommand("styleWithCSS", null, true);
-    document.execCommand('hiliteColor', false, color);
+    document.execCommand("hiliteColor", false, color);
     document.execCommand("styleWithCSS", null, false);
 }
 
@@ -318,43 +318,43 @@ RE.setFontSize = function(fontSize){
 }
 
 RE.setHeading = function(heading) {
-    document.execCommand('formatBlock', false, '<h'+heading+'>');
+    document.execCommand("formatBlock", false, "<h"+heading+">");
 }
 
 RE.setIndent = function() {
-    document.execCommand('indent', false, null);
+    document.execCommand("indent", false, null);
 }
 
 RE.setOutdent = function() {
-    document.execCommand('outdent', false, null);
+    document.execCommand("outdent", false, null);
 }
 
 RE.setJustifyLeft = function() {
-    document.execCommand('justifyLeft', false, null);
+    document.execCommand("justifyLeft", false, null);
 }
 
 RE.setJustifyCenter = function() {
-    document.execCommand('justifyCenter', false, null);
+    document.execCommand("justifyCenter", false, null);
 }
 
 RE.setJustifyRight = function() {
-    document.execCommand('justifyRight', false, null);
+    document.execCommand("justifyRight", false, null);
 }
 
 RE.setBlockquote = function() {
-    document.execCommand('formatBlock', false, '<blockquote>');
+    document.execCommand("formatBlock", false, "<blockquote>");
 }
 
 RE.setCode = function() {
-    document.execCommand('formatBlock', false, '<pre>');
+    document.execCommand("formatBlock", false, "<pre>");
 }
 
 RE.removeFormat = function() {
-    document.execCommand('removeFormat', false, null);
+    document.execCommand("removeFormat", false, null);
 }
 
 RE.insertLine = function() {
-    document.execCommand('insertHorizontalRule', false, null);
+    document.execCommand("insertHorizontalRule", false, null);
 }
 
 RE.insertImage = function(url, alt) {
@@ -375,7 +375,7 @@ RE.insertYoutubeVideo = function(url) {
 
 RE.insertHTML = function(html) {
     RE.restoreRange();
-    document.execCommand('insertHTML', false, html);
+    document.execCommand("insertHTML", false, html);
 }
 
 // create new link (with url and text) or converts exist text to a link
@@ -401,11 +401,11 @@ RE.insertLink = function(url, text) {
 
 
 RE.createLink = function(url, title) {
-    document.execCommand('createLink', false, url);
+    document.execCommand("createLink", false, url);
 }
 
 RE.removeLink = function() {
-    document.execCommand('unlink', false, null);
+    document.execCommand("unlink", false, null);
 }
 
 RE.insertCSS = function(cssFile) {
@@ -420,7 +420,7 @@ RE.insertCSS = function(cssFile) {
 
 RE.insertTodo = function(text) {
     var html = '<input type="checkbox" name="'+ text +'" value="'+ text +'"/> &nbsp;';
-    document.execCommand('insertHTML', false, html);
+    document.execCommand("insertHTML", false, html);
 }
 
 RE.prepareInsert = function() {

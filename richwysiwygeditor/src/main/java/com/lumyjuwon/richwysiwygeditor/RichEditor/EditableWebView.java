@@ -47,6 +47,23 @@ import java.util.Map;
 
 public class EditableWebView extends WebView {
 
+    public enum Granularities {
+        Character ("character"),
+        Word ("word"),
+        Sentence ("sentence"),
+        Paragraph ("paragraph");
+
+        String mValue;
+
+        Granularities(String value) {
+            this.mValue = value;
+        }
+
+        public String getValue() {
+            return mValue;
+        }
+    }
+
     public static final String JAVASCRIPT = "javascript:";
 
     public interface ITextChangeListener {
@@ -460,12 +477,14 @@ public class EditableWebView extends WebView {
         execJavascript("RE.redo();");
     }
 
-    public void left(boolean withSelection) {
-        execJavascript((withSelection) ?"RE.moveSelection(-1);" : "RE.moveCursor(-1);");
+    public void left(boolean withSelection, Granularities granularity) {
+        String params = String.format("-1,'%s'",  granularity.getValue());
+        execJavascript((withSelection) ? "RE.moveSelection("+params+");" : "RE.moveCursor("+params+");");
     }
 
-    public void right(boolean withSelection) {
-        execJavascript((withSelection) ?"RE.moveSelection(1);" : "RE.moveCursor(1);");
+    public void right(boolean withSelection, Granularities granularity) {
+        String params = String.format("1,'%s'",  granularity.getValue());
+        execJavascript((withSelection) ? "RE.moveSelection("+params+");" : "RE.moveCursor("+params+");");
     }
 
     public void selectAll() {
@@ -477,14 +496,14 @@ public class EditableWebView extends WebView {
     }
 
     public void copy() {
-//        execJavascript("RE.copy();");
-        load(JAVASCRIPT + "Android.receiveSelectedText(RE.getSelectedText(),RE.getSelectedHtml(),true);", null);
+        execJavascript("RE.copy();");
+//        load(JAVASCRIPT + "Android.receiveSelectedText(RE.getSelectedText(),RE.getSelectedHtml(),true);", null);
     }
 
     public void cut() {
-//        execJavascript("RE.cut();");
-        load(JAVASCRIPT + "Android.receiveSelectedText(RE.getSelectedText(),RE.getSelectedHtml(),true);", null);
-        execJavascript("RE.deleteSelected();");
+        execJavascript("RE.cut();");
+//        load(JAVASCRIPT + "Android.receiveSelectedText(RE.getSelectedText(),RE.getSelectedHtml(),true);", null);
+//        execJavascript("RE.deleteSelected();");
     }
 
     public void paste() {
