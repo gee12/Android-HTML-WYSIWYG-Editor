@@ -496,14 +496,19 @@ public class EditableWebView extends WebView {
     }
 
     public void copy() {
-        execJavascript("RE.copy();");
-//        load(JAVASCRIPT + "Android.receiveSelectedText(RE.getSelectedText(),RE.getSelectedHtml(),true);", null);
+        // FIXME: copy() не работает, судя по всему, из-за проблем с разрешением на работу с буфером обмена
+//        execJavascript("RE.copy();");
+        load(JAVASCRIPT + "Android.receiveSelectedText(RE.getSelectedText(),RE.getSelectedHtml(),true);", null);
     }
 
     public void cut() {
-        execJavascript("RE.cut();");
-//        load(JAVASCRIPT + "Android.receiveSelectedText(RE.getSelectedText(),RE.getSelectedHtml(),true);", null);
-//        execJavascript("RE.deleteSelected();");
+        // FIXME: cut() не работает, судя по всему, из-за проблем с разрешением на работу с буфером обмена
+//        execJavascript("RE.cut();");
+        load(JAVASCRIPT + "Android.receiveSelectedText(RE.getSelectedText(),RE.getSelectedHtml(),true);", null);
+        execJavascript("RE.deleteSelected();");
+        // принудительно вызываем получение обновленного html, т.к. deleteSelected() ничего не вызывает
+        // (в отличие от стандартного cut())
+        execJavascript("RE.textChange();");
     }
 
     public void paste() {

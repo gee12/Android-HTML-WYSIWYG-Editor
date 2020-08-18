@@ -27,10 +27,6 @@
     <string name="code">Code</string>
     <string name="undo">Undo</string>
     <string name="redo">Redo</string>
-    <string name="up">Up</string>
-    <string name="left">Left</string>
-    <string name="right">Right</string>
-    <string name="down">Down</string>
     <string name="selection_mode">Enable selection mode</string>
     <string name="select_word">Select word</string>
     <string name="select_all">Select all</string>
@@ -48,4 +44,5 @@
     <string name="height_points">Height (points)</string>
     <string name="invalid_number">Invalid number:&#160;</string>
     <string name="set_similar_image_params">Set similar parameters for other images</string>
+    <string name="switch_toolbars">Switch toolbars</string>
 </resources>

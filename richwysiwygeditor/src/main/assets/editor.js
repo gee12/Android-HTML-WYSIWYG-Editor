@@ -217,11 +217,10 @@ RE.copy = function() {
 RE.cut = function() {
     document.execCommand("cut");
 }
-/*
+
 RE.paste = function() {
     document.execCommand("paste");
 }
-}*/
 
 // FIXME:
 //  не вставляется многострочнй текст (с разделителями "\n")
@@ -230,7 +229,6 @@ RE.pasteTextOnly = function(text) {
 }
 
 RE.paste = function(html) {
-//    var sel = window.getSelection();
     document.execCommand("insertHTML", false, html);
 }
 
@@ -430,8 +428,8 @@ RE.prepareInsert = function() {
 RE.saveRange = function(){
     var selection = window.getSelection();
     if (selection.rangeCount > 0) {
-      var range = selection.getRangeAt(0);
-      RE.currentSelection = {
+        var range = selection.getRangeAt(0);
+        RE.currentSelection = {
           "startContainer": range.startContainer,
           "startOffset": range.startOffset,
           "endContainer": range.endContainer,

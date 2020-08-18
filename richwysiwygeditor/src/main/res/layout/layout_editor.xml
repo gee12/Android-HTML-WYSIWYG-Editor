@@ -234,19 +234,16 @@
                     style="@style/action_button"
                     android:layout_gravity="center_horizontal"
                     android:visibility="gone"
-                    android:contentDescription="@string/up"
                     android:src="@drawable/ic_arrow_up" />
 
                 <com.gee12.htmlwysiwygeditor.ActionButton
                     android:id="@+id/button_left"
                     style="@style/action_button"
-                    android:contentDescription="@string/left"
                     android:src="@drawable/ic_arrow_left" />
 
                 <com.gee12.htmlwysiwygeditor.ActionButton
                     android:id="@+id/button_right"
                     style="@style/action_button"
-                    android:contentDescription="@string/right"
                     android:src="@drawable/ic_arrow_right" />
 
                 <com.gee12.htmlwysiwygeditor.ActionButton
@@ -254,7 +251,6 @@
                     style="@style/action_button"
                     android:layout_gravity="center_horizontal"
                     android:visibility="gone"
-                    android:contentDescription="@string/down"
                     android:src="@drawable/ic_arrow_down" />
 
                 <com.gee12.htmlwysiwygeditor.ActionButton
@@ -320,6 +316,7 @@
             android:layout_marginLeft="3dp"
             android:layout_marginStart="3dp"
             style="@style/action_button"
+            android:contentDescription="@string/switch_toolbars"
             android:src="@drawable/ic_switch" />
 
     </RelativeLayout>

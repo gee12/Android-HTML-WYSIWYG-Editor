@@ -184,7 +184,9 @@ public class WysiwygEditor extends LinearLayout {
         this.mScrollviewClipboard = findViewById(R.id.scrollview_clipboard);
         this.mToolbarClipboard = findViewById(R.id.toolbar_clipboard);
 
-        ((ActionButton)findViewById(R.id.button_switch_toolbar)).setOnClickListener(v -> switchToolbars());
+        ActionButton bToolbarSwitcher = (ActionButton) findViewById(R.id.button_switch_toolbar);
+        bToolbarSwitcher.setOnClickListener(v -> switchToolbars());
+        TooltipCompat.setTooltipText(bToolbarSwitcher, getResources().getString(R.string.switch_toolbars));
 
         /*mWebView.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
             @Override

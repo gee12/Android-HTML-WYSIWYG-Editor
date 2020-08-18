@@ -27,10 +27,6 @@
     <string name="code">Код</string>
     <string name="undo">Отменить действие</string>
     <string name="redo">Повторить отмененное действие</string>
-    <string name="up">Курсор вверх</string>
-    <string name="left">Курсор влево</string>
-    <string name="right">Курсор вправо</string>
-    <string name="down">Курсор вниз</string>
     <string name="selection_mode">Включить режим выделения</string>
     <string name="select_word">Выделить слово</string>
     <string name="select_all">Выделить все</string>
@@ -48,4 +44,5 @@
     <string name="height_points">Высота (точек)</string>
     <string name="invalid_number">Недопустимое число:&#160;</string>
     <string name="set_similar_image_params">Установить аналогичные параметры для остальных изображений</string>
+    <string name="switch_toolbars">Переключить панели</string>
 </resources>
