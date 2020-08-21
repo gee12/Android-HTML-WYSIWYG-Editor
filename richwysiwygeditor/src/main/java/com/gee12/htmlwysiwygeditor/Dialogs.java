@@ -228,6 +228,12 @@ public class Dialogs {
         }
     }
 
+    public static void showAlertDialog(Context context, int messageRes, DialogInterface.OnClickListener okListener) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
+        builder.setMessage(context.getString(messageRes))
+                .setPositiveButton(R.string.answer_ok, okListener).show();
+    }
+
     public static void showAlertDialog(Context context, int messageRes,
                                        DialogInterface.OnClickListener yesListener, DialogInterface.OnClickListener noListerener) {
         showAlertDialog(context, context.getString(messageRes), yesListener, noListerener);
