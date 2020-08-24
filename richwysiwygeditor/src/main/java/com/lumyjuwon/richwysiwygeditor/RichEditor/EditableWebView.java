@@ -306,7 +306,7 @@ public class EditableWebView extends WebView {
      *
      * @param trigger
      */
-    protected void execJavascript(final String trigger) {
+    public void execJavascript(final String trigger) {
         execJavascript(trigger, true);
     }
 

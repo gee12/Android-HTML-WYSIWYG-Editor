@@ -50,7 +50,7 @@ RE.stateChange = function() {
     if (window.getComputedStyle(node, "background-color")) {
         items.push(encodeParam("background-color",
             window.getComputedStyle(node, "background-color").getPropertyValue("background-color")));
-     }
+    }
     if (window.getComputedStyle(node, "color")) {
         items.push(encodeParam("color",
             window.getComputedStyle(node, "color").getPropertyValue("color")));
