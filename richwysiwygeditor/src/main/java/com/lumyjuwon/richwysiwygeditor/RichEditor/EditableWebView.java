@@ -232,7 +232,7 @@ public class EditableWebView extends WebView {
 //        if (html.length() >= 1) {
 //            html = html.substring(0, html.length()-1);
 //        }
-        EditableWebView.this.mHtml = html;
+        this.mHtml = html;
         if (mReceiveHtmlListener != null) {
             mReceiveHtmlListener.onReceiveEditableHtml(html);
         }
