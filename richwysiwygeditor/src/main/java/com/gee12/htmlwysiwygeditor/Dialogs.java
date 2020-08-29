@@ -1,7 +1,6 @@
 package com.gee12.htmlwysiwygeditor;
 
 import android.content.Context;
-import android.os.Build;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
 import com.lumyjuwon.richwysiwygeditor.R;
+import com.lumyjuwon.richwysiwygeditor.RichEditor.Utils;
 
 import java.util.Locale;
 
@@ -60,7 +60,7 @@ public class Dialogs {
         builder.setPositiveButton(R.string.answer_ok, (dialog1, which) -> {
 //            int size = Integer.parseInt(etSize.getText().toString());
             String s = etSize.getText().toString();
-            Integer size = parseInt(s);
+            Integer size = Utils.parseInt(s);
             if (size != null) {
                 callback.onApply(size);
             } else {
@@ -90,7 +90,7 @@ public class Dialogs {
 //            } else {
 //                int size = Integer.parseInt(etSize.getText().toString());
 //                okButton.setEnabled(size >= 1 && size <= 7);
-                Integer size = parseInt(etSize.getText().toString());
+                Integer size = Utils.parseInt(etSize.getText().toString());
                 okButton.setEnabled(size != null && size >= 1 && size <= 7);
 //            }
         }));
@@ -121,10 +121,10 @@ public class Dialogs {
 
         builder.setPositiveButton(R.string.answer_ok, (dialog1, which) -> {
             String s = etWidth.getText().toString();
-            Integer width = parseInt(s);
+            Integer width = Utils.parseInt(s);
             if (width != null) {
                 s = etHeight.getText().toString();
-                Integer height = parseInt(s);
+                Integer height = Utils.parseInt(s);
                 if (height != null) {
                     boolean setSimilarParams = checkBox.isChecked();
                     callback.onApply(width, height, setSimilarParams);
@@ -160,7 +160,7 @@ public class Dialogs {
 //                int dimen = Integer.parseInt(newText);
 //                okButton.setEnabled(dimen > 0);
 //            }
-            Integer size = parseInt(newText);
+            Integer size = Utils.parseInt(newText);
             okButton.setEnabled(size != null && size > 0);
         });
         etWidth.addTextChangedListener(textWatcher);
@@ -184,16 +184,6 @@ public class Dialogs {
                 callback.onApply(etLink.getText().toString(), etTitle.getText().toString()))
             .setNegativeButton(R.string.answer_cancel, null)
             .create().show();
-    }
-
-    public static Integer parseInt(String s) {
-        if (s == null || s.length() == 0)
-            return null;
-        try {
-            int res = Integer.parseInt(s);
-            return res;
-        } catch(Exception ignored) {}
-        return null;
     }
 
     /**
@@ -232,21 +222,11 @@ public class Dialogs {
         }
     }
 
-//    public static void showAlertDialog(Context context, int messageRes, DialogInterface.OnClickListener okListener) {
-//        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
-//        builder.setMessage(context.getString(messageRes))
-//                .setPositiveButton(R.string.answer_ok, okListener).show();
-//    }
-
     public static void showAlertDialog(Context context, int messageRes, IApplyResult callback) {
-//                                       DialogInterface.OnClickListener yesListener, DialogInterface.OnClickListener noListerener) {
-//        showAlertDialog(context, context.getString(messageRes), yesListener, noListerener);
         showAlertDialog(context, context.getString(messageRes), true, true, callback);
     }
 
     public static void showAlertDialog(Context context, CharSequence message, IApplyResult callback) {
-//                                       DialogInterface.OnClickListener yesListener, DialogInterface.OnClickListener noListerener) {
-//        showAlertDialog(context, context.getString(messageRes), yesListener, noListerener);
         showAlertDialog(context, message, true, true, callback);
     }
 
@@ -269,15 +249,11 @@ public class Dialogs {
     }
 
     public static void showAlertDialog(Context context, int messageRes, IApplyCancelResult callback) {
-//                                       DialogInterface.OnClickListener yesListener, DialogInterface.OnClickListener noListerener) {
-//        showAlertDialog(context, context.getString(messageRes), yesListener, noListerener);
         showAlertDialog(context, context.getString(messageRes), callback);
     }
 
     public static void showAlertDialog(Context context, CharSequence message, IApplyCancelResult callback) {
         showAlertDialog(context, message, true, true, callback);
-//                                       DialogInterface.OnClickListener yesListener, DialogInterface.OnClickListener noListerener) {
-//        showAlertDialog(context, message, true, yesListener, noListerener);
 
     }
 
@@ -288,19 +264,18 @@ public class Dialogs {
 
     public static void showAlertDialog(Context context, CharSequence message, boolean isNeedCancel, boolean isCancelable,
                                        IApplyCancelResult callback) {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
-        builder.setMessage(message)
-                .setCancelable(isCancelable)
-                .setPositiveButton(R.string.answer_yes, (dialog, which) -> callback.onApply());
+        /*android.app.*/AlertDialog.Builder builder = new /*android.app.*/AlertDialog.Builder(context);
+        builder.setMessage(message);
+        builder.setCancelable(isCancelable);
+        builder.setPositiveButton(R.string.answer_yes, (dialog, which) -> callback.onApply());
         if (isNeedCancel) {
             builder.setNegativeButton(R.string.answer_no, (dialog, which) -> callback.onCancel());
         }
-        final android.app.AlertDialog dialog = builder.create();
+        final /*android.app.*/AlertDialog dialog = builder.create();
 //        dialog.setCanceledOnTouchOutside();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
-            && callback instanceof IApplyCancelDismissResult) {
+        if (/*Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
+            &&*/ callback instanceof IApplyCancelDismissResult) {
             dialog.setOnDismissListener(dialog1 ->
-//                    noListerener.onClick(dialog1, 0));
                     ((IApplyCancelDismissResult)callback).onDismiss());
         }
         dialog.show();

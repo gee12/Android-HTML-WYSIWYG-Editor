@@ -133,4 +133,19 @@ public final class Utils {
         }
         return null;
     }
+
+    /**
+     *
+     * @param s
+     * @return
+     */
+    public static Integer parseInt(String s) {
+        if (s == null || s.length() == 0)
+            return null;
+        try {
+            int res = Integer.parseInt(s);
+            return res;
+        } catch(Exception ignored) {}
+        return null;
+    }
 }
