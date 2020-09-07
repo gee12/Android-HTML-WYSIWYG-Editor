@@ -30,6 +30,7 @@ import com.gee12.htmlwysiwygeditor.ActionType;
 import com.gee12.htmlwysiwygeditor.ColorUtils;
 import com.gee12.htmlwysiwygeditor.Dialogs;
 import com.gee12.htmlwysiwygeditor.IImagePicker;
+import com.gee12.htmlwysiwygeditor.ViewUtils;
 import com.lumyjuwon.richwysiwygeditor.RichEditor.EditableWebView;
 import com.lumyjuwon.richwysiwygeditor.RichEditor.Utils;
 import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.TextColor;
@@ -340,6 +341,8 @@ public class WysiwygEditor extends LinearLayout {
             initActionButton(button, ActionType.REMOVE_FORMAT, false, false);
 
         // right panel
+        else if (id == R.id.button_keyboard)
+            initNoEditButton(button, ActionType.KEYBOARD);
         else if (id == R.id.button_undo)
             initButton(button, ActionType.UNDO, true, false, false, false);
         else if (id == R.id.button_redo)
@@ -486,6 +489,7 @@ public class WysiwygEditor extends LinearLayout {
             case REMOVE_FORMAT: mWebView.removeFormat(); break;
 
             // right panel
+            case KEYBOARD: ViewUtils.toggleClipboard(getContext(), mWebView); break;
             case UNDO: mWebView.undo(); break;
             case REDO: mWebView.redo(); break;
             case UP:  break;

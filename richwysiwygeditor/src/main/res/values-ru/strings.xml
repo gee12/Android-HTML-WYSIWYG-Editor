@@ -45,4 +45,5 @@
     <string name="invalid_number">Недопустимое число:&#160;</string>
     <string name="set_similar_image_params">Установить аналогичные параметры для остальных изображений</string>
     <string name="switch_toolbars">Переключить панели</string>
+    <string name="keyboard">Клавиатура</string>
 </resources>

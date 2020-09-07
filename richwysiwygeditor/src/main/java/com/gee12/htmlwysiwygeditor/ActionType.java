@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 public enum ActionType {
     NONE,
+    KEYBOARD,
     UNDO,
     REDO,
     UP,

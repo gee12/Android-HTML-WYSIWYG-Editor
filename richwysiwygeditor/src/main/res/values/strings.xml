@@ -45,4 +45,5 @@
     <string name="invalid_number">Invalid number:&#160;</string>
     <string name="set_similar_image_params">Set similar parameters for other images</string>
     <string name="switch_toolbars">Switch toolbars</string>
+    <string name="keyboard">Keyboard</string>
 </resources>

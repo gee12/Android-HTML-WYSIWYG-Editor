@@ -28,6 +28,6 @@
 <!--    <color name="toolbar_background">#EEE</color>-->
     <color name="toolbar_background">#B2E0EAFF</color>
     <color name="action_background">#B2E0EAFF</color>
-    <color name="fab">#4D86B945</color>
+    <color name="fab">#2C86B945</color>
 
 </resources>
