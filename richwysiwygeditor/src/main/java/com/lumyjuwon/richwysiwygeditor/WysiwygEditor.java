@@ -76,10 +76,12 @@ public class WysiwygEditor extends LinearLayout {
     private EditableWebView.IScrollListener mScrollListener;
     protected EditableWebView.IPageLoadListener mPageLoadListener;
     protected IImagePicker mImgPickerListener;
+    protected IColorPicker mColorPickerListener;
 
     //    protected boolean isActivateAllButtons = true;
     private int mCurTextSize;
     protected boolean mIsEdited;
+    private boolean mIsTextColor;   // false - isBackgroundColor
 
     public WysiwygEditor(Context context) {
         super(context);
@@ -575,17 +577,24 @@ public class WysiwygEditor extends LinearLayout {
         this.mPopupWindow = createPopupWindow(button, R.layout.popup_text_color);
         View contentView = mPopupWindow.getContentView();
 
+        contentView.findViewById(R.id.color_picker)
+                .setOnClickListener(v -> {
+                    closePopupWindow();
+                    mColorPickerListener.onPickColor();
+                });
+
         Context context = getContext().getApplicationContext();
         for (Integer key : TextColor.colorMap.keySet()){
             final int value = TextColor.colorMap.get(key);
             Button popupButton = contentView.findViewById(key);
             popupButton.setOnClickListener(view -> {
                 closePopupWindow();
-                if (button.getId() == R.id.button_text_color) {
+                /*if (button.getId() == R.id.button_text_color) {
                     mWebView.setTextColor(ContextCompat.getColor(context, value));
                 } else {
                     mWebView.setTextBackgroundColor(ContextCompat.getColor(context, value));
-                }
+                }*/
+                setPickedColor(button.getId() == R.id.button_text_color, value);
                 setIsEdited();
                 // теперь вызывается stateChange
 //                int color = ContextCompat.getColor(context, (value != R.color.white)
@@ -594,6 +603,24 @@ public class WysiwygEditor extends LinearLayout {
 //                webView.focusEditor();
             });
         }
+    }
+
+    /**
+     * Установка выбранного цвета
+     * @param isTextColor true - цвет текста, false - цвет фона
+     * @param color
+     */
+    public void setPickedColor(boolean isTextColor, int color) {
+        Context context = getContext().getApplicationContext();
+        if (isTextColor) {
+            mWebView.setTextColor(ContextCompat.getColor(context, color));
+        } else {
+            mWebView.setTextBackgroundColor(ContextCompat.getColor(context, color));
+        }
+    }
+
+    public void setPickedColor(int color) {
+        setPickedColor(mIsTextColor, color);
     }
 
 //    /**
@@ -906,8 +933,12 @@ public class WysiwygEditor extends LinearLayout {
         this.mIsEdited = isEdited;
     }
 
-    public void setImgPickerCallback(IImagePicker callback) {
-        this.mImgPickerListener = callback;
+    public void setImagePickerListener(IImagePicker listener) {
+        this.mImgPickerListener = listener;
+    }
+
+    public void setColorPickerListener(IColorPicker listener) {
+        this.mColorPickerListener = listener;
     }
 
 }
