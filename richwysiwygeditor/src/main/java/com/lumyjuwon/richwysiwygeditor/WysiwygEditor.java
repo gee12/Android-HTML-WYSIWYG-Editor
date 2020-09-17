@@ -33,7 +33,6 @@ import com.gee12.htmlwysiwygeditor.IImagePicker;
 import com.lumyjuwon.richwysiwygeditor.RichEditor.EditableWebView;
 import com.lumyjuwon.richwysiwygeditor.RichEditor.Utils;
 import com.lumyjuwon.richwysiwygeditor.Utils.Keyboard;
-import com.lumyjuwon.richwysiwygeditor.Utils.TextColor;
 import com.lumyjuwon.richwysiwygeditor.Utils.Youtube;
 
 import java.util.ArrayList;
@@ -59,6 +58,8 @@ import java.util.Map;
  */
 
 public class WysiwygEditor extends LinearLayout {
+
+    public static final int MAX_SAVED_COLORS = 15;
 
     protected LayoutInflater mLayoutInflater;
     protected EditableWebView mWebView;
@@ -590,7 +591,7 @@ public class WysiwygEditor extends LinearLayout {
                     mColorPickerListener.onPickColor();
                 });
 
-        for (Integer key : TextColor.colorMap.keySet()){
+        /*for (Integer key : TextColor.colorMap.keySet()){
             final int value = TextColor.colorMap.get(key);
             Button popupButton = contentView.findViewById(key);
             popupButton.setOnClickListener(view -> {
@@ -598,6 +599,22 @@ public class WysiwygEditor extends LinearLayout {
                 setPickedColor(button.getId() == R.id.button_text_color, value, true);
 //                webView.focusEditor();
             });
+        }*/
+        // отображаем кнопки с сохраненными цветами
+        int[] savedColors = mColorPickerListener.getSavedColors();
+        if (savedColors != null) {
+            ViewGroup viewGroup = (ViewGroup) contentView;
+            int length = Math.min(savedColors.length, viewGroup.getChildCount() - 1);
+            for (int i = length-1; i >= 0; i--) {
+                final int color = savedColors[i];
+                Button colorButton = (Button)viewGroup.getChildAt(i);
+                colorButton.setVisibility(View.VISIBLE);
+                colorButton.setOnClickListener(view -> {
+                    closePopupWindow();
+                    setPickedColor(button.getId() == R.id.button_text_color, color, true);
+//                webView.focusEditor();
+                });
+            }
         }
     }
 
@@ -738,29 +755,6 @@ public class WysiwygEditor extends LinearLayout {
         setClickListener(contentView, R.id.popup_capture_photo, listener);
         setClickListener(contentView, R.id.popup_edit_image, listener);
     }
-
-    /**
-     * Вставка выбранных изображений.
-     * @param imagesFileNames
-     *//*
-
-    public void onSelectImages(List<String> imagesFileNames) {
-        if (imagesFileNames == null)
-            return;
-        int size = imagesFileNames.size();
-        if (size > 0) {
-            if (size == 1) {
-                // обрабатываем изображение только когда выбран один файл
-                showEditImageDialog(imagesFileNames.get(0));
-            } else {
-                for (String fileName : imagesFileNames) {
-                    webView.insertImage(fileName, null);
-                }
-            }
-            setIsEdited();
-        }
-    }
-*/
 
     /**
      * Обработка изображения перед добавлением.

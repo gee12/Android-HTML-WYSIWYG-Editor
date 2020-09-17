@@ -17,10 +17,27 @@
             android:layout_width="@dimen/color_button_size"
             android:layout_height="@dimen/color_button_size"
             android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:background="@color/transparent"
             android:src="@drawable/ic_color_picker" />
 
-        <Button
+        <Button style="@style/color_button" />
+        <Button style="@style/color_button" />
+        <Button style="@style/color_button" />
+        <Button style="@style/color_button" />
+        <Button style="@style/color_button" />
+        <Button style="@style/color_button" />
+        <Button style="@style/color_button" />
+        <Button style="@style/color_button" />
+        <Button style="@style/color_button" />
+        <Button style="@style/color_button" />
+        <Button style="@style/color_button" />
+        <Button style="@style/color_button" />
+        <Button style="@style/color_button" />
+        <Button style="@style/color_button" />
+        <Button style="@style/color_button" />
+
+        <!--<Button
             android:id="@+id/color_white"
             android:layout_width="@dimen/color_button_size"
             android:layout_height="@dimen/color_button_size"
@@ -115,7 +132,7 @@
             android:layout_width="@dimen/color_button_size"
             android:layout_height="@dimen/color_button_size"
             android:layout_marginEnd="8dp"
-            android:background="@color/pink" />
+            android:background="@color/pink" />-->
 
     </LinearLayout>
 
