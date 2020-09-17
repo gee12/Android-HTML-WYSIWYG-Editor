@@ -22,7 +22,7 @@ import androidx.annotation.Nullable;
 
 import com.gee12.htmlwysiwygeditor.ActionType;
 import com.gee12.htmlwysiwygeditor.ColorUtils;
-import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.Youtube;
+import com.lumyjuwon.richwysiwygeditor.Utils.Youtube;
 
 import java.util.HashMap;
 import java.util.Map;

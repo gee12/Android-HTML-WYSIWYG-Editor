@@ -12,12 +12,13 @@
         android:paddingEnd="4dp"
         android:background="@color/white">
 
-        <Button
+        <ImageButton
             android:id="@+id/color_picker"
             android:layout_width="@dimen/color_button_size"
             android:layout_height="@dimen/color_button_size"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/ic_color_picker" />
+            android:background="@color/transparent"
+            android:src="@drawable/ic_color_picker" />
 
         <Button
             android:id="@+id/color_white"

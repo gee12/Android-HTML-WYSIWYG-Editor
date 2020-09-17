@@ -30,11 +30,11 @@ import com.gee12.htmlwysiwygeditor.ActionType;
 import com.gee12.htmlwysiwygeditor.ColorUtils;
 import com.gee12.htmlwysiwygeditor.Dialogs;
 import com.gee12.htmlwysiwygeditor.IImagePicker;
-import com.gee12.htmlwysiwygeditor.ViewUtils;
 import com.lumyjuwon.richwysiwygeditor.RichEditor.EditableWebView;
 import com.lumyjuwon.richwysiwygeditor.RichEditor.Utils;
-import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.TextColor;
-import com.lumyjuwon.richwysiwygeditor.WysiwygUtils.Youtube;
+import com.lumyjuwon.richwysiwygeditor.Utils.Keyboard;
+import com.lumyjuwon.richwysiwygeditor.Utils.TextColor;
+import com.lumyjuwon.richwysiwygeditor.Utils.Youtube;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,6 +82,7 @@ public class WysiwygEditor extends LinearLayout {
     private int mCurTextSize;
     protected boolean mIsEdited;
     private boolean mIsTextColor;   // false - isBackgroundColor
+    private boolean mIsKeyboardShowed;
 
     public WysiwygEditor(Context context) {
         super(context);
@@ -491,7 +492,7 @@ public class WysiwygEditor extends LinearLayout {
             case REMOVE_FORMAT: mWebView.removeFormat(); break;
 
             // right panel
-            case KEYBOARD: ViewUtils.toggleClipboard(getContext(), mWebView); break;
+            case KEYBOARD: Keyboard.toggleClipboard(getContext(), mWebView); break;
             case UNDO: mWebView.undo(); break;
             case REDO: mWebView.redo(); break;
             case UP:  break;
@@ -579,75 +580,54 @@ public class WysiwygEditor extends LinearLayout {
 
         contentView.findViewById(R.id.color_picker)
                 .setOnClickListener(v -> {
+                    this.mIsTextColor = (button.getId() == R.id.button_text_color);
+                    // запоминаем состояние клавиатуры
+                    this.mIsKeyboardShowed = Keyboard.isClipboardShowed(mWebView);
+                    if (mIsKeyboardShowed) {
+                        Keyboard.closeKeyboard(mWebView);
+                    }
                     closePopupWindow();
                     mColorPickerListener.onPickColor();
                 });
 
-        Context context = getContext().getApplicationContext();
         for (Integer key : TextColor.colorMap.keySet()){
             final int value = TextColor.colorMap.get(key);
             Button popupButton = contentView.findViewById(key);
             popupButton.setOnClickListener(view -> {
                 closePopupWindow();
-                /*if (button.getId() == R.id.button_text_color) {
-                    mWebView.setTextColor(ContextCompat.getColor(context, value));
-                } else {
-                    mWebView.setTextBackgroundColor(ContextCompat.getColor(context, value));
-                }*/
-                setPickedColor(button.getId() == R.id.button_text_color, value);
-                setIsEdited();
-                // теперь вызывается stateChange
-//                int color = ContextCompat.getColor(context, (value != R.color.white)
-//                        ? value : ActionButton.RES_COLOR_BASE);
-//                button.setCheckedState(true, color);
+                setPickedColor(button.getId() == R.id.button_text_color, value, true);
 //                webView.focusEditor();
             });
         }
     }
 
     /**
-     * Установка выбранного цвета
+     * Установка выбранного цвета.
      * @param isTextColor true - цвет текста, false - цвет фона
      * @param color
+     * @param fromId true - передается id ресурса цвета, а не непосредственное значение
      */
-    public void setPickedColor(boolean isTextColor, int color) {
+    protected void setPickedColor(boolean isTextColor, int color, boolean fromId) {
         Context context = getContext().getApplicationContext();
         if (isTextColor) {
-            mWebView.setTextColor(ContextCompat.getColor(context, color));
+            mWebView.setTextColor((fromId) ? ContextCompat.getColor(context, color) : color);
         } else {
-            mWebView.setTextBackgroundColor(ContextCompat.getColor(context, color));
+            mWebView.setTextBackgroundColor((fromId) ? ContextCompat.getColor(context, color) : color);
+        }
+        setIsEdited();
+    }
+
+    /**
+     * Установка выбранного цвета из ColorPicker.
+     * @param color
+     */
+    public void setPickedColor(int color) {
+        setPickedColor(mIsTextColor, color, false);
+        // восстанавливаем состояние клавиатуры
+        if (mIsKeyboardShowed) {
+            Keyboard.showKeyboard(mWebView);
         }
     }
-
-    public void setPickedColor(int color) {
-        setPickedColor(mIsTextColor, color);
-    }
-
-//    /**
-//     * Обработчик изменения цвета фона текста.
-//     * @param button
-//     */
-//    private void showBackgroundColorPopupWindow(ActionButton button) {
-//        if (button == null) return;
-//        this.popupWindow = createPopupWindow(button, R.layout.popup_text_color);
-//        View contentView = popupWindow.getContentView();
-//
-//        Context context = getContext().getApplicationContext();
-//        for (Integer key : TextColor.colorMap.keySet()){
-//            final int value = TextColor.colorMap.get(key);
-//            Button popupButton = contentView.findViewById(key);
-//            popupButton.setOnClickListener(view -> {
-//                closePopupWindow();
-//                webView.setTextBackgroundColor(ContextCompat.getColor(context, value));
-//                setIsEdited();
-//                // теперь вызывается stateChange
-////                int color = ContextCompat.getColor(context, (value != R.color.white)
-////                        ? value : ActionButton.RES_COLOR_BASE);
-////                button.setCheckedState(true, color);
-////                webView.focusEditor();
-//            });
-//        }
-//    }
 
     /**
      * Обработчик изменения выравнивания текста.

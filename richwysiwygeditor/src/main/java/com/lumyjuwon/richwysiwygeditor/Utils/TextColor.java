@@ -1,4 +1,4 @@
-package com.lumyjuwon.richwysiwygeditor.WysiwygUtils;
+package com.lumyjuwon.richwysiwygeditor.Utils;
 
 import android.content.Context;
 
