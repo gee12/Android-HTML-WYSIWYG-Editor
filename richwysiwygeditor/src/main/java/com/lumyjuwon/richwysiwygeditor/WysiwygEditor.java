@@ -603,16 +603,24 @@ public class WysiwygEditor extends LinearLayout {
         // отображаем кнопки с сохраненными цветами
         int[] savedColors = mColorPickerListener.getSavedColors();
         if (savedColors != null) {
-            ViewGroup viewGroup = (ViewGroup) contentView;
-            int length = Math.min(savedColors.length, viewGroup.getChildCount() - 1);
-            for (int i = length-1; i >= 0; i--) {
-                final int color = savedColors[i];
-                Button colorButton = (Button)viewGroup.getChildAt(i);
+//            ViewGroup layout = (ViewGroup) contentView;
+            LinearLayout layout = contentView.findViewById(R.id.layout_buttons);
+            int length = Math.min(savedColors.length, layout.getChildCount() - 1);
+            for (int i = 1; i <= length; i++) {
+                final int colorIndex = length - i;
+                final int color = savedColors[colorIndex];
+                final Button colorButton = (Button)layout.getChildAt(i);
                 colorButton.setVisibility(View.VISIBLE);
-                colorButton.setOnClickListener(view -> {
+                colorButton.setBackgroundColor(color);
+                colorButton.setOnClickListener(v -> {
                     closePopupWindow();
-                    setPickedColor(button.getId() == R.id.button_text_color, color, true);
+                    setPickedColor(button.getId() == R.id.button_text_color, color, false);
 //                webView.focusEditor();
+                });
+                colorButton.setOnLongClickListener(v -> {
+                    mColorPickerListener.removeSavedColor(colorIndex, color);
+                    layout.removeView(colorButton);
+                    return true;
                 });
             }
         }

@@ -8,8 +8,15 @@ public interface IColorPicker {
     void onPickColor();
 
     /**
-     * Получение массива выбранных ранее цветов.
+     * Получение массива сохраненных цветов.
      * @return
      */
     int[] getSavedColors();
+
+    /**
+     * Удаление цвета из массива сохраненных.
+     * @param index
+     * @param color
+     */
+    void removeSavedColor(int index, int color);
 }

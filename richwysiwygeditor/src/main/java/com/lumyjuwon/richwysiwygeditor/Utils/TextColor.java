@@ -7,14 +7,12 @@ import androidx.core.content.ContextCompat;
 
 import com.lumyjuwon.richwysiwygeditor.R;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TextColor {
 
-    public static final Map<Integer,Integer> colorMap = new HashMap<Integer, Integer>() {{
+    /*public static final Map<Integer,Integer> colorMap = new HashMap<Integer, Integer>() {{
         put(R.id.color_white, R.color.white);
         put(R.id.color_black, R.color.black);
         put(R.id.color_maroon, R.color.maroon);
@@ -29,7 +27,7 @@ public class TextColor {
         put(R.id.color_sky_blue, R.color.sky_blue);
         put(R.id.color_pale_cyan, R.color.pale_cyan);
         put(R.id.color_green, R.color.green);
-    }};
+    }};*/
 
     /**
      * FIXME:
