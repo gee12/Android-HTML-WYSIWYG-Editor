@@ -19,6 +19,7 @@ public class ActionButton extends androidx.appcompat.widget.AppCompatImageButton
     private boolean isChecked;
     private boolean isPopup;
 
+    private int mCurCheckedColor;       // текущий цвет
     private int mBaseColor;      // цвет отключенного состояния
     private int mCheckedColor;   // цвет включенного состояния
     private int mDisabledColor;  // цвет неактивного состояния
@@ -87,7 +88,8 @@ public class ActionButton extends androidx.appcompat.widget.AppCompatImageButton
      * @param isChecked
      * @param checkedColor
      */
-    public void setCheckedState(boolean isChecked, int checkedColor){
+    public void setCheckedState(boolean isChecked, int checkedColor) {
+        this.mCurCheckedColor = checkedColor;
         this.isChecked = isChecked;
         // если нужно включить кнопку, но переданный цвет состояния указан как цвет ее отключения,
         // то игнорируем переданный цвет и принудительно устанавливаем цвет включения кнопки
@@ -137,5 +139,9 @@ public class ActionButton extends androidx.appcompat.widget.AppCompatImageButton
 
     public boolean isEditable() {
         return isEditable;
+    }
+
+    public int getCurCheckedColor() {
+        return mCurCheckedColor;
     }
 }

@@ -26,7 +26,7 @@ public class ColorUtils {
             for (int i = 0; i < nums.length; i++) {
                 chanels[i] = Integer.parseInt(nums[i].trim());
             }
-            return Color.rgb(chanels[0], chanels[1],chanels[2]);
+            return Color.rgb(chanels[0], chanels[1], chanels[2]);
         } catch (Exception ignored) {
         }
         return -1;

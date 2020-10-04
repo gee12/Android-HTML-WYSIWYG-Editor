@@ -427,8 +427,6 @@ public class WysiwygEditor extends LinearLayout {
                     break;
                 case TEXT_COLOR:
                 case BACKGROUND_COLOR:
-                    // TODO: проверить получение ЛЮБОГО цвета
-
                     if (!TextUtils.isEmpty(value)) {
 //                        int color = TextColor.getColor(getContext(), value);
                         int color = ColorUtils.rgbStringToColor(value);
@@ -588,22 +586,13 @@ public class WysiwygEditor extends LinearLayout {
                         Keyboard.closeKeyboard(mWebView);
                     }
                     closePopupWindow();
-                    mColorPickerListener.onPickColor();
+                    int curColor = button.getCurCheckedColor();
+                    mColorPickerListener.onPickColor(curColor);
                 });
 
-        /*for (Integer key : TextColor.colorMap.keySet()){
-            final int value = TextColor.colorMap.get(key);
-            Button popupButton = contentView.findViewById(key);
-            popupButton.setOnClickListener(view -> {
-                closePopupWindow();
-                setPickedColor(button.getId() == R.id.button_text_color, value, true);
-//                webView.focusEditor();
-            });
-        }*/
         // отображаем кнопки с сохраненными цветами
         int[] savedColors = mColorPickerListener.getSavedColors();
         if (savedColors != null) {
-//            ViewGroup layout = (ViewGroup) contentView;
             LinearLayout layout = contentView.findViewById(R.id.layout_buttons);
             int length = Math.min(savedColors.length, layout.getChildCount() - 1);
             for (int i = 1; i <= length; i++) {

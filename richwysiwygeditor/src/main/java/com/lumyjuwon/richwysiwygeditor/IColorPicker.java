@@ -5,7 +5,7 @@ public interface IColorPicker {
     /**
      * Запуск диалога выбора цвета.
      */
-    void onPickColor();
+    void onPickColor(int curColor);
 
     /**
      * Получение массива сохраненных цветов.
