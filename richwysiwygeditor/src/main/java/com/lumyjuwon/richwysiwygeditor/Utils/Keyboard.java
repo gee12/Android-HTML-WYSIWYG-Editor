@@ -15,11 +15,13 @@ public class Keyboard {
     public static void closeKeyboard(View view){
         InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+//        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     public static void showKeyboard(View view){
         InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+//        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
     }
 
     public static void showSoftKeyboard(Dialog dialog){

@@ -639,6 +639,8 @@ public class WysiwygEditor extends LinearLayout {
         setPickedColor(mIsTextColor, color, false);
         // восстанавливаем состояние клавиатуры
         if (mIsKeyboardShowed) {
+            // FIXME: не работает на Android 4.4
+//            mWebView.focusEditor();
             Keyboard.showKeyboard(mWebView);
         }
     }
