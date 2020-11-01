@@ -20,8 +20,8 @@ public class Keyboard {
 
     public static void showKeyboard(View view){
         InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
-//        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+//        imm.showSoftInput(view, flags);
     }
 
     public static void showSoftKeyboard(Dialog dialog){
